@@ -2,7 +2,7 @@
 
 Code repository for 2024 Data Science for the Common Good project with iNaturalist. 
 
-Collaborators: Angela Zhu, 
+Collaborators: Angela Zhu, Paula Navarrete
 
 This template draws a lot of inspiration from [Cookiecutter Data Science](https://drivendata.github.io/cookiecutter-data-science/). Please read their awesome explanations!
 
