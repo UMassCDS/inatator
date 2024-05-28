@@ -1,0 +1,8 @@
+stages:
+  count-words:
+    cmd: python cdstemplate/corpus_counter_script.py data/gutenberg_counts.csv data/gutenberg/*.txt --case-insensitive
+    deps:
+    - cdstemplate/corpus_counter_script.py
+    - data/gutenberg
+    outs:
+    - data/gutenberg_counts.csv
