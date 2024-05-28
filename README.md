@@ -1,4 +1,4 @@
-# PythonProjectTemplate
+# iNaturalist-PythonProjectTemplate
 
 This repository presents some opinionated guidelines for creating a data science and machine learning project in Python, using the simple example of scripts for counting words in text documents. By following these guidelines you can make it easy for your code to be tested and understood by others (or yourself months from now), so they can reproduce your experiments.
 
