@@ -5,13 +5,12 @@ requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cdstemplate"
+name = "inatator"
 version = "1.0.0"
-description = "A template repo for data science and machine learning projects at UMass Center for Data Science."
 readme = "README.md"
 
 # What version of python does your library work with?
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 
 # Metadata about your package in case you upload it to PYPI
 classifiers = [
@@ -43,5 +42,5 @@ dev = [
 
 # If your project contains scripts you'd like to be available command line, you can define them here.
 # The value must be of the form "<package_name>:<module_name>.<function>"
-[project.scripts]
-corpus-counter = "cdstemplate:corpus_counter_script.main_cli"
+# [project.scripts]
+# corpus-counter = "cdstemplate:corpus_counter_script.main_cli"
