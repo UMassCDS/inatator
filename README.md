@@ -1,4 +1,4 @@
-# DS4CG iNaturalist GeoModel Annotator Project
+# iNaturalist GeoModel Annotator Project
 
 Code repository for 2024 Data Science for the Common Good project with iNaturalist. 
 
@@ -7,7 +7,7 @@ Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozzie
 This template draws a lot of inspiration from [Cookiecutter Data Science](https://drivendata.github.io/cookiecutter-data-science/). Please read their awesome explanations!
 
 # Getting Started
-## :hatched_chick: Installation for development
+## :hatched_chick: Installation for local development
 Make sure you update your local branch to the latest.
 
 ```
@@ -15,11 +15,11 @@ $ conda create -n inatator python=3.9
 $ conda activate inatator
 ```
 
-### React components
+### React Components
 1) Navigate to `src/frontend`
 2) Run `npm i` that will install js libraries needed for react.
 
-### Backend and SINR
+### Backend and SINR Dependency Installation
 1. Check if you have `poetry`, this is needed because poetry is a tool that finds all compatible library versions while downloading them, otherwise we would die
   - To install poetry go to https://python-poetry.org/docs/
   - It will need you to install pipx, pip on steroids, follow the official pipx instructions to install
