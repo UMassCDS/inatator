@@ -4,7 +4,7 @@ function App() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    fetch("/hello/") //http://localhost:8000/
+    fetch("http://localhost:8000/hello/") //http://localhost:8000/
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
