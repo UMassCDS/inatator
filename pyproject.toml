@@ -1,38 +1,25 @@
-# A build system is required to convert your code into a distributable package.
-# setuptools is the oldest and most common build tool, but we also like Poetry
-[build-system]
-requires = ["setuptools >= 61.0"]
-build-backend = "setuptools.build_meta"
-
-[project]
-name = "cdstemplate"
+[tool.poetry]
+name = "inatator"
 version = "1.0.0"
-description = "A template repo for data science and machine learning projects at UMass Center for Data Science."
+description = "Annotation tool for GeoModels"
+authors = ["Ozel Yilmazel <ozel@yilmazel.com>"]
 readme = "README.md"
-
-# What version of python does your library work with?
-requires-python = ">=3.10"
-
-# Metadata about your package in case you upload it to PYPI
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+packages = [
+    { include = "sinr", from = "src" }
 ]
 
-# All the dependencies needed for running your module go here
-dependencies = [
-    "dvc==2.10.2",
-    "numpy",
-    "pandas",
-    "scikit-learn",
-]
+[tool.poetry.dependencies]
+python = ">=3.9"
+dvc = "^2.10.2"
+numpy = "^1.21.0"
+pandas = "^1.3.0"
+scikit-learn = "^0.24.0"
+torch = "^1.9.0"
+fastapi = "^0.68.0"
+uvicorn = {extras = ["standard"], version = "^0.14.0"}
 
-[project.optional-dependencies]
-# Extra dependencies only needed for running tests go here
+[tool.poetry.extras]
 test = ["pytest"]
-
-# Dependencies that are useful only to developers, like an autoformatter and support for visualizations in jupyter notebooks go here
 dev = [
     "ruff",
     "jupyter",
@@ -41,7 +28,6 @@ dev = [
     "sphinx",
 ]
 
-# If your project contains scripts you'd like to be available command line, you can define them here.
-# The value must be of the form "<package_name>:<module_name>.<function>"
-[project.scripts]
-corpus-counter = "cdstemplate:corpus_counter_script.main_cli"
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

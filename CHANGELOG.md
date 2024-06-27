@@ -8,6 +8,16 @@ You should also add project tags for each release in Github, see [Managing relea
 
 ## [Unreleased]
 ### Added
+- React base code
+- FastAPI Uvicorn server base code
+- SINR package code
+### Changed
+- pyproject.toml to fit poetry
+- .gitignore to ignore .lock from poetry
+- README.md to include instructions on set up for development
+
+## [Unreleased]
+### Added
 - Added example auto-built Sphinx documentation in the `docs` folder
 - Github workflow for running ruff linter
 ### Changed
