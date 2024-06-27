@@ -2,7 +2,7 @@
 
 Code repository for 2024 Data Science for the Common Good project with iNaturalist. 
 
-Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozzie xD
+Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozzie 
 
 This template draws a lot of inspiration from [Cookiecutter Data Science](https://drivendata.github.io/cookiecutter-data-science/). Please read their awesome explanations!
 
@@ -20,17 +20,16 @@ $ conda activate inatator
 2) Run `npm i` that will install js libraries needed for react.
 
 ### Backend and SINR
-- Check if you have `poetry`, this is needed because poetry is a tool that finds all compatible library versions while downloading them, otherwise we would die
-- - To install poetry go to https://python-poetry.org/docs/
-- - It will need you to install pipx, pip on steroids, follow the official pipx instructions to install
-- - You don't have to run the command with --global option, the last command
-- - Steps will differ slightly based on your OS
+1. Check if you have `poetry`, this is needed because poetry is a tool that finds all compatible library versions while downloading them, otherwise we would die
+  - To install poetry go to https://python-poetry.org/docs/
+  - It will need you to install pipx, pip on steroids, follow the official pipx instructions to install
+  - You don't have to run the command with --global option, the last command
+  - Steps will differ slightly based on your OS
+  - After pipx is installed you can install poetry from their instructions, just one line
+2. Check poetry by just typing `poetry` into terminal, it should recognize and list options etc
 
-- - After pipx is installed you can install poetry from their instructions, just one line
-- Check poetry by just typing `poetry` into terminal, it should recognize and list options etc
-
-- Now at the project root you can run `poetry install` which will install all packages required for now
-- - To double check everything is working as intended, navigate to `src/sinr/models.py` write a function that prints something. Now, navigate to `src/backend/app` and create a temporary python file that you will delete later, in the file enter `from sinr.models import *`, then call the function you just created from that file, make sure it prints correctly and does not give errors.
+3. Now at the project root you can run `poetry install` which will install all packages required for now
+  - To double check everything is working as intended, navigate to `src/sinr/models.py` write a function that prints something. Now, navigate to `src/backend/app` and create a temporary python file that you will delete later, in the file enter `from sinr.models import *`, then call the function you just created from that file, make sure it prints correctly and does not give errors.
 
 ## :penguin: Run the Application
 1. Open two terminals. You will need to run the server first, then application frontend.
