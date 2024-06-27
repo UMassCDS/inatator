@@ -1,0 +1,49 @@
+# A build system is required to convert your code into a distributable package.
+# setuptools is the oldest and most common build tool, but we also like Poetry
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "inatator"
+version = "1.0.0"
+readme = "README.md"
+
+# What version of python does your library work with?
+requires-python = ">=3.9"
+
+# Metadata about your package in case you upload it to PYPI
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+# All the dependencies needed for running your module go here
+dependencies = [
+    "dvc==2.10.2",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "torch",
+    "fastapi",
+    "uvicorn[standard]",
+]
+
+[project.optional-dependencies]
+# Extra dependencies only needed for running tests go here
+test = ["pytest"]
+
+# Dependencies that are useful only to developers, like an autoformatter and support for visualizations in jupyter notebooks go here
+dev = [
+    "ruff",
+    "jupyter",
+    "matplotlib",
+    "seaborn",
+    "sphinx",
+]
+
+# If your project contains scripts you'd like to be available command line, you can define them here.
+# The value must be of the form "<package_name>:<module_name>.<function>"
+# [project.scripts]
+# corpus-counter = "cdstemplate:corpus_counter_script.main_cli"

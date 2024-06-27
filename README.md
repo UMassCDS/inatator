@@ -7,6 +7,38 @@ Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov
 This template draws a lot of inspiration from [Cookiecutter Data Science](https://drivendata.github.io/cookiecutter-data-science/). Please read their awesome explanations!
 
 # Getting Started
+## Installation for development
+Make sure you update your local branch to the latest.
+
+```
+$ conda create -n inatator python=3.9
+$ conda activate inatator
+```
+
+### React components
+1) Navigate to `src/frontend`, run `npm i` that will install js libraries needed for react.
+
+### Backend and SINR
+- Check if you have `poetry`, this is needed because poetry is a tool that finds all compatible library versions while downloading them, otherwise we would die
+- To install poetry go to https://python-poetry.org/docs/
+- It will need you to install pipx, pip on steroids, follow the official pipx instructions to install
+- You don't have to run the command with --global option, the last command
+- Steps will differ slightly based on your OS
+
+- After pipx is installed you can install poetry from their instructions, just one line
+- Check poetry by just typing `poetry` into terminal, it should recognize and list options etc
+
+- Now at the project root you can run `poetry install` which will install all packages required for now
+- To double check everything is working as intended, navigate to `src/sinr/models.py` write a function that prints something. Now, navigate to `src/backend/app` and create a temporary python file that you will delete later, in the file enter `from sinr.models import *`, then call the function you just created from that file, make sure it prints correctly and does not give errors.
+
+### Running React App and Server FastAPI
+- You run server first, then application
+- Open two terminals.
+- To start the server, navigate to project root, run `uvicorn src.backend.app.main:app --reload`, to make sure it is working go to `http://localhost:8000/hello/` in your browser
+- To start the application, navigate to `src/frontend/` you see there are js things, you are at the right spot. Now run `npm start`, it will start running the app and should automatically open to page in your browser.
+
+# Old instructions, don't read further
+
 ## Installing Dependencies and Packages
 Use these steps for setting up a development environment to install and work with code in this template:
 1) Set up a Python 3 virtual environment using [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html#) or [Virtualenv](https://virtualenv.pypa.io/en/latest/index.html). Read [Python Virtual Environments: A Primer](https://realpython.com/python-virtual-environments-a-primer/#the-virtualenv-project) for details on how to get started with virtual environments and why you need them.
