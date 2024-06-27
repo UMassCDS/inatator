@@ -1,4 +1,4 @@
-# iNaturalist-PythonProjectTemplate
+# DS4CG iNaturalist GeoModel Annotator Project
 
 Code repository for 2024 Data Science for the Common Good project with iNaturalist. 
 
