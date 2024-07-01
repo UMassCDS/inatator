@@ -15,16 +15,6 @@ torch = "^1.9.0"
 fastapi = "^0.68.0"
 uvicorn = {extras = ["standard"], version = "^0.14.0"}
 
-[tool.poetry.extras]
-test = ["pytest"]
-dev = [
-    "ruff",
-    "jupyter",
-    "matplotlib",
-    "seaborn",
-    "sphinx",
-]
-
 [build-system]
 requires = ["poetry-core>=1.6"]
 build-backend = "poetry.core.masonry.api"

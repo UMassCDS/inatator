@@ -1,5 +1,6 @@
 services:
   frontend:
+    platform: linux/amd64
     build:
       context: ./src/frontend
       dockerfile: Dockerfile
@@ -8,6 +9,7 @@ services:
     depends_on:
       - backend
   backend:
+    platform: linux/amd64
     build:
       context: .
       dockerfile: ./src/backend/Dockerfile
