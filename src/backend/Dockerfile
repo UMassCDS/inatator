@@ -30,7 +30,7 @@ RUN poetry config virtualenvs.create false \
     && poetry install --no-interaction --no-root
 
 # Copy the rest of the application code
-COPY ./src/backend/app ./src/backend/app
+COPY ./src/backend/ ./src/backend/
 
 # Expose the port that FastAPI runs on
 EXPOSE 8000

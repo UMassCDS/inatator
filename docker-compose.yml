@@ -10,6 +10,6 @@ services:
   backend:
     build:
       context: .
-      dockerfile: ./src/backend/app/Dockerfile
+      dockerfile: ./src/backend/Dockerfile
     ports:
       - "8000:8000"
