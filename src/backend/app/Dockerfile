@@ -18,7 +18,6 @@ RUN pip install poetry \
 
 # Copy the rest of the application code
 COPY ./src/backend/app ./src/backend/app
-COPY ./src/sinr ./src/sinr
 
 # Expose the port that FastAPI runs on
 EXPOSE 8000

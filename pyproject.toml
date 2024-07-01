@@ -4,9 +4,6 @@ version = "1.0.0"
 description = "Annotation tool for GeoModels"
 authors = ["Ozel Yilmazel <ozel@yilmazel.com>"]
 readme = "README.md"
-packages = [
-    { include = "sinr", from = "src" }
-]
 
 [tool.poetry.dependencies]
 python = ">=3.9"

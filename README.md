@@ -1,13 +1,13 @@
-# iNaturalist-PythonProjectTemplate
+# iNaturalist GeoModel Annotator Project
 
 Code repository for 2024 Data Science for the Common Good project with iNaturalist. 
 
-Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov
+Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozzie 
 
 This template draws a lot of inspiration from [Cookiecutter Data Science](https://drivendata.github.io/cookiecutter-data-science/). Please read their awesome explanations!
 
 # Getting Started
-## Installation for development
+## :hatched_chick: Installation for local development
 Make sure you update your local branch to the latest.
 
 ```
@@ -15,120 +15,41 @@ $ conda create -n inatator python=3.9
 $ conda activate inatator
 ```
 
-### React components
-1) Navigate to `src/frontend`, run `npm i` that will install js libraries needed for react.
+### React Components
+1) Navigate to `src/frontend`
+2) Run `npm i` that will install js libraries needed for react.
 
-### Backend and SINR
-- Check if you have `poetry`, this is needed because poetry is a tool that finds all compatible library versions while downloading them, otherwise we would die
-- To install poetry go to https://python-poetry.org/docs/
-- It will need you to install pipx, pip on steroids, follow the official pipx instructions to install
-- You don't have to run the command with --global option, the last command
-- Steps will differ slightly based on your OS
+### Backend and SINR Dependency Installation
+1. Check if you have `poetry`, this is needed because poetry is a tool that finds all compatible library versions while downloading them, otherwise we would die
+  - To install poetry go to https://python-poetry.org/docs/
+  - It will need you to install pipx, pip on steroids, follow the official pipx instructions to install
+  - You don't have to run the command with --global option, the last command
+  - Steps will differ slightly based on your OS
+  - After pipx is installed you can install poetry from their instructions, just one line
+2. Check poetry by just typing `poetry` into terminal, it should recognize and list options etc
 
-- After pipx is installed you can install poetry from their instructions, just one line
-- Check poetry by just typing `poetry` into terminal, it should recognize and list options etc
+3. Now at the project root you can run `poetry install` which will install all packages required for now
+  - To double check everything is working as intended, navigate to `src/sinr/models.py` write a function that prints something. Now, navigate to `src/backend/app` and create a temporary python file that you will delete later, in the file enter `from sinr.models import *`, then call the function you just created from that file, make sure it prints correctly and does not give errors.
 
-- Now at the project root you can run `poetry install` which will install all packages required for now
-- To double check everything is working as intended, navigate to `src/sinr/models.py` write a function that prints something. Now, navigate to `src/backend/app` and create a temporary python file that you will delete later, in the file enter `from sinr.models import *`, then call the function you just created from that file, make sure it prints correctly and does not give errors.
+## :penguin: Run the Application
+Open two terminals. You will need to run the server first, then application frontend.
+1. ***Run the backend (server):*** To start the server, navigate to project root, run `uvicorn src.backend.app.main:app --reload`, to make sure it is working go to `http://localhost:8000/hello/` in your browser.
+2. ***Run the frontend (application):*** To start the application, navigate to `src/frontend/` you see there are js things, you are at the right spot. Now run `npm start`, it will start running the app and should automatically open to page in your browser.
 
-### Running React App and Server FastAPI
-- You run server first, then application
-- Open two terminals.
-- To start the server, navigate to project root, run `uvicorn src.backend.app.main:app --reload`, to make sure it is working go to `http://localhost:8000/hello/` in your browser
-- To start the application, navigate to `src/frontend/` you see there are js things, you are at the right spot. Now run `npm start`, it will start running the app and should automatically open to page in your browser.
+### Running applications with Docker
+1. Install Docker if you haven't already
+2. Navigate project root
+3. Run `docker-compose up --build`
+  - For the first build it may take a while
+4. Make sure the default application is running as expected by going to urls for react and server
+5. During development, you can stop contianers with ctrl+c or using the Docker app
+6. If you want to start the application again, run `docker-compose up`
+7. If you change a docker configuration file, run `docker-compose up --build`
 
-# Old instructions, don't read further
-
-## Installing Dependencies and Packages
-Use these steps for setting up a development environment to install and work with code in this template:
-1) Set up a Python 3 virtual environment using [Conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html#) or [Virtualenv](https://virtualenv.pypa.io/en/latest/index.html). Read [Python Virtual Environments: A Primer](https://realpython.com/python-virtual-environments-a-primer/#the-virtualenv-project) for details on how to get started with virtual environments and why you need them.
-2) Activate your virtual environment.
-
-3) Install the package.
-	- If you want to just use the scripts and package features, install the project by running `pip install .` from the root directory.
-	- If you will be changing the code and running tests, you can install it by running `pip install -e .[test,dev]`. The `-e/--editable` flag means local changes to the project code will always be available with the package is imported. You wouldn't use this in production, but it's useful for development.
-
-
-For example, if you use Conda, you would run the following to create an environment named `template` with python version 3.10, then activate it and install the package in developer mode:
-```
-$ conda create -n template python=3.10 -y
-Collecting package metadata (current_repodata.json): done
-Solving environment: done
-
-## Package Plan ##
-
-  environment location: /home/virginia/miniconda3/envs/template
-
-  added / updated specs:
-    - python=3.10
-
-
-
-The following NEW packages will be INSTALLED:
-
-    package                    |            build
-    ---------------------------|-----------------
-...
-
-$ conda activate `template`
-$ pip install -e .[test,dev]
-Obtaining file:///home/virginia/workspace/PythonProjectTemplate
-  Installing build dependencies ... done
-  Getting requirements to build wheel ... done
-  Installing backend dependencies ... done
-    Preparing wheel metadata ... done
-Collecting numpy
-...
-```
-
-## Specifying Requirements
-In order for users to install your package and all the libraries it depends on by running `pip install`, you need to provide a `pyproject.toml` file. This has two important sections:
-- `project`: List project metadata and version information and all library requirements/dependencies, including for testing or development environments. This is the main file you will work with and add requirements to.
-- `build-system`: Define the build tool that is used to package and distribute your code. For this project, we use [SetupTools](https://setuptools.pypa.io/en/latest/userguide/quickstart.html), but we also recommend [Poetry](https://python-poetry.org/docs/).
-
-If you'd like to learn more about python packaging, refer to [the Python Packaging User Guide](https://packaging.python.org/en/latest/) or [PEP 517](https://peps.python.org/pep-0517/#build-requirements).
-
-
-## Directory Structure
-So what does each file in this repository do?
-```
-.
-├── src
-    ├── cdstemplate     # The python package root - Any code you'd like to be able to import lives here
-        ├── corpus_counter_script.py    # A script that takes a list of documents as input and outputs a CSV of word counts
-        ├── __init__.py     # Indicates that this directory is a python package, you can put special import instructions here
-        ├── word_count.py    # A module that has functions and classes to import
-        └── utils.py    # A module that handles logging and other internals
-├── CHANGELOG.md    # Versioning information
-├── dag_workflow.png    # An image that is linked to in this README
-├── data    # Data files which may or may not be tracked in Git, but we reserve a folder for them so that users can all have the same relative paths
-    ├── gutenberg     # Sample text input files, the raw inputs to our experiment pipeline.
-    └── gutenberg_counts.csv     # The expected output file for our experiment. It's generated by `dvc repro` and is ignored by git.
-├── docs     # Sphinx auto-documentation uses this folder to run its scripts and store documentation
-    ├── _build     # Contains the Sphinx doctree and html documentation source code
-        ├── doctrees     # A folder with doctree construction information
-        └── html   # A folder that contains the html code for all automatically created documentation
-    ├── _static     # A folder that can contain static code
-    ├── _templates    # A folder that can contain Sphinx templates
-    ├── conf.py    # A function that configures Sphinx according to user specifications  
-    ├── index.rst    # A directory that users can input new functions into for auto-documentation
-    ├── make.bat    # A function that runs auto-documentation
-    └── Makefile    # A function that creates html documentation based on functions in the index.rst file
-├── dvc.lock    # Data Version Control uses this file to compare experiment versions. It's tracked in Git, but don't edit it manually.
-├── dvc.yaml    # Create the Data Version Control pipeline stages here
-├── notebooks
-    └── word_count_prototype.ipynb    # A jupyter notebook that makes pretty plots
-├── pyproject.toml    # Project metadata, dependencies and build tools are declared for proper installation and packaging.
-├── README.md     # You're reading it now!
-└── tests
-    └── test_word_count.py    # Unit and smoke tests for the word_count module
-├── .dvc    # The configuration file for Data Version Control
-├── .github
-    └── workflows/python_package.yml    # Github Workflow file, configures running tests on Github every time a pull request to the main branch is made
-├── .gitignore   # Lists files that should not be included in version control, created from Github's template .gitignore for Python.
-└── .dvcignore    # Lists files that Data Version Control should skip when checking for changes in stage dependencies.
-```
-
+## Code Standards
+1. Use Docstrings, for some functions just a one-linet is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
+2. Module Docstrings, include a short description of module and functions inside the module.
+3. Use a formatter if possible, **black** formatter has support for vscode and is decent
 
 # Communication Tools and Code
 When you work with others, it's not just about the code!
