@@ -8,13 +8,26 @@ ENV PYTHONUNBUFFERED 1
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy only the necessary files for installing dependencies
-COPY pyproject.toml ./
+# Install necessary system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libc-dev \
+    libffi-dev \
+    libpq-dev \
+    build-essential \
+    curl \
+    && apt-get clean
 
-# Install Poetry and project dependencies
-RUN pip install poetry \
-    && poetry config virtualenvs.create false \
-    && poetry install --no-dev --no-interaction --no-root
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 - && \
+    ln -s /root/.local/bin/poetry /usr/local/bin/poetry
+
+# Copy only the necessary files for installing dependencies
+COPY pyproject.toml poetry.lock ./
+
+# Install project dependencies
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-root
 
 # Copy the rest of the application code
 COPY ./src/backend/app ./src/backend/app
