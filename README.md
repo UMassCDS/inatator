@@ -31,10 +31,32 @@ $ conda activate inatator
 3. Now at the project root you can run `poetry install` which will install all packages required for now
   - To double check everything is working as intended, navigate to `src/sinr/models.py` write a function that prints something. Now, navigate to `src/backend/app` and create a temporary python file that you will delete later, in the file enter `from sinr.models import *`, then call the function you just created from that file, make sure it prints correctly and does not give errors.
 
-## :penguin: Run the Application
-Open two terminals. You will need to run the server first, then application frontend.
-1. ***Run the backend (server):*** To start the server, navigate to project root, run `uvicorn src.backend.app.main:app --reload`, to make sure it is working go to `http://localhost:8000/hello/` in your browser.
-2. ***Run the frontend (application):*** To start the application, navigate to `src/frontend/` you see there are js things, you are at the right spot. Now run `npm start`, it will start running the app and should automatically open to page in your browser.
+## :penguin: Starting the app
+#### Activate the inatator environment:
+```bash
+ conda activate inatator
+```
+#### Run backend in first terminal:
+1. Navigate to the main directory:
+```bash
+ cd /path/to/sinr/ds4cg2024-inaturalist
+```
+2. Launch the **backend**:
+```bash
+ uvicorn src.backend.app.main:app --reload
+```
+### Run **frontend** in another terminal:
+1. Navigate to the main directory:
+```bash
+ cd /path/to/sinr/ds4cg2024-inaturalist
+```
+2. Launch the **frontend**:
+```bash
+  npm start --prefix src/frontend/
+```
+
+In your web browser, open the link [http://localhost:3000/](http://localhost:3000/)
+
 
 ### Running applications with Docker
 1. Install Docker if you haven't already
