@@ -6,7 +6,7 @@ authors = ["Ozel Yilmazel <ozel@yilmazel.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = ">=3.8, <3.11"
 dvc = "^2.10.2"
 numpy = "^1.21.0"
 pandas = "^1.3.0"
