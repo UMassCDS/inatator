@@ -1,0 +1,11 @@
+pretrained_models
+reproduce
+reproduce/*
+__pycache__/
+./__pycache__/*
+experiments
+.ipynb_checkpoints/
+
+data/*
+!data/env
+!data/README.md
