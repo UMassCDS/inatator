@@ -5,13 +5,12 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-COPY environment.yml .
-
-RUN conda env create -f environment.yml
+RUN conda create -n inatator python=3.10
 
 COPY . .
 
-COPY entrypoint.sh /app/entrypoint.sh
+RUN pip install -r requirements.txt && pip install -r requirements-dev.txt
+
 RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8000

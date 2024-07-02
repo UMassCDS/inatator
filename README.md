@@ -28,12 +28,12 @@ conda activate inatator
 ## :penguin: Run the Application
 Open two terminals. You will need to run the server first, then application frontend.
 1. ***Run the backend (server):*** To start the server, navigate to project root, run `uvicorn src.backend.app.main:app --reload`, to make sure it is working go to `http://localhost:8000/hello/` in your browser.
-2. ***Run the frontend (application):*** To start the application, navigate to `src/frontend/` you see there are js things, you are at the right spot. Now run `npm start`, it will start running the app and should automatically open to page in your browser.
+2. ***Run the frontend (application):*** To start the application, navigate to `src/frontend/` you see there are js files, you are at the right spot. Now run `npm start`, it will start running the app and should automatically open to page in your browser.
 
 ### Running applications with Docker
 1. Install Docker if you haven't already
 2. Navigate project root
-3. Run `docker-compose up --build`, for the first build it may take a while
+3. Run `docker compose up --build`, for the first build it may take a while
 4. Make sure the default application is running as expected by going to urls for react and server
 5. During development, you can stop contianers with ctrl+c or using the Docker app
 6. If you want to start the application again, run `docker compose up`

@@ -16,4 +16,4 @@ app.add_middleware(
 
 @app.get("/hello/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Hello": "world"}
