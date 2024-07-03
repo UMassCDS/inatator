@@ -14,6 +14,7 @@ function App() {
   };
 
   const [hullPoints, setHullPoints] = useState(null);
+  const [hexResolution, sethexResolution] = useState(null);
 
   const handleGeneratePrediction = () => {
     const formData = {
@@ -43,12 +44,16 @@ function App() {
     });
   };
 
+  const onShowGrid = () => {
+    sethexResolution(Number(formRefs.hexResolution.current.value))
+  }
+
   return (
     <div className="app-container">
       <Sidebar ref={formRefs} />
       <div className="main-content">
-        <Buttons onGeneratePrediction={handleGeneratePrediction} />
-        <Map hullPoints={hullPoints} />
+        <Buttons onGeneratePrediction={handleGeneratePrediction} onShowGrid={onShowGrid} />
+        <Map hullPoints={hullPoints} hexResolution={hexResolution}/>
       </div>
     </div>
   );

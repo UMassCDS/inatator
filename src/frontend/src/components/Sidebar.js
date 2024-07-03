@@ -47,7 +47,7 @@ const Sidebar = forwardRef((props, ref) => {
       <input readOnly="True" type="number" step="0.01" id="threshold" defaultValue="0.1" min="0.1" max="0.9" ref={ref.threshold} />
 
       <label htmlFor="hexResolution">Hex Resolution:</label>
-      <input readOnly="True" type="number" id="hexResolution" defaultValue="5" min="0" max="15" ref={ref.hexResolution} />
+      <input type="number" id="hexResolution" defaultValue="1" min="0" max="15" ref={ref.hexResolution} />
 
       <div className="checkbox-container">
         <input type="checkbox" id="disable_ocean_mask" name="Disable Ocean Mask" ref={ref.disableOceanMask} />
