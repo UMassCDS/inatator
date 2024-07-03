@@ -32,6 +32,7 @@ Open two terminals. You will need to run the server first, then application fron
 
 ### Running applications with Docker
 1. Install Docker if you haven't already
+2. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
 2. Navigate project root
 3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`
 5. You can stop contianers with ctrl+c or using the Docker app
