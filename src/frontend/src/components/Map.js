@@ -18,23 +18,23 @@ const HexagonLayer = ({ hexResolution }) => {
 
         const hexIndexes = h3.polyfill(
           [
-            [southWest.lng, southWest.lat],
-            [northEast.lng, southWest.lat],
-            [northEast.lng, northEast.lat],
-            [southWest.lng, northEast.lat],
+            [southWest.lat, southWest.lng],
+            [northEast.lat, southWest.lng],
+            [northEast.lat, northEast.lng],
+            [southWest.lat, northEast.lng],
           ],
           hexResolution
         );
 
-        const hexagonsData = hexIndexes.map((hex) => h3.h3ToGeoBoundary(hex, true).map(([lat, lng]) => [lat, lng]));
+        const hexagonsData = hexIndexes.map((hex) => h3.h3ToGeoBoundary(hex, false).map(([lat, lng]) => [lat, lng]));
         setHexagons(hexagonsData);
       };
 
       generateHexagons();
     }
-  }, [hexResolution]);
+  }, [hexResolution, map]);
   return (
-    <Polygon positions={hexagons} pathOptions={{ color: 'green', fillColor: 'blue', fillOpacity: 0.1 }} />
+    <Polygon positions={hexagons} pathOptions={{ color: 'lightblue', fillColor: 'blue', fillOpacity: 0.1 }} />
   );
 };
 
@@ -62,7 +62,6 @@ const Map = ({ hullPoints, hexResolution }) => {
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            minZoom={4}
           />
         </LayersControl.BaseLayer>
 
@@ -88,7 +87,7 @@ const Map = ({ hullPoints, hexResolution }) => {
         </LayersControl.BaseLayer>
 
         {/* Render the Hexagon Layer */}
-        <LayersControl.Overlay checked name="Hexagon Layer">
+        <LayersControl.Overlay checked name="Hexagon Grid">
           <HexagonLayer hexResolution={hexResolution}/>
         </LayersControl.Overlay>
 
