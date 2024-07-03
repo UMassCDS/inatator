@@ -1,5 +1,5 @@
 numpy
 pandas
 torch
-fastapi
+fastapi<1.0.0
 uvicorn[standard]

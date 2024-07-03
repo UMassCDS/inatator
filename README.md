@@ -27,17 +27,17 @@ conda activate inatator
 
 ## :penguin: Run the Application
 Open two terminals. You will need to run the server first, then application frontend.
-1. ***Run the backend (server):*** To start the server, navigate to project root, run `uvicorn src.backend.app.main:app --reload`, to make sure it is working go to `http://localhost:8000/hello/` in your browser.
+1. ***Run the backend (server):*** To start the server, navigate to project root, activate your environment `conda activate inatator`, run `uvicorn src.backend.app.main:app --reload`, go to `http://localhost:8000/hello/` in your browser, if you are seeing `{hello: world}` you are good to go.
 2. ***Run the frontend (application):*** To start the application, navigate to `src/frontend/` you see there are js files, you are at the right spot. Now run `npm start`, it will start running the app and should automatically open to page in your browser.
 
 ### Running applications with Docker
 1. Install Docker if you haven't already
 2. Navigate project root
-3. Run `docker compose up --build`, for the first build it may take a while
-4. Make sure the default application is running as expected by going to urls for react and server
-5. During development, you can stop contianers with ctrl+c or using the Docker app
+3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`
+5. You can stop contianers with ctrl+c or using the Docker app
 6. If you want to start the application again, run `docker compose up`
-7. If you change a docker configuration file, run `docker compose up --build`
+7. If you want to just build images, run `docker compose build`
+8. If you want to build and run containers, run `docker compose up --build`
 
 ## Code Standards
 1. Use Docstrings, for some functions just a one-linet is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
