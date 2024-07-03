@@ -7,6 +7,9 @@ from shapely.geometry import mapping
 
 from ..sinr import sinr
 
+MIN_THRESHOLD = 0.1
+MAX_THRESHOLD = 0.9
+
 
 def get_taxa_id_by_name(taxa_name: str):
     """ Returns the Taxa ID from the title, assuming the title is in format `taxa_name (taxa_id)`.
@@ -54,8 +57,11 @@ def generate_prediction(eval_params):
     pred_loc_combined = np.column_stack((locs, preds))
     pred_loc_combined = np.float_(pred_loc_combined)
 
-    # leave only predictions above threshold
-    threshold = eval_params['threshold']
+    # leave only predictions above threshold.
+    # threshold should be beatween MIN_THRESHOLD and MAX_THRESHOLD:
+    #   (MIN_THRESHOLD <= threshold <= MAX_THRESHOLD)
+    threshold = min(max(eval_params.get('threshold', MIN_THRESHOLD), MIN_THRESHOLD), MAX_THRESHOLD)
+
     # if a more detailed HeatMap needed, use `pred_loc_combined` for that
     pred_loc_combined = pred_loc_combined[pred_loc_combined[:,2] >= threshold]
     coordinates = pred_loc_combined[:,[0,1]]
