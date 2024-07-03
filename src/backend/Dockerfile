@@ -9,10 +9,11 @@ RUN conda create -n inatator python=3.10
 
 COPY . .
 
-RUN pip install -r requirements.txt && pip install -r requirements-dev.txt
+RUN conda run -n inatator \
+    pip install -r requirements.txt
 
 RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8000
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT [ "/app/entrypoint.sh" ]
