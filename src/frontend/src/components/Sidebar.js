@@ -35,9 +35,6 @@ const Sidebar = forwardRef((props, ref) => {
       <label htmlFor="taxa_name">Taxa Name:</label>
       <input type="text" id="taxa_name" defaultValue="Ranunculus alpestris (130712)" ref={ref.taxaName} />
 
-      <label htmlFor="threshold">Threshold:</label>
-      <input type="number" step="0.01" id="threshold" defaultValue="0.1" min="0.1" max="1" ref={ref.threshold} />
-      
       <label htmlFor="model">Model:</label>
       <select name="Model" id="model" defaultValue="AN_FULL_max_1000" ref={ref.model}>
         <option value="AN_FULL_max_10">AN_FULL max 10</option>
@@ -45,6 +42,9 @@ const Sidebar = forwardRef((props, ref) => {
         <option value="AN_FULL_max_1000">AN_FULL max 1000</option>
         <option value="Distilled_env_model">Distilled env model</option>
       </select>
+
+      <label htmlFor="threshold">Threshold:</label>
+      <input readOnly="True" type="number" step="0.01" id="threshold" defaultValue="0.1" min="0.1" max="0.9" ref={ref.threshold} />
 
       <label htmlFor="hexResolution">Hex Resolution:</label>
       <input readOnly="True" type="number" id="hexResolution" defaultValue="5" min="0" max="15" ref={ref.hexResolution} />
