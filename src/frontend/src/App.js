@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
-import Map from './components/Map';
-import Sidebar from './components/Sidebar';
-import Buttons from './components/Buttons';
-import './App.css';
+import React, { useRef, useState } from "react";
+import Map from "./components/Map";
+import Sidebar from "./components/Sidebar";
+import Buttons from "./components/Buttons";
+import "./App.css";
 
 function App() {
   const formRefs = {
@@ -24,23 +24,23 @@ function App() {
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
     };
 
-    fetch('/generate_prediction/', {
-      method: 'POST',
+    fetch("http://localhost:8000/generate_prediction/", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Prediction generated:', data);
-      if (data.hull_points) {
-        setHullPoints(data.hull_points);
-      }
-    })
-    .catch(error => {
-      console.error('Error generating prediction:', error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Prediction generated:", data);
+        if (data.hull_points) {
+          setHullPoints(data.hull_points);
+        }
+      })
+      .catch((error) => {
+        console.error("Error generating prediction:", error);
+      });
   };
 
   return (
