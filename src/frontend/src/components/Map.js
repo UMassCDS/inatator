@@ -34,15 +34,7 @@ const HexagonLayer = ({ hexResolution }) => {
     }
   }, [hexResolution]);
   return (
-    <>
-      {hexagons.map((hexagon, index) => (
-        <Polygon
-          key={index}
-          positions={hexagon}
-          pathOptions={{ color: 'blue', fillColor: 'blue', fillOpacity: 0.1 }}
-        />
-      ))}
-    </>
+    <Polygon positions={hexagons} pathOptions={{ color: 'green', fillColor: 'blue', fillOpacity: 0.1 }} />
   );
 };
 
@@ -97,7 +89,7 @@ const Map = ({ hullPoints, hexResolution }) => {
 
         {/* Render the Hexagon Layer */}
         <LayersControl.Overlay checked name="Hexagon Layer">
-          <HexagonLayer hexResolution={hexResolution} />
+          <HexagonLayer hexResolution={hexResolution}/>
         </LayersControl.Overlay>
 
         {/* Render the PredictionPolygon if hullPoints are available */}
