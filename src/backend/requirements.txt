@@ -1,0 +1,5 @@
+numpy
+pandas
+torch
+fastapi<1.0.0
+uvicorn[standard]
