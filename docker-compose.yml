@@ -11,7 +11,7 @@ services:
   backend:
     platform: linux/amd64
     build:
-      context: .
-      dockerfile: ./src/backend/Dockerfile
+      context: ./src/backend
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"

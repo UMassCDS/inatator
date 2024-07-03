@@ -10,10 +10,8 @@ You should also add project tags for each release in Github, see [Managing relea
 ### Added
 - React base code
 - FastAPI Uvicorn server base code
-- SINR package code
 ### Changed
-- pyproject.toml to fit poetry
-- .gitignore to ignore .lock from poetry
+- requirements.txt and requirements-dev.txt to install packages within conda environment
 - README.md to include instructions on set up for development
 
 ## [Unreleased]
