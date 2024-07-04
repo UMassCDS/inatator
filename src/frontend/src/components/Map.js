@@ -1,40 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, LayersControl, Polygon, useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import * as h3 from 'h3-js/legacy';
+import React, { useEffect, useState } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  LayersControl,
+  Polygon,
+  useMap,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import * as h3 from "h3-js/legacy";
 
 // Component to generate and display hexagons
 const HexagonLayer = ({ hexResolution }) => {
   const [hexagons, setHexagons] = useState([]);
-  const map = useMap()
+  const map = useMap();
+  hexResolution = 5;
 
-  useEffect(() => {
-    if (hexResolution) {
-      const generateHexagons = () => {
+  const generateHexagons = (hexResolution) => {
+    const { _southWest: sw, _northEast: ne } = map.getBounds();
+    const screenBounds = [
+      [sw.lat, sw.lng],
+      [ne.lat, sw.lng],
+      [ne.lat, ne.lng],
+      [sw.lat, ne.lng],
+      [sw.lat, sw.lng],
+    ];
 
-        const bounds = map.getBounds();
-        const southWest = bounds.getSouthWest();
-        const northEast = bounds.getNorthEast();
+    const hexIdxs = h3.polyfill(screenBounds, hexResolution);
 
-        const hexIndexes = h3.polyfill(
-          [
-            [southWest.lat, southWest.lng],
-            [northEast.lat, southWest.lng],
-            [northEast.lat, northEast.lng],
-            [southWest.lat, northEast.lng],
-          ],
-          hexResolution
-        );
+    const hexagonsData = hexIdxs.map((hex) =>
+      h3.h3ToGeoBoundary(hex, false).map(([lat, lng]) => [lat, lng])
+    );
+    setHexagons(hexagonsData);
+  };
 
-        const hexagonsData = hexIndexes.map((hex) => h3.h3ToGeoBoundary(hex, false).map(([lat, lng]) => [lat, lng]));
-        setHexagons(hexagonsData);
-      };
+  map.on("moveend", () => map.getZoom() > 6 && generateHexagons(hexResolution)); // it is better if it renders at 'end' because otherwise it gets really slow
+  map.on("zoomend", () => map.getZoom() > 6 && generateHexagons(hexResolution));
 
-      generateHexagons();
-    }
-  }, [hexResolution, map]);
   return (
-    <Polygon positions={hexagons} pathOptions={{ color: 'lightblue', fillColor: 'blue', fillOpacity: 0.1 }} />
+    <Polygon
+      positions={hexagons}
+      pathOptions={{ color: "red", fillColor: "red", fillOpacity: 0.5 }}
+    />
   );
 };
 
@@ -44,19 +50,27 @@ const PredictionPolygon = ({ hullPoints }) => {
 
   useEffect(() => {
     if (hullPoints) {
-      map.flyToBounds(hullPoints, {maxZoom: 5});
+      map.flyToBounds(hullPoints, { maxZoom: 5 });
     }
   }, [hullPoints, map]);
 
-  return hullPoints ? <Polygon positions={hullPoints} pathOptions={{ color: 'red', fillColor: 'yellow' }} /> : null;
+  return hullPoints ? (
+    <Polygon
+      positions={hullPoints}
+      pathOptions={{ color: "purple", fillColor: "purple", opacity: 0.7 }}
+    />
+  ) : null;
 };
 
 // Main Map Component
 const Map = ({ hullPoints, hexResolution }) => {
   return (
-    <MapContainer center={[39, 34]} zoom={3} style={{ height: '100vh', width: '100%' }}>
+    <MapContainer
+      center={[39, 34]}
+      zoom={3}
+      style={{ height: "100vh", width: "100%" }}
+    >
       <LayersControl position="topright">
-
         {/* Base Layers */}
         <LayersControl.BaseLayer checked name="OpenStreetMap">
           <TileLayer
@@ -88,7 +102,7 @@ const Map = ({ hullPoints, hexResolution }) => {
 
         {/* Render the Hexagon Layer */}
         <LayersControl.Overlay checked name="Hexagon Grid">
-          <HexagonLayer hexResolution={hexResolution}/>
+          <HexagonLayer hexResolution={hexResolution} />
         </LayersControl.Overlay>
 
         {/* Render the PredictionPolygon if hullPoints are available */}
@@ -97,7 +111,6 @@ const Map = ({ hullPoints, hexResolution }) => {
             <PredictionPolygon hullPoints={hullPoints} />
           </LayersControl.Overlay>
         )}
-
       </LayersControl>
     </MapContainer>
   );
