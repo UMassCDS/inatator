@@ -10,10 +10,11 @@ import "leaflet/dist/leaflet.css";
 import * as h3 from "h3-js/legacy";
 
 // Component to generate and display hexagons
-const HexagonLayer = ({ hexResolution }) => {
+const HexagonLayer = () => {
   const [hexagons, setHexagons] = useState([]);
+  const [chosenHexagons, setChosenHexagons] = useState([]);
   const map = useMap();
-  hexResolution = 5;
+  const hexResolution = 5;
 
   const generateHexagons = (hexResolution) => {
     const { _southWest: sw, _northEast: ne } = map.getBounds();
@@ -33,14 +34,44 @@ const HexagonLayer = ({ hexResolution }) => {
     setHexagons(hexagonsData);
   };
 
-  map.on("moveend", () => map.getZoom() > 6 && generateHexagons(hexResolution)); // it is better if it renders at 'end' because otherwise it gets really slow
-  map.on("zoomend", () => map.getZoom() > 6 && generateHexagons(hexResolution));
+  map.on("moveend", () => map.getZoom() > 7 && generateHexagons(hexResolution)); // it is better if it renders at 'end' because otherwise it gets really slow
+  map.on("zoomend", () => map.getZoom() > 7 && generateHexagons(hexResolution));
+  // map.mouseEventToLatLng("click");
+  map.on("click", (e) => {
+    // e.latlng
+    // console.log(e.latlng);
+
+    setChosenHexagons(
+      chosenHexagons.concat([
+        h3.h3ToGeoBoundary(
+          h3.geoToH3(e.latlng.lat, e.latlng.lng, hexResolution),
+          false
+        ),
+      ])
+    );
+  });
 
   return (
-    <Polygon
-      positions={hexagons}
-      pathOptions={{ color: "red", fillColor: "red", fillOpacity: 0.5 }}
-    />
+    <>
+      <Polygon
+        positions={hexagons}
+        pathOptions={{
+          color: "white",
+          fillColor: "white",
+          fillOpacity: 0.2,
+          opacity: 0.4,
+        }}
+      />
+      <Polygon
+        positions={chosenHexagons}
+        pathOptions={{
+          color: "red",
+          fillColor: "red",
+          fillOpacity: 0.2,
+          opacity: 0.4,
+        }}
+      />
+    </>
   );
 };
 
@@ -63,7 +94,7 @@ const PredictionPolygon = ({ hullPoints }) => {
 };
 
 // Main Map Component
-const Map = ({ hullPoints, hexResolution }) => {
+const Map = ({ hullPoints }) => {
   return (
     <MapContainer
       center={[39, 34]}
@@ -99,10 +130,9 @@ const Map = ({ hullPoints, hexResolution }) => {
             attribution='&copy; <a href="https://www.arcgis.com/">ArcGIS</a>'
           />
         </LayersControl.BaseLayer>
-
         {/* Render the Hexagon Layer */}
         <LayersControl.Overlay checked name="Hexagon Grid">
-          <HexagonLayer hexResolution={hexResolution} />
+          <HexagonLayer />
         </LayersControl.Overlay>
 
         {/* Render the PredictionPolygon if hullPoints are available */}

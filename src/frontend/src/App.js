@@ -7,19 +7,16 @@ import "./App.css";
 function App() {
   const formRefs = {
     taxaName: useRef(null),
-    hexResolution: useRef(null),
     threshold: useRef(null),
     model: useRef(null),
     disableOceanMask: useRef(null),
   };
 
   const [hullPoints, setHullPoints] = useState(null);
-  const [hexResolution, setHexResolution] = useState(null);
 
   const handleGeneratePrediction = () => {
     const formData = {
       taxa_name: formRefs.taxaName.current.value,
-      hexResolution: Number(formRefs.hexResolution.current.value),
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
@@ -44,19 +41,12 @@ function App() {
       });
   };
 
-  const onShowGrid = () => {
-    setHexResolution(Number(formRefs.hexResolution.current.value));
-  };
-
   return (
     <div className="app-container">
       <Sidebar ref={formRefs} />
       <div className="main-content">
-        <Buttons
-          onGeneratePrediction={handleGeneratePrediction}
-          onShowGrid={onShowGrid}
-        />
-        <Map hullPoints={hullPoints} hexResolution={hexResolution} />
+        <Buttons onGeneratePrediction={handleGeneratePrediction} />
+        <Map hullPoints={hullPoints} />
       </div>
     </div>
   );
