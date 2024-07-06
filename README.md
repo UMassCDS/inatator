@@ -3,7 +3,7 @@
 
 Code repository for 2024 Data Science for the Common Good project with iNaturalist. 
 
-Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozzie 
+Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel 
 
 ## Spatial Implicit Neural Representations for Global-Scale Species Mapping - ICML 2023
 
