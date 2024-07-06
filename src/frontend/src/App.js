@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import Map from './components/Map';
 import Sidebar from './components/Sidebar';
 import Buttons from './components/Buttons';
+import * as h3 from 'h3-js/legacy';
 import './App.css';
 
 
@@ -16,6 +17,7 @@ function App() {
 
   const [hullPoints, setHullPoints] = useState(null);
   const [hexagons, setHexagons] = useState(null);
+  const [annotationHexagons, setAnnotationHexagons] = useState([]);
 
   const handleGeneratePrediction = () => {
     const formData = {
@@ -48,12 +50,25 @@ function App() {
     });
   };
 
+  const handleAddAnnotationHexagons = (latlng) => {
+    const hexResolution = Number(formRefs.hexResolution.current.value)
+    const hexagonIndex = h3.geoToH3(latlng.lat, latlng.lng, hexResolution);
+    const hexagonVertices = h3.h3ToGeoBoundary(hexagonIndex);
+    const newAnnotationHexagon = hexagonVertices.map(vertex => [vertex[0], vertex[1]]);
+    setAnnotationHexagons([...annotationHexagons, newAnnotationHexagon]);
+  };
+
   return (
     <div className="app-container">
       <Sidebar ref={formRefs} />
       <div className="main-content">
         <Buttons onGeneratePrediction={handleGeneratePrediction} />
-        <Map hullPoints={hullPoints} hexagons={hexagons} />
+        <Map
+          hullPoints={hullPoints}
+          hexagons={hexagons}
+          annotationHexagons={annotationHexagons}
+          onAddAnnotationHexagons={handleAddAnnotationHexagons}
+        />
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { MapContainer, TileLayer, LayersControl, Polygon, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, LayersControl, Polygon, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 const PredictionPolygon = ({ hullPoints }) => {
@@ -26,11 +26,32 @@ const PredictionHexagons = ({ hexagons }) => {
   }, [hexagons, map]);
 
   return (
-    hexagons && <Polygon positions={hexagons} pathOptions={{ color: 'green', fillColor: 'green' }} />
+    hexagons && <Polygon positions={hexagons} pathOptions={{ color: 'blue', fillColor: 'blue' }} />
   );
 };
 
-const Map = ({ hullPoints, hexagons }) => {
+const AnnotationHexagonsLayer = ({ annotationHexagons }) => {
+  return (
+    annotationHexagons && <Polygon positions={annotationHexagons} pathOptions={{ color: 'green', fillColor: 'green' }} />
+
+  //   customHexagons.map((hexagon, index) => (
+  //     <Polygon key={index} positions={hexagon} pathOptions={{ color: 'blue', fillColor: 'blue' }} />
+  //   ))
+  );
+};
+
+const ClickHandler = ({ onAddAnnotationHexagons }) => {
+  useMapEvents({
+    click: (e) => {
+      onAddAnnotationHexagons(e.latlng);
+    }
+  });
+  return null;
+};
+
+const Map = ({ hullPoints, hexagons, annotationHexagons, onAddAnnotationHexagons }) => {
+
+
   return (
     <MapContainer center={[39, 34]} zoom={3} style={{ height: "100vh", width: "100%" }}>
       <LayersControl position="topright">
@@ -78,7 +99,14 @@ const Map = ({ hullPoints, hexagons }) => {
           </LayersControl.Overlay>
         )}
 
+        {/* Custom Hexagons Layer */}
+        <LayersControl.Overlay checked name="Current Annotation">
+          <AnnotationHexagonsLayer annotationHexagons={annotationHexagons} />
+        </LayersControl.Overlay>
       </LayersControl>
+
+      <ClickHandler onAddAnnotationHexagons={onAddAnnotationHexagons} />
+
     </MapContainer>
   );
 };
