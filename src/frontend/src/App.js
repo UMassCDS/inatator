@@ -55,7 +55,6 @@ function App() {
     });
   };
 
-
   const handlSaveAnnotation = () => {
     const body = {
       taxa_name: formRefs.taxaName.current.value,
@@ -77,6 +76,34 @@ function App() {
     .then(data => {
       alert('Annotation saved successfully!');
       console.log('Annotation saved successfully!');
+    })
+    .catch(error => {
+      console.error('Error generating prediction:', error);
+    });
+  };
+
+  const handlClearAnnotation = () => {
+    const body = {
+      taxa_name: formRefs.taxaName.current.value,
+      hex_resolution: Number(formRefs.hexResolution.current.value),
+      threshold: Number(formRefs.threshold.current.value),
+      model: formRefs.model.current.value,
+      disable_ocean_mask: formRefs.disableOceanMask.current.checked,
+      annotation_hexagons:[],
+    };
+
+    fetch('/save_annotation/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
+    .then(response => response.json())
+    .then(data => {
+      setAnnotationHexagons([]);
+      alert('Annotation cleared successfully!');
+      console.log('Annotation cleared successfully!');
     })
     .catch(error => {
       console.error('Error generating prediction:', error);
@@ -111,7 +138,11 @@ function App() {
     <div className="app-container">
       <Sidebar ref={formRefs} />
       <div className="main-content">
-        <Buttons onGeneratePrediction={handleGeneratePrediction} onSaveAnnotation={handlSaveAnnotation}/>
+        <Buttons 
+          onGeneratePrediction={handleGeneratePrediction}
+          onSaveAnnotation={handlSaveAnnotation}
+          onClearAnnotation={handlClearAnnotation}
+        />
         <Map
           hullPoints={hullPoints}
           hexagons={hexagons}
