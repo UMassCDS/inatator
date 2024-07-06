@@ -55,7 +55,23 @@ function App() {
     const hexagonIndex = h3.geoToH3(latlng.lat, latlng.lng, hexResolution);
     const hexagonVertices = h3.h3ToGeoBoundary(hexagonIndex);
     const newAnnotationHexagon = hexagonVertices.map(vertex => [vertex[0], vertex[1]]);
-    setAnnotationHexagons([...annotationHexagons, newAnnotationHexagon]);
+    setAnnotationHexagons(prevAnnotationHexagons => {
+      // Check if the new hexagon is already in the array
+      const index = prevAnnotationHexagons.findIndex(hexagon => 
+        hexagon.every((point, i) => point[0] === newAnnotationHexagon[i][0] && point[1] === newAnnotationHexagon[i][1])
+      );
+
+      if (index !== -1) {
+        // If the hexagon is found, remove it
+        const updatedAnnotationHexagons = [...prevAnnotationHexagons];
+        updatedAnnotationHexagons.splice(index, 1);
+        return updatedAnnotationHexagons;
+
+      } else {
+        // If the hexagon is not found, add it
+        return [...prevAnnotationHexagons, newAnnotationHexagon];
+      }
+    });
   };
 
   return (
