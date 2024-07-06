@@ -1,6 +1,7 @@
 import numpy as np
 import json
 import os
+import h3
 
 import alphashape
 from shapely.geometry import mapping
@@ -9,6 +10,8 @@ from ..sinr import sinr
 
 MIN_THRESHOLD = 0.1
 MAX_THRESHOLD = 0.9
+MIN_HEX_RESOLUTION = 1
+MAX_HEX_RESOLUTION = 5
 
 
 def get_taxa_id_by_name(taxa_name: str):
@@ -61,10 +64,14 @@ def generate_prediction(eval_params):
     # threshold should be beatween MIN_THRESHOLD and MAX_THRESHOLD:
     #   (MIN_THRESHOLD <= threshold <= MAX_THRESHOLD)
     threshold = min(max(eval_params.get('threshold', MIN_THRESHOLD), MIN_THRESHOLD), MAX_THRESHOLD)
+    hex_resolution = min(max(eval_params.get('hex_resolution', MIN_HEX_RESOLUTION), MIN_HEX_RESOLUTION), MAX_HEX_RESOLUTION)
 
     # if a more detailed HeatMap needed, use `pred_loc_combined` for that
     pred_loc_combined = pred_loc_combined[pred_loc_combined[:,2] >= threshold]
     coordinates = pred_loc_combined[:,[0,1]]
+
+    hexagon_ids = {h3.geo_to_h3(lat, lon, hex_resolution) for lat, lon in coordinates}
+    hexagons = [h3.h3_to_geo_boundary(h3_index) for h3_index in hexagon_ids]
 
     hull = alphashape.alphashape(coordinates, 1)
     hull_points = list(mapping(hull)['coordinates'])
@@ -75,6 +82,7 @@ def generate_prediction(eval_params):
         coordinates=coordinates.tolist(),
         pred_loc_combined=pred_loc_combined.tolist(),
         hull_points=hull_points,
+        hexagons=hexagons,
         saved_annotation=saved_annotation['polygons'],
     )
 

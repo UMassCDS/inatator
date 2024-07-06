@@ -7,16 +7,30 @@ const PredictionPolygon = ({ hullPoints }) => {
 
   useEffect(() => {
     if (hullPoints) {
-      map.flyToBounds(hullPoints, {'maxZoom': 5});
+      map.flyToBounds(hullPoints, { 'maxZoom': 5 });
     }
   }, [hullPoints, map]);
 
   return (
-    hullPoints && <Polygon positions={hullPoints} pathOptions={{ color: 'red', fillColor: 'yellow', }} />
+    hullPoints && <Polygon positions={hullPoints} pathOptions={{ color: 'red', fillColor: 'yellow' }} />
   );
 };
 
-const Map = ({ hullPoints }) => {
+const PredictionHexagons = ({ hexagons }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (hexagons) {
+      map.flyToBounds(hexagons, { 'maxZoom': 5 });
+    }
+  }, [hexagons, map]);
+
+  return (
+    hexagons && <Polygon positions={hexagons} pathOptions={{ color: 'green', fillColor: 'green' }} />
+  );
+};
+
+const Map = ({ hullPoints, hexagons }) => {
   return (
     <MapContainer center={[39, 34]} zoom={3} style={{ height: "100vh", width: "100%" }}>
       <LayersControl position="topright">
@@ -52,8 +66,15 @@ const Map = ({ hullPoints }) => {
 
         {/* Render the PredictionPolygon if hullPoints are available */}
         {hullPoints && (
-          <LayersControl.Overlay checked name="Prediction Polygon">
+          <LayersControl.Overlay name="Prediction Polygon">
             <PredictionPolygon hullPoints={hullPoints} />
+          </LayersControl.Overlay>
+        )}
+
+        {/* Render the PredictionHexagons if hexagons are available */}
+        {hexagons && (
+          <LayersControl.Overlay checked name="Prediction Hexagons">
+            <PredictionHexagons hexagons={hexagons} />
           </LayersControl.Overlay>
         )}
 

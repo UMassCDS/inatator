@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar';
 import Buttons from './components/Buttons';
 import './App.css';
 
+
 function App() {
   const formRefs = {
     taxaName: useRef(null),
@@ -14,11 +15,12 @@ function App() {
   };
 
   const [hullPoints, setHullPoints] = useState(null);
+  const [hexagons, setHexagons] = useState(null);
 
   const handleGeneratePrediction = () => {
     const formData = {
       taxa_name: formRefs.taxaName.current.value,
-      hexResolution: Number(formRefs.hexResolution.current.value),
+      hex_resolution: Number(formRefs.hexResolution.current.value),
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
@@ -37,6 +39,9 @@ function App() {
       if (data.hull_points) {
         setHullPoints(data.hull_points);
       }
+      if (data.hexagons) {
+        setHexagons(data.hexagons);
+      }
     })
     .catch(error => {
       console.error('Error generating prediction:', error);
@@ -48,7 +53,7 @@ function App() {
       <Sidebar ref={formRefs} />
       <div className="main-content">
         <Buttons onGeneratePrediction={handleGeneratePrediction} />
-        <Map hullPoints={hullPoints} />
+        <Map hullPoints={hullPoints} hexagons={hexagons} />
       </div>
     </div>
   );
