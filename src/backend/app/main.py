@@ -22,3 +22,8 @@ app.add_middleware(
 async def generate_prediction(request: Request):
     response = tools.generate_prediction(await request.json())
     return JSONResponse(content=response)
+
+@app.post("/save_annotation/")
+async def save_annotation(request: Request):
+    response = tools.save_annotation(await request.json())
+    return JSONResponse(content=response)

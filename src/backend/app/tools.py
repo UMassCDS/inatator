@@ -83,33 +83,28 @@ def generate_prediction(eval_params):
         pred_loc_combined=pred_loc_combined.tolist(),
         hull_points=hull_points,
         hexagons=hexagons,
-        saved_annotation=saved_annotation['polygons'],
+        annotation_hexagons=saved_annotation['annotation_hexagons'],
     )
 
 
 def save_annotation(data):
-    taxa_id = get_taxa_id_by_name(data['taxa_name'])
-    polygons = data['polygons']
+    taxa_name = data['taxa_name']
+    annotation_hexagons = data['annotation_hexagons']
     directory = 'annotations'
-    # If the polygons are empty, clear all existing polygons
-    if polygons:
-        # If the polygons are not empty, add new polygons to the existing ones
-        saved_polygons = load_annotation(data)['polygons']
-        polygons += saved_polygons
     if not os.path.exists(directory):
         os.makedirs(directory)
-    with open(f'{directory}/{taxa_id}.json', 'w') as f:
-        json.dump(polygons, f)
-    print(f'Saving annotation for taxa ID #{taxa_id}:\nAnnotation:{polygons}')
-    return {'polygons': polygons}
+    with open(f'{directory}/{taxa_name}.json', 'w') as f:
+        json.dump(annotation_hexagons, f)
+    print(f'Saving annotation for {taxa_name}:\nAnnotation:{annotation_hexagons}')
+    return {'annotation_hexagons': annotation_hexagons}
 
 
 def load_annotation(data):
     directory = 'annotations'
-    taxa_id = get_taxa_id_by_name(data['taxa_name'])
-    polygon_file = f'{directory}/{taxa_id}.json'
-    if os.path.isfile(polygon_file):
-        with open(polygon_file) as f:
-            polygons = json.load(f)
-        return {'polygons': polygons}
-    return {'polygons': []}
+    taxa_name = data['taxa_name']
+    annotation_file = f'{directory}/{taxa_name}.json'
+    if os.path.isfile(annotation_file):
+        with open(annotation_file) as f:
+            annotation = json.load(f)
+        return {'annotation_hexagons': annotation}
+    return {'annotation_hexagons': []}
