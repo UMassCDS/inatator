@@ -8,12 +8,15 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import * as h3 from "h3-js/legacy";
+
 const SelectedHexagonLayer = () => {
+  // Layer for colored hexagons
   const map = useMap();
   const [hexagons, setHexagons] = useState(new Set());
   const resolution = 5;
 
   const addHex = (id) => {
+    // wrapper functions for useState
     setHexagons((hexagons) => new Set([...hexagons, id]));
   };
 
@@ -24,6 +27,7 @@ const SelectedHexagonLayer = () => {
   };
 
   map.on("click", (e) => {
+    // on click, get the clicked h3-id and add it or delete it based on if it was selected previously
     const id = h3.geoToH3(e.latlng.lat, e.latlng.lng, resolution);
     if (hexagons.has(id)) {
       delHex(id);
@@ -34,8 +38,10 @@ const SelectedHexagonLayer = () => {
 
   return (
     <Polygon
-      positions={[...hexagons].map((id) =>
-        h3.h3ToGeoBoundary(id, false).map(([lat, lng]) => [lat, lng])
+      positions={[...hexagons].map(
+        (
+          id // maps indexes to polygon positions
+        ) => h3.h3ToGeoBoundary(id, false).map(([lat, lng]) => [lat, lng])
       )}
       pathOptions={{
         color: "red",
@@ -54,6 +60,11 @@ const HexagonLayer = () => {
   const hexResolution = 5;
 
   const generateHexagons = (hexResolution) => {
+    if (map.getZoom() <= 7) {
+      // function only draws the polygon if zoom level constraint is satisfied
+      setHexagons([]);
+      return;
+    }
     const { _southWest: sw, _northEast: ne } = map.getBounds();
     const screenBounds = [
       [sw.lat, sw.lng],
@@ -63,16 +74,16 @@ const HexagonLayer = () => {
       [sw.lat, sw.lng],
     ];
 
-    const hexIdxs = h3.polyfill(screenBounds, hexResolution);
+    const hexIdxs = h3.polyfill(screenBounds, hexResolution); // fills onscreen rectangle with h3
 
     const hexagonsData = hexIdxs.map((hex) =>
       h3.h3ToGeoBoundary(hex, false).map(([lat, lng]) => [lat, lng])
     );
-    setHexagons(hexagonsData);
+    setHexagons(hexagonsData); // sets and renders screen
   };
 
-  map.on("moveend", () => map.getZoom() > 7 && generateHexagons(hexResolution)); // it is better if it renders at 'end' because otherwise it gets really slow
-  map.on("zoomend", () => map.getZoom() > 7 && generateHexagons(hexResolution));
+  map.on("moveend", () => generateHexagons(hexResolution)); // it is better if it renders at 'end' because otherwise it gets really slow
+  map.on("zoomend", () => generateHexagons(hexResolution)); // event listeners to achieve dynamic renders with interactions with the map
 
   return (
     <Polygon
@@ -142,20 +153,21 @@ const Map = ({ hullPoints }) => {
             attribution='&copy; <a href="https://www.arcgis.com/">ArcGIS</a>'
           />
         </LayersControl.BaseLayer>
-        <LayersControl.Overlay checked name="Select Hexagon Grid">
-          <SelectedHexagonLayer />
-        </LayersControl.Overlay>
-        {/* Render the Hexagon Layer */}
-        <LayersControl.Overlay checked name="Hexagon Grid">
-          <HexagonLayer />
-        </LayersControl.Overlay>
-
         {/* Render the PredictionPolygon if hullPoints are available */}
         {hullPoints && (
           <LayersControl.Overlay checked name="Prediction Polygon">
             <PredictionPolygon hullPoints={hullPoints} />
           </LayersControl.Overlay>
         )}
+        {/* Render the Hexagon Layer */}
+        <LayersControl.Overlay checked name="Hexagon Grid">
+          <HexagonLayer />
+        </LayersControl.Overlay>
+
+        {/* Render the Selected Hexagon Layer */}
+        <LayersControl.Overlay checked name="Select Hexagon Grid">
+          <SelectedHexagonLayer />
+        </LayersControl.Overlay>
       </LayersControl>
     </MapContainer>
   );
