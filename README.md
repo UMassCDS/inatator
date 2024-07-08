@@ -22,7 +22,7 @@ Make sure you update your local branch to the latest.
 Download the pretrained models from [here](https://data.caltech.edu/records/dk5g7-rhq64/files/pretrained_models.zip?download=1) and place them at   
 `/path/to/ds4cg2024-inaturalist/src/backend/sinr/pretrained_models`.
 
-# Starting the app
+# Installing the app
 
 1. We recommend using an isolated Python environment to avoid dependency issues. Install the Anaconda Python 3.9 distribution for your operating system from [here](https://www.anaconda.com/download). 
 
@@ -41,7 +41,9 @@ pip install -r src/backend/requirements.txt && pip install -r src/backend/requir
 ```bash
 npm i --prefix src/frontend/
 ```
- 
+
+# Running the app
+
 ## Run backend in first terminal:
 1. Navigate to the main directory if you are not already there:
 ```bash
@@ -64,7 +66,7 @@ npm i --prefix src/frontend/
 In your web browser, open the link [http://localhost:3000/](http://localhost:3000/)
 
 
-### Running applications with Docker
+# Running applications with Docker
 1. Install Docker if you haven't already
 2. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
 2. Navigate project root
@@ -75,7 +77,7 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 8. If you want to build and run containers, run `docker compose up --build`
 
 
-## Code Standards
+# Code Standards
 1. Use Docstrings, for some functions just a one-linet is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
 2. Module Docstrings, include a short description of module and functions inside the module.
 3. Use a formatter if possible, **black** formatter has support for vscode and is decent
