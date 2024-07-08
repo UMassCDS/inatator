@@ -3,7 +3,7 @@
 
 Code repository for 2024 Data Science for the Common Good project with iNaturalist. 
 
-Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozzie 
+Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel 
 
 ## Spatial Implicit Neural Representations for Global-Scale Species Mapping - ICML 2023
 
@@ -22,7 +22,7 @@ Make sure you update your local branch to the latest.
 Download the pretrained models from [here](https://data.caltech.edu/records/dk5g7-rhq64/files/pretrained_models.zip?download=1) and place them at   
 `/path/to/ds4cg2024-inaturalist/src/backend/sinr/pretrained_models`.
 
-# Starting the app
+# Installing the app
 
 1. We recommend using an isolated Python environment to avoid dependency issues. Install the Anaconda Python 3.9 distribution for your operating system from [here](https://www.anaconda.com/download). 
 
@@ -41,7 +41,9 @@ pip install -r src/backend/requirements.txt && pip install -r src/backend/requir
 ```bash
 npm i --prefix src/frontend/
 ```
- 
+
+# Running the app
+
 ## Run backend in first terminal:
 1. Navigate to the main directory if you are not already there:
 ```bash
@@ -64,17 +66,18 @@ npm i --prefix src/frontend/
 In your web browser, open the link [http://localhost:3000/](http://localhost:3000/)
 
 
-### Running applications with Docker
+# Running applications with Docker
 1. Install Docker if you haven't already
+2. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
 2. Navigate project root
-3. Run `docker compose up --build`
-  - For the first build it may take a while
-4. Make sure the default application is running as expected by going to urls for react and server
-5. During development, you can stop contianers with ctrl+c or using the Docker app
+3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`
+5. You can stop contianers with ctrl+c or using the Docker app
 6. If you want to start the application again, run `docker compose up`
-7. If you change a docker configuration file, run `docker compose up --build`
+7. If you want to just build images, run `docker compose build`
+8. If you want to build and run containers, run `docker compose up --build`
 
-## Code Standards
+
+# Code Standards
 1. Use Docstrings, for some functions just a one-linet is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
 2. Module Docstrings, include a short description of module and functions inside the module.
 3. Use a formatter if possible, **black** formatter has support for vscode and is decent

@@ -30,7 +30,7 @@ def an_ssdl(batch, model, params, loc_to_feats, neg_type='hard'):
     loc_feat = loc_feat.to(params['device'])
     class_id = class_id.to(params['device'])
     
-    assert model.inc_bias == False
+    assert not model.inc_bias
     batch_size = loc_feat.shape[0]
     
     # create random background samples and extract features
@@ -68,7 +68,7 @@ def an_slds(batch, model, params, loc_to_feats, neg_type='hard'):
     loc_feat = loc_feat.to(params['device'])
     class_id = class_id.to(params['device'])
     
-    assert model.inc_bias == False
+    assert not model.inc_bias
     batch_size = loc_feat.shape[0]
 
     loc_emb = model(loc_feat, return_feats=True)
@@ -101,7 +101,7 @@ def an_full(batch, model, params, loc_to_feats, neg_type='hard'):
     loc_feat = loc_feat.to(params['device'])
     class_id = class_id.to(params['device'])
     
-    assert model.inc_bias == False
+    assert not model.inc_bias
     batch_size = loc_feat.shape[0]
     
     # create random background samples and extract features
