@@ -66,13 +66,14 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 
 ### Running applications with Docker
 1. Install Docker if you haven't already
+2. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
 2. Navigate project root
-3. Run `docker compose up --build`
-  - For the first build it may take a while
-4. Make sure the default application is running as expected by going to urls for react and server
-5. During development, you can stop contianers with ctrl+c or using the Docker app
+3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`
+5. You can stop contianers with ctrl+c or using the Docker app
 6. If you want to start the application again, run `docker compose up`
-7. If you change a docker configuration file, run `docker compose up --build`
+7. If you want to just build images, run `docker compose build`
+8. If you want to build and run containers, run `docker compose up --build`
+
 
 ## Code Standards
 1. Use Docstrings, for some functions just a one-linet is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
