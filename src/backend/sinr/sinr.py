@@ -3,19 +3,17 @@ API for connecting web app with models.
 To generate predictions call the method `generate_prediction`.
 """
 
-import numpy as np
-
 import json
 import os
-import torch
-
 import sys
-sys.path
-sys.path.append('../')
-
 from pathlib import Path
 
+import numpy as np
+import torch
+
 from . import utils, models, datasets
+
+sys.path.append('../')
 
 
 def get_cur_path():
