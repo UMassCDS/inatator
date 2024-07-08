@@ -24,7 +24,7 @@ function App() {
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
     };
 
-    fetch('/generate_prediction/', {
+    fetch('http://localhost:8000/generate_prediction/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
