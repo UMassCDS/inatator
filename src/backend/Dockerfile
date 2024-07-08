@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-RUN conda create -n inatator python=3.10
+RUN conda create -n inatator python=3.9
 
 COPY ./src/backend ./src/backend
 
