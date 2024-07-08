@@ -8,11 +8,48 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import * as h3 from "h3-js/legacy";
+const SelectedHexagonLayer = () => {
+  const map = useMap();
+  const [hexagons, setHexagons] = useState(new Set());
+  const resolution = 5;
+
+  const addHex = (id) => {
+    setHexagons((hexagons) => new Set([...hexagons, id]));
+  };
+
+  const delHex = (id) => {
+    setHexagons(
+      (hexagons) => new Set([...hexagons].filter((idx) => idx !== id))
+    );
+  };
+
+  map.on("click", (e) => {
+    const id = h3.geoToH3(e.latlng.lat, e.latlng.lng, resolution);
+    if (hexagons.has(id)) {
+      delHex(id);
+    } else {
+      addHex(id);
+    }
+  });
+
+  return (
+    <Polygon
+      positions={[...hexagons].map((id) =>
+        h3.h3ToGeoBoundary(id, false).map(([lat, lng]) => [lat, lng])
+      )}
+      pathOptions={{
+        color: "red",
+        fillColor: "red",
+        fillOpacity: 0.2,
+        opacity: 0.4,
+      }}
+    />
+  );
+};
 
 // Component to generate and display hexagons
 const HexagonLayer = () => {
   const [hexagons, setHexagons] = useState([]);
-  const [chosenHexagons, setChosenHexagons] = useState([]);
   const map = useMap();
   const hexResolution = 5;
 
@@ -36,42 +73,17 @@ const HexagonLayer = () => {
 
   map.on("moveend", () => map.getZoom() > 7 && generateHexagons(hexResolution)); // it is better if it renders at 'end' because otherwise it gets really slow
   map.on("zoomend", () => map.getZoom() > 7 && generateHexagons(hexResolution));
-  // map.mouseEventToLatLng("click");
-  map.on("click", (e) => {
-    // e.latlng
-    // console.log(e.latlng);
-
-    setChosenHexagons(
-      chosenHexagons.concat([
-        h3.h3ToGeoBoundary(
-          h3.geoToH3(e.latlng.lat, e.latlng.lng, hexResolution),
-          false
-        ),
-      ])
-    );
-  });
 
   return (
-    <>
-      <Polygon
-        positions={hexagons}
-        pathOptions={{
-          color: "white",
-          fillColor: "white",
-          fillOpacity: 0.2,
-          opacity: 0.4,
-        }}
-      />
-      <Polygon
-        positions={chosenHexagons}
-        pathOptions={{
-          color: "red",
-          fillColor: "red",
-          fillOpacity: 0.2,
-          opacity: 0.4,
-        }}
-      />
-    </>
+    <Polygon
+      positions={hexagons}
+      pathOptions={{
+        color: "white",
+        fillColor: "white",
+        fillOpacity: 0.2,
+        opacity: 0.4,
+      }}
+    />
   );
 };
 
@@ -130,6 +142,9 @@ const Map = ({ hullPoints }) => {
             attribution='&copy; <a href="https://www.arcgis.com/">ArcGIS</a>'
           />
         </LayersControl.BaseLayer>
+        <LayersControl.Overlay checked name="Select Hexagon Grid">
+          <SelectedHexagonLayer />
+        </LayersControl.Overlay>
         {/* Render the Hexagon Layer */}
         <LayersControl.Overlay checked name="Hexagon Grid">
           <HexagonLayer />
