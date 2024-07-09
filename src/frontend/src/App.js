@@ -15,8 +15,8 @@ function App() {
   };
 
   const [hullPoints, setHullPoints] = useState(null);
-  const [hexagons, setHexagons] = useState(null);
-  const [annotationHexagons, setAnnotationHexagons] = useState([]);
+  const [predictionHexagonIDs, setPredictionHexagonIDs] = useState(null);
+  const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState([]);
 
   const handleGeneratePrediction = () => {
     const formData = {
@@ -36,17 +36,14 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Prediction generated:", data);
         if (data.hull_points) {
           setHullPoints(data.hull_points);
         }
-        if (data.hexagons) {
-          setHexagons(data.hexagons);
+        if (data.prediction_hexagon_ids) {
+          setPredictionHexagonIDs(data.prediction_hexagon_ids);
         }
-        console.log("annotation_hexagons");
-        console.log(annotationHexagons);
-        if (data.annotation_hexagons) {
-          setAnnotationHexagons(data.annotation_hexagons);
+        if (data.annotation_hexagon_ids) {
+          setAnnotationHexagonIDs(data.annotation_hexagon_ids);
         }
       })
       .catch((error) => {
@@ -61,7 +58,7 @@ function App() {
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
-      annotation_hexagons: annotationHexagons,
+      annotation_hexagon_ids: annotationHexagonIDs,
     };
 
     fetch("http://localhost:8000/save_annotation/", {
@@ -88,7 +85,7 @@ function App() {
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
-      annotation_hexagons: [],
+      annotation_hexagon_ids: [],
     };
 
     fetch("http://localhost:8000/save_annotation/", {
@@ -100,7 +97,7 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setAnnotationHexagons([]);
+        setAnnotationHexagonIDs([]);
         alert("Annotation cleared successfully!");
         console.log("Annotation cleared successfully!");
       })
@@ -109,33 +106,22 @@ function App() {
       });
   };
 
-  const handleAddAnnotationHexagons = (latlng) => {
+  const handleAddAnnotationHexagonIDs = (latlng) => {
     const hexResolution = Number(formRefs.hexResolution.current.value);
-    const hexagonIndex = h3.geoToH3(latlng.lat, latlng.lng, hexResolution);
-    const hexagonVertices = h3.h3ToGeoBoundary(hexagonIndex);
-    const newAnnotationHexagon = hexagonVertices.map((vertex) => [
-      vertex[0],
-      vertex[1],
-    ]);
-    setAnnotationHexagons((prevAnnotationHexagons) => {
-      // Check if the new hexagon is already in the array
-      const index = prevAnnotationHexagons.findIndex((hexagon) =>
-        hexagon.every(
-          (point, i) =>
-            point[0] === newAnnotationHexagon[i][0] &&
-            point[1] === newAnnotationHexagon[i][1]
-        )
-      );
-
-      if (index !== -1) {
-        // If the hexagon is found, remove it
-        const updatedAnnotationHexagons = [...prevAnnotationHexagons];
-        updatedAnnotationHexagons.splice(index, 1);
-        return updatedAnnotationHexagons;
+    const hexagonID = h3.geoToH3(latlng.lat, latlng.lng, hexResolution);
+    setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
+      // Create a Set from the previous annotation hexagon IDs
+      const annotationHexagonIDsSet = new Set(prevAnnotationHexagonIDs);
+      
+      // Check if the new hexagon ID is already in the Set and toggle its presence
+      if (annotationHexagonIDsSet.has(hexagonID)) {
+        annotationHexagonIDsSet.delete(hexagonID);
       } else {
-        // If the hexagon is not found, add it
-        return [...prevAnnotationHexagons, newAnnotationHexagon];
+        annotationHexagonIDsSet.add(hexagonID);
       }
+  
+      // Convert the Set back to an array and return it
+      return Array.from(annotationHexagonIDsSet);
     });
   };
 
@@ -150,9 +136,9 @@ function App() {
         />
         <Map
           hullPoints={hullPoints}
-          hexagons={hexagons}
-          annotationHexagons={annotationHexagons}
-          onAddAnnotationHexagons={handleAddAnnotationHexagons}
+          predictionHexagonIDs={predictionHexagonIDs}
+          annotationHexagonIDs={annotationHexagonIDs}
+          onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}
         />
       </div>
     </div>
