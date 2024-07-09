@@ -54,7 +54,6 @@ const Sidebar = forwardRef((props, ref) => {
 
       <label htmlFor="threshold">Threshold:</label>
       <input
-        readOnly="True"
         type="number"
         step="0.01"
         id="threshold"
@@ -62,6 +61,16 @@ const Sidebar = forwardRef((props, ref) => {
         min="0.1"
         max="0.9"
         ref={ref.threshold}
+      />
+
+      <label htmlFor="hexResolution">Hex Resolution:</label>
+      <input
+        type="number"
+        id="hexResolution"
+        defaultValue="4"
+        min="0"
+        max="15"
+        ref={ref.hexResolution}
       />
 
       <div className="checkbox-container">

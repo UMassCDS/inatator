@@ -5,53 +5,10 @@ import {
   LayersControl,
   Polygon,
   useMap,
+  useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import * as h3 from "h3-js/legacy";
-
-const SelectedHexagonLayer = () => {
-  // Layer for colored hexagons
-  const map = useMap();
-  const [hexagons, setHexagons] = useState(new Set());
-  const resolution = 5;
-
-  const addHex = (id) => {
-    // wrapper functions for useState
-    setHexagons((hexagons) => new Set([...hexagons, id]));
-  };
-
-  const delHex = (id) => {
-    setHexagons(
-      (hexagons) => new Set([...hexagons].filter((idx) => idx !== id))
-    );
-  };
-
-  map.on("click", (e) => {
-    // on click, get the clicked h3-id and add it or delete it based on if it was selected previously
-    const id = h3.geoToH3(e.latlng.lat, e.latlng.lng, resolution);
-    if (hexagons.has(id)) {
-      delHex(id);
-    } else {
-      addHex(id);
-    }
-  });
-
-  return (
-    <Polygon
-      positions={[...hexagons].map(
-        (
-          id // maps indexes to polygon positions
-        ) => h3.h3ToGeoBoundary(id, false).map(([lat, lng]) => [lat, lng])
-      )}
-      pathOptions={{
-        color: "red",
-        fillColor: "red",
-        fillOpacity: 0.2,
-        opacity: 0.4,
-      }}
-    />
-  );
-};
 
 // Component to generate and display hexagons
 const HexagonLayer = () => {
@@ -108,16 +65,61 @@ const PredictionPolygon = ({ hullPoints }) => {
     }
   }, [hullPoints, map]);
 
-  return hullPoints ? (
-    <Polygon
-      positions={hullPoints}
-      pathOptions={{ color: "purple", fillColor: "purple", opacity: 0.7 }}
-    />
-  ) : null;
+  return (
+    hullPoints && (
+      <Polygon
+        positions={hullPoints}
+        pathOptions={{ color: "red", fillColor: "yellow" }}
+      />
+    )
+  );
 };
 
-// Main Map Component
-const Map = ({ hullPoints }) => {
+const PredictionHexagons = ({ hexagons }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (hexagons) {
+      map.flyToBounds(hexagons, { maxZoom: 5 });
+    }
+  }, [hexagons, map]);
+
+  return (
+    hexagons && (
+      <Polygon
+        positions={hexagons}
+        pathOptions={{ color: "blue", fillColor: "blue" }}
+      />
+    )
+  );
+};
+
+const AnnotationHexagonsLayer = ({ annotationHexagons }) => {
+  return (
+    annotationHexagons && (
+      <Polygon
+        positions={annotationHexagons}
+        pathOptions={{ color: "green", fillColor: "green" }}
+      />
+    )
+  );
+};
+
+const ClickHandler = ({ onAddAnnotationHexagons }) => {
+  useMapEvents({
+    click: (e) => {
+      onAddAnnotationHexagons(e.latlng);
+    },
+  });
+  return null;
+};
+
+const Map = ({
+  hullPoints,
+  hexagons,
+  annotationHexagons,
+  onAddAnnotationHexagons,
+}) => {
   return (
     <MapContainer
       center={[39, 34]}
@@ -155,7 +157,7 @@ const Map = ({ hullPoints }) => {
         </LayersControl.BaseLayer>
         {/* Render the PredictionPolygon if hullPoints are available */}
         {hullPoints && (
-          <LayersControl.Overlay checked name="Prediction Polygon">
+          <LayersControl.Overlay name="Prediction Polygon">
             <PredictionPolygon hullPoints={hullPoints} />
           </LayersControl.Overlay>
         )}
@@ -164,11 +166,20 @@ const Map = ({ hullPoints }) => {
           <HexagonLayer />
         </LayersControl.Overlay>
 
-        {/* Render the Selected Hexagon Layer */}
-        <LayersControl.Overlay checked name="Select Hexagon Grid">
-          <SelectedHexagonLayer />
+        {/* Render the PredictionHexagons if hexagons are available */}
+        {hexagons && (
+          <LayersControl.Overlay checked name="Prediction Hexagons">
+            <PredictionHexagons hexagons={hexagons} />
+          </LayersControl.Overlay>
+        )}
+
+        {/* Custom Hexagons Layer */}
+        <LayersControl.Overlay checked name="Current Annotation">
+          <AnnotationHexagonsLayer annotationHexagons={annotationHexagons} />
         </LayersControl.Overlay>
       </LayersControl>
+
+      <ClickHandler onAddAnnotationHexagons={onAddAnnotationHexagons} />
     </MapContainer>
   );
 };

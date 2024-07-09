@@ -1,6 +1,7 @@
 import numpy as np
 import json
 import os
+import h3
 
 import alphashape
 from shapely.geometry import mapping
@@ -9,6 +10,8 @@ from ..sinr import sinr
 
 MIN_THRESHOLD = 0.1
 MAX_THRESHOLD = 0.9
+MIN_HEX_RESOLUTION = 1
+MAX_HEX_RESOLUTION = 5
 
 
 def get_taxa_id_by_name(taxa_name: str):
@@ -61,10 +64,14 @@ def generate_prediction(eval_params):
     # threshold should be beatween MIN_THRESHOLD and MAX_THRESHOLD:
     #   (MIN_THRESHOLD <= threshold <= MAX_THRESHOLD)
     threshold = min(max(eval_params.get('threshold', MIN_THRESHOLD), MIN_THRESHOLD), MAX_THRESHOLD)
+    hex_resolution = min(max(eval_params.get('hex_resolution', MIN_HEX_RESOLUTION), MIN_HEX_RESOLUTION), MAX_HEX_RESOLUTION)
 
     # if a more detailed HeatMap needed, use `pred_loc_combined` for that
     pred_loc_combined = pred_loc_combined[pred_loc_combined[:,2] >= threshold]
     coordinates = pred_loc_combined[:,[0,1]]
+
+    hexagon_ids = {h3.geo_to_h3(lat, lon, hex_resolution) for lat, lon in coordinates}
+    hexagons = [h3.h3_to_geo_boundary(h3_index) for h3_index in hexagon_ids]
 
     hull = alphashape.alphashape(coordinates, 1)
     hull_points = list(mapping(hull)['coordinates'])
@@ -75,33 +82,29 @@ def generate_prediction(eval_params):
         coordinates=coordinates.tolist(),
         pred_loc_combined=pred_loc_combined.tolist(),
         hull_points=hull_points,
-        saved_annotation=saved_annotation['polygons'],
+        hexagons=hexagons,
+        annotation_hexagons=saved_annotation['annotation_hexagons'],
     )
 
 
 def save_annotation(data):
-    taxa_id = get_taxa_id_by_name(data['taxa_name'])
-    polygons = data['polygons']
+    taxa_name = data['taxa_name']
+    annotation_hexagons = data['annotation_hexagons']
     directory = 'annotations'
-    # If the polygons are empty, clear all existing polygons
-    if polygons:
-        # If the polygons are not empty, add new polygons to the existing ones
-        saved_polygons = load_annotation(data)['polygons']
-        polygons += saved_polygons
     if not os.path.exists(directory):
         os.makedirs(directory)
-    with open(f'{directory}/{taxa_id}.json', 'w') as f:
-        json.dump(polygons, f)
-    print(f'Saving annotation for taxa ID #{taxa_id}:\nAnnotation:{polygons}')
-    return {'polygons': polygons}
+    with open(f'{directory}/{taxa_name}.json', 'w') as f:
+        json.dump(annotation_hexagons, f)
+    print(f'Saving annotation for {taxa_name}:\nAnnotation:{annotation_hexagons}')
+    return {'annotation_hexagons': annotation_hexagons}
 
 
 def load_annotation(data):
     directory = 'annotations'
-    taxa_id = get_taxa_id_by_name(data['taxa_name'])
-    polygon_file = f'{directory}/{taxa_id}.json'
-    if os.path.isfile(polygon_file):
-        with open(polygon_file) as f:
-            polygons = json.load(f)
-        return {'polygons': polygons}
-    return {'polygons': []}
+    taxa_name = data['taxa_name']
+    annotation_file = f'{directory}/{taxa_name}.json'
+    if os.path.isfile(annotation_file):
+        with open(annotation_file) as f:
+            annotation = json.load(f)
+        return {'annotation_hexagons': annotation}
+    return {'annotation_hexagons': []}
