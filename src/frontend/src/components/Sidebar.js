@@ -48,7 +48,7 @@ const Sidebar = forwardRef((props, ref) => {
       .then((response) => response.json())
       .then((data) => {
         setDescription(
-          `${data.results[0].name}: ${
+          `${data.results[0].name}, or common name: ${
             data.results[0].preferred_common_name
               ? data.results[0].preferred_common_name
               : "No preferred common name"
