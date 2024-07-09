@@ -70,8 +70,7 @@ def generate_prediction(eval_params):
     pred_loc_combined = pred_loc_combined[pred_loc_combined[:,2] >= threshold]
     coordinates = pred_loc_combined[:,[0,1]]
 
-    hexagon_ids = {h3.geo_to_h3(lat, lon, hex_resolution) for lat, lon in coordinates}
-    hexagons = [h3.h3_to_geo_boundary(h3_index) for h3_index in hexagon_ids]
+    prediction_hexagon_ids = list({h3.geo_to_h3(lat, lon, hex_resolution) for lat, lon in coordinates})
 
     hull = alphashape.alphashape(coordinates, 1)
     hull_points = list(mapping(hull)['coordinates'])
@@ -82,21 +81,22 @@ def generate_prediction(eval_params):
         coordinates=coordinates.tolist(),
         pred_loc_combined=pred_loc_combined.tolist(),
         hull_points=hull_points,
-        hexagons=hexagons,
-        annotation_hexagons=saved_annotation['annotation_hexagons'],
+        prediction_hexagon_ids=prediction_hexagon_ids,
+        # If there are no saved annotations, set prediction_hexagon_ids as the starting point for the annotation
+        annotation_hexagon_ids=saved_annotation['annotation_hexagon_ids'] or prediction_hexagon_ids,
     )
 
 
 def save_annotation(data):
     taxa_name = data['taxa_name']
-    annotation_hexagons = data['annotation_hexagons']
+    annotation_hexagon_ids = data['annotation_hexagon_ids']
     directory = 'annotations'
     if not os.path.exists(directory):
         os.makedirs(directory)
     with open(f'{directory}/{taxa_name}.json', 'w') as f:
-        json.dump(annotation_hexagons, f)
-    print(f'Saving annotation for {taxa_name}:\nAnnotation:{annotation_hexagons}')
-    return {'annotation_hexagons': annotation_hexagons}
+        json.dump(annotation_hexagon_ids, f)
+    print(f'Saving annotation for {taxa_name}.')
+    return {'annotation_hexagon_ids': annotation_hexagon_ids}
 
 
 def load_annotation(data):
@@ -106,5 +106,5 @@ def load_annotation(data):
     if os.path.isfile(annotation_file):
         with open(annotation_file) as f:
             annotation = json.load(f)
-        return {'annotation_hexagons': annotation}
-    return {'annotation_hexagons': []}
+        return {'annotation_hexagon_ids': annotation}
+    return {'annotation_hexagon_ids': []}

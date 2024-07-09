@@ -10,6 +10,18 @@ import {
 import "leaflet/dist/leaflet.css";
 import * as h3 from "h3-js/legacy";
 
+// Tools
+const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
+  if (hexagonIDs) {
+    const hexagons = hexagonIDs.map((hexID) =>
+      h3.h3ToGeoBoundary(hexID, false).map(([lat, lng]) => [lat, lng])
+    );
+    return hexagons;
+  }
+  return null;
+};
+
+
 // Component to generate and display hexagons
 const HexagonLayer = () => {
   const [hexagons, setHexagons] = useState([]);
@@ -33,9 +45,7 @@ const HexagonLayer = () => {
 
     const hexIdxs = h3.polyfill(screenBounds, hexResolution); // fills onscreen rectangle with h3
 
-    const hexagonsData = hexIdxs.map((hex) =>
-      h3.h3ToGeoBoundary(hex, false).map(([lat, lng]) => [lat, lng])
-    );
+    const hexagonsData = h3IDsToGeoBoundary({ hexagonIDs: hexIdxs });
     setHexagons(hexagonsData); // sets and renders screen
   };
 
@@ -75,26 +85,44 @@ const PredictionPolygon = ({ hullPoints }) => {
   );
 };
 
-const PredictionHexagons = ({ hexagons }) => {
+const PredictionHexagons = ({ predictionHexagonIDs }) => {
   const map = useMap();
 
+  const [predictionHexagons, setPredictionHexagons] = useState(null);
   useEffect(() => {
-    if (hexagons) {
-      map.flyToBounds(hexagons, { maxZoom: 5 });
+    if (predictionHexagonIDs) {
+      const hexagons = h3IDsToGeoBoundary({ hexagonIDs: predictionHexagonIDs });
+      setPredictionHexagons(hexagons);
     }
-  }, [hexagons, map]);
+  }, [predictionHexagonIDs]);
+
+  useEffect(() => {
+    if (predictionHexagons) {
+      map.flyToBounds(predictionHexagons, { maxZoom: 5 });
+    }
+  }, [predictionHexagons, map]);
 
   return (
-    hexagons && (
+    predictionHexagons && (
       <Polygon
-        positions={hexagons}
-        pathOptions={{ color: "blue", fillColor: "blue" }}
+        positions={predictionHexagons}
+        pathOptions={{ color: 'blue', fillColor: 'blue' }}
       />
     )
   );
 };
 
-const AnnotationHexagonsLayer = ({ annotationHexagons }) => {
+
+const AnnotationHexagonsLayer = ({ annotationHexagonIDs }) => {
+  const [annotationHexagons, setAnnotationHexagons] = useState([]);
+
+  useEffect(() => {
+    if (annotationHexagonIDs) {
+      const hexagons = h3IDsToGeoBoundary({ hexagonIDs: annotationHexagonIDs })
+      setAnnotationHexagons(hexagons);
+    }
+  }, [annotationHexagonIDs]);
+
   return (
     annotationHexagons && (
       <Polygon
@@ -105,10 +133,10 @@ const AnnotationHexagonsLayer = ({ annotationHexagons }) => {
   );
 };
 
-const ClickHandler = ({ onAddAnnotationHexagons }) => {
+const ClickHandler = ({ onAddAnnotationHexagonIDs }) => {
   useMapEvents({
     click: (e) => {
-      onAddAnnotationHexagons(e.latlng);
+      onAddAnnotationHexagonIDs(e.latlng);
     },
   });
   return null;
@@ -116,9 +144,9 @@ const ClickHandler = ({ onAddAnnotationHexagons }) => {
 
 const Map = ({
   hullPoints,
-  hexagons,
-  annotationHexagons,
-  onAddAnnotationHexagons,
+  predictionHexagonIDs,
+  annotationHexagonIDs,
+  onAddAnnotationHexagonIDs,
 }) => {
   return (
     <MapContainer
@@ -167,19 +195,17 @@ const Map = ({
         </LayersControl.Overlay>
 
         {/* Render the PredictionHexagons if hexagons are available */}
-        {hexagons && (
-          <LayersControl.Overlay checked name="Prediction Hexagons">
-            <PredictionHexagons hexagons={hexagons} />
-          </LayersControl.Overlay>
-        )}
+        <LayersControl.Overlay checked name="Prediction Hexagons">
+          <PredictionHexagons predictionHexagonIDs={predictionHexagonIDs} />
+        </LayersControl.Overlay>
 
         {/* Custom Hexagons Layer */}
         <LayersControl.Overlay checked name="Current Annotation">
-          <AnnotationHexagonsLayer annotationHexagons={annotationHexagons} />
+          <AnnotationHexagonsLayer annotationHexagonIDs={annotationHexagonIDs} />
         </LayersControl.Overlay>
       </LayersControl>
 
-      <ClickHandler onAddAnnotationHexagons={onAddAnnotationHexagons} />
+      <ClickHandler onAddAnnotationHexagonIDs={onAddAnnotationHexagonIDs} />
     </MapContainer>
   );
 };
