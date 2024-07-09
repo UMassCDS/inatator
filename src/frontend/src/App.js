@@ -64,7 +64,7 @@ function App() {
       annotation_hexagons: annotationHexagons,
     };
 
-    fetch("/save_annotation/", {
+    fetch("http://localhost:8000/save_annotation/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +91,7 @@ function App() {
       annotation_hexagons: [],
     };
 
-    fetch("/save_annotation/", {
+    fetch("http://localhost:8000/save_annotation/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -46,8 +46,8 @@ const HexagonLayer = () => {
     <Polygon
       positions={hexagons}
       pathOptions={{
-        color: "white",
-        fillColor: "white",
+        color: "gray",
+        fillColor: "gray",
         fillOpacity: 0.2,
         opacity: 0.4,
       }}
@@ -69,7 +69,7 @@ const PredictionPolygon = ({ hullPoints }) => {
     hullPoints && (
       <Polygon
         positions={hullPoints}
-        pathOptions={{ color: "red", fillColor: "yellow" }}
+        pathOptions={{ color: "blue", fillColor: "blue" }}
       />
     )
   );
@@ -128,14 +128,14 @@ const Map = ({
     >
       <LayersControl position="topright">
         {/* Base Layers */}
-        <LayersControl.BaseLayer checked name="OpenStreetMap">
+        <LayersControl.BaseLayer name="OpenStreetMap">
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
         </LayersControl.BaseLayer>
 
-        <LayersControl.BaseLayer name="World Light Gray Base">
+        <LayersControl.BaseLayer checked name="World Light Gray Base">
           <TileLayer
             url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
             attribution='&copy; <a href="https://www.esri.com/">Esri</a>'

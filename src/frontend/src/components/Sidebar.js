@@ -67,9 +67,9 @@ const Sidebar = forwardRef((props, ref) => {
       <input
         type="number"
         id="hexResolution"
-        defaultValue="4"
-        min="0"
-        max="15"
+        defaultValue="5"
+        min="1"
+        max="10"
         ref={ref.hexResolution}
       />
 
