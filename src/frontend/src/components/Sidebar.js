@@ -13,7 +13,7 @@ const debounce = (func, wait) => {
 
 const Sidebar = forwardRef((props, ref) => {
   const [, setTaxaNames] = useState([]);
-  const [description, setDescription] = useState("");
+  const [speciesData, setSpeciesData] = useState({ name: "", common_name: "" });
   const [taxaName, setTaxaName] = useState("");
   const [imgURL, setImgURL] = useState("/static/inat_logo_square.png");
 
@@ -47,13 +47,12 @@ const Sidebar = forwardRef((props, ref) => {
     fetch(`https://api.inaturalist.org/v1/taxa/${input}`)
       .then((response) => response.json())
       .then((data) => {
-        setDescription(
-          `${data.results[0].name}, or common name: ${
-            data.results[0].preferred_common_name
-              ? data.results[0].preferred_common_name
-              : "No preferred common name"
-          }`
-        );
+        setSpeciesData({
+          name: data.results[0].name,
+          common_name: data.results[0].preferred_common_name
+            ? data.results[0].preferred_common_name
+            : "No preferred common name",
+        });
         setImgURL(data.results[0].default_photo.url);
       })
       .catch((error) => console.error("Error fetching taxa info:", error));
@@ -126,7 +125,12 @@ const Sidebar = forwardRef((props, ref) => {
 
       <div className="taxa-info">
         <img src={imgURL} alt="species_default_image" />
-        <p>{description}</p>
+        <p>
+          <span style={{ fontWeight: "bold" }}>Name:</span> {speciesData.name}
+          <br />
+          <span style={{ fontWeight: "bold" }}>Common Name:</span>{" "}
+          {speciesData.common_name}
+        </p>
       </div>
     </div>
   );
