@@ -3,8 +3,19 @@ import $ from "jquery";
 import "jquery-ui-dist/jquery-ui.css";
 import "jquery-ui-dist/jquery-ui.js";
 
+const debounce = (func, wait) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+};
+
 const Sidebar = forwardRef((props, ref) => {
   const [, setTaxaNames] = useState([]);
+  const [description, setDescription] = useState("");
+  const [taxaName, setTaxaName] = useState("");
+  const [imgURL, setImgURL] = useState("/static/inat_logo_square.png");
 
   useEffect(() => {
     // Fetch taxa names from the JSON file and initialize auto-suggest
@@ -24,10 +35,39 @@ const Sidebar = forwardRef((props, ref) => {
               alert("Please select a valid taxa name from the list.");
             }
           },
+          select: function (event, ui) {
+            setTaxaName(ui.item.value);
+          },
         });
       })
       .catch((error) => console.error("Error loading taxa names:", error));
   }, []);
+
+  const debouncedFetch = debounce((input) => {
+    fetch(`https://api.inaturalist.org/v1/taxa/${input}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setDescription(
+          `${data.results[0].name}: ${
+            data.results[0].preferred_common_name
+              ? data.results[0].preferred_common_name
+              : "No preferred common name"
+          }`
+        );
+        setImgURL(data.results[0].default_photo.url);
+      })
+      .catch((error) => console.error("Error fetching taxa info:", error));
+  }, 500);
+
+  useEffect(() => {
+    if (taxaName) {
+      const regExp = /\(([^)]+)\)/;
+      const taxaMatch = taxaName.match(regExp);
+      if (taxaMatch) {
+        debouncedFetch(taxaMatch[1]);
+      }
+    }
+  }, [taxaName, debouncedFetch]);
 
   return (
     <div className="sidebar">
@@ -35,8 +75,9 @@ const Sidebar = forwardRef((props, ref) => {
       <input
         type="text"
         id="taxa_name"
-        defaultValue="Ranunculus alpestris (130712)"
+        defaultValue="" //Ranunculus alpestris (130712)
         ref={ref.taxaName}
+        onInput={(e) => setTaxaName(e.target.value)}
       />
 
       <label htmlFor="model">Model:</label>
@@ -84,8 +125,8 @@ const Sidebar = forwardRef((props, ref) => {
       </div>
 
       <div className="taxa-info">
-        <img src="/static/inat_logo_square.png" alt="iNat logo" />
-        <p>Description</p>
+        <img src={imgURL} alt="species_default_image" />
+        <p>{description}</p>
       </div>
     </div>
   );
