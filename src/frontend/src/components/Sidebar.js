@@ -53,7 +53,11 @@ const Sidebar = forwardRef((props, ref) => {
             ? data.results[0].preferred_common_name
             : "No preferred common name",
         });
-        setImgURL(data.results[0].default_photo.url);
+        setImgURL(
+          data.results[0].default_photo.medium_url
+            ? data.results[0].default_photo.medium_url
+            : data.results[0].default_photo.url
+        );
       })
       .catch((error) => console.error("Error fetching taxa info:", error));
   }, 500);
