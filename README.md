@@ -72,7 +72,7 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 
 
 # Code Standards
-1. Use Docstrings, for some functions just a one-linet is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
+1. Use Docstrings, for some functions just a one-liner is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
 2. Module Docstrings, include a short description of module and functions inside the module.
 3. Use a formatter if possible, **black** formatter has support for vscode and is decent
 
