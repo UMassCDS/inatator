@@ -45,19 +45,13 @@ npm i --prefix src/frontend/
 # Running the app
 
 ## Run backend in first terminal:
-1. Navigate to the main directory if you are not already there:
-```bash
- cd /path/to/sinr/ds4cg2024-inaturalist
-```
+1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
 2. Launch the **backend**:
 ```bash
  uvicorn src.backend.app.main:app --reload
 ```
 ## Run **frontend** in another terminal:
-1. Navigate to the main directory if you are not already there:
-```bash
- cd /path/to/sinr/ds4cg2024-inaturalist
-```
+1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
 2. Launch the **frontend**:
 ```bash
   npm start --prefix src/frontend/
