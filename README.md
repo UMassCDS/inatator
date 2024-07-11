@@ -14,7 +14,7 @@ Estimating the geographical range of a species from sparse observations is a cha
 
 # Getting Started
 
-## Installation for local development
+## :hatched_chick: Installation for local development
 Make sure you update your local branch to the latest.
 
 
