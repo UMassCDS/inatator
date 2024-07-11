@@ -19,8 +19,9 @@ Make sure you update your local branch to the latest.
 
 
 ####  Downloading the pretrained models
-Download the pretrained models from [here](https://data.caltech.edu/records/dk5g7-rhq64/files/pretrained_models.zip?download=1), unzip them and place them in a folder at
-`/path/to/ds4cg2024-inaturalist/src/backend/sinr/pretrained_models`.
+If you want to run the app locally for development purposes, download the pretrained models from [here](https://data.caltech.edu/records/dk5g7-rhq64/files/pretrained_models.zip?download=1), unzip them, and place them in a folder located at  
+`/src/backend/sinr/pretrained_models`.  
+If you only run the app in Docker, there's no need to download the models; Docker will handle this for you inside the image.
 
 # Installing the app
 
