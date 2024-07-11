@@ -21,15 +21,13 @@ const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
   return null;
 };
 
-
 // Component to generate and display hexagons
-const HexagonLayer = () => {
+const HexagonLayer = ({ hexResolution }) => {
   const [hexagons, setHexagons] = useState([]);
   const map = useMap();
-  const hexResolution = 5;
 
   const generateHexagons = (hexResolution) => {
-    if (map.getZoom() <= 7) {
+    if (map.getZoom() <= 7 || hexResolution == null) {
       // function only draws the polygon if zoom level constraint is satisfied
       setHexagons([]);
       return;
@@ -106,19 +104,18 @@ const PredictionHexagons = ({ predictionHexagonIDs }) => {
     predictionHexagons && (
       <Polygon
         positions={predictionHexagons}
-        pathOptions={{ color: 'blue', fillColor: 'blue' }}
+        pathOptions={{ color: "blue", fillColor: "blue" }}
       />
     )
   );
 };
-
 
 const AnnotationHexagonsLayer = ({ annotationHexagonIDs }) => {
   const [annotationHexagons, setAnnotationHexagons] = useState([]);
 
   useEffect(() => {
     if (annotationHexagonIDs) {
-      const hexagons = h3IDsToGeoBoundary({ hexagonIDs: annotationHexagonIDs })
+      const hexagons = h3IDsToGeoBoundary({ hexagonIDs: annotationHexagonIDs });
       setAnnotationHexagons(hexagons);
     }
   }, [annotationHexagonIDs]);
@@ -147,6 +144,7 @@ const Map = ({
   predictionHexagonIDs,
   annotationHexagonIDs,
   onAddAnnotationHexagonIDs,
+  hexResolution,
 }) => {
   return (
     <MapContainer
@@ -191,7 +189,7 @@ const Map = ({
         )}
         {/* Render the Hexagon Layer */}
         <LayersControl.Overlay checked name="Hexagon Grid">
-          <HexagonLayer />
+          <HexagonLayer hexResolution={hexResolution} />
         </LayersControl.Overlay>
 
         {/* Render the PredictionHexagons if hexagons are available */}
@@ -201,7 +199,9 @@ const Map = ({
 
         {/* Custom Hexagons Layer */}
         <LayersControl.Overlay checked name="Current Annotation">
-          <AnnotationHexagonsLayer annotationHexagonIDs={annotationHexagonIDs} />
+          <AnnotationHexagonsLayer
+            annotationHexagonIDs={annotationHexagonIDs}
+          />
         </LayersControl.Overlay>
       </LayersControl>
 

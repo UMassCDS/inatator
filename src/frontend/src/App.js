@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Map from "./components/Map";
 import Sidebar from "./components/Sidebar";
 import Buttons from "./components/Buttons";
@@ -17,6 +17,24 @@ function App() {
   const [hullPoints, setHullPoints] = useState(null);
   const [predictionHexagonIDs, setPredictionHexagonIDs] = useState(null);
   const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState([]);
+  const [hexResolution, setHexResolution] = useState(4);
+
+  useEffect(() => {
+    // Update the hexResolution state when the input value changes
+    const updateHexResolution = () => {
+      const newResolution = formRefs.hexResolution.current
+        ? Number(formRefs.hexResolution.current.value)
+        : 4;
+      setHexResolution(newResolution);
+    };
+
+    const hexResolutionInput = formRefs.hexResolution.current;
+    hexResolutionInput?.addEventListener("change", updateHexResolution);
+
+    return () => {
+      hexResolutionInput?.removeEventListener("change", updateHexResolution);
+    };
+  }, [formRefs.hexResolution]);
 
   const handleGeneratePrediction = () => {
     const formData = {
@@ -112,14 +130,14 @@ function App() {
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
       // Create a Set from the previous annotation hexagon IDs
       const annotationHexagonIDsSet = new Set(prevAnnotationHexagonIDs);
-      
+
       // Check if the new hexagon ID is already in the Set and toggle its presence
       if (annotationHexagonIDsSet.has(hexagonID)) {
         annotationHexagonIDsSet.delete(hexagonID);
       } else {
         annotationHexagonIDsSet.add(hexagonID);
       }
-  
+
       // Convert the Set back to an array and return it
       return Array.from(annotationHexagonIDsSet);
     });
@@ -139,6 +157,7 @@ function App() {
           predictionHexagonIDs={predictionHexagonIDs}
           annotationHexagonIDs={annotationHexagonIDs}
           onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}
+          hexResolution={hexResolution}
         />
       </div>
     </div>
