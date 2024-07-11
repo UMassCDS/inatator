@@ -14,12 +14,12 @@ Estimating the geographical range of a species from sparse observations is a cha
 
 # Getting Started
 
-## Installation for local development
+## :hatched_chick: Installation for local development
 Make sure you update your local branch to the latest.
 
 
 ####  Downloading the pretrained models
-Download the pretrained models from [here](https://data.caltech.edu/records/dk5g7-rhq64/files/pretrained_models.zip?download=1) and place them at   
+Download the pretrained models from [here](https://data.caltech.edu/records/dk5g7-rhq64/files/pretrained_models.zip?download=1), unzip them and place them in a folder at
 `/path/to/ds4cg2024-inaturalist/src/backend/sinr/pretrained_models`.
 
 # Installing the app
@@ -42,22 +42,16 @@ pip install -r src/backend/requirements.txt && pip install -r src/backend/requir
 npm i --prefix src/frontend/
 ```
 
-# Running the app
+# :penguin: Running the iNatAtor Application
 
 ## Run backend in first terminal:
-1. Navigate to the main directory if you are not already there:
-```bash
- cd /path/to/sinr/ds4cg2024-inaturalist
-```
+1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
 2. Launch the **backend**:
 ```bash
  uvicorn src.backend.app.main:app --reload
 ```
 ## Run **frontend** in another terminal:
-1. Navigate to the main directory if you are not already there:
-```bash
- cd /path/to/sinr/ds4cg2024-inaturalist
-```
+1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
 2. Launch the **frontend**:
 ```bash
   npm start --prefix src/frontend/
@@ -78,9 +72,9 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 
 
 # Code Standards
-1. Use Docstrings, for some functions just a one-linet is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
+1. Use Docstrings, for some functions just a one-liner is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
 2. Module Docstrings, include a short description of module and functions inside the module.
-3. Use a formatter if possible, **black** formatter has support for vscode and is decent
+3. Use a formatter if possible. We have included [ruff](https://docs.astral.sh/ruff/) for linting and formatting in the developer dependencies in `requirements-dev.txt`.
 
 
 ##  🙏 Acknowledgements
