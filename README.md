@@ -42,7 +42,7 @@ pip install -r src/backend/requirements.txt && pip install -r src/backend/requir
 npm i --prefix src/frontend/
 ```
 
-# Running the app
+# :penguin: Running the iNatAtor Application
 
 ## Run backend in first terminal:
 1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
