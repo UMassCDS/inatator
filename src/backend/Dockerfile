@@ -5,15 +5,15 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-RUN conda create -n inatator python=3.10
+RUN conda create -n inatator python=3.9
 
-COPY . .
+COPY ./src/backend ./src/backend
 
 RUN conda run -n inatator \
-    pip install -r requirements.txt
+    pip install -r ./src/backend/requirements.txt
 
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /app/src/backend/entrypoint.sh
 
 EXPOSE 8000
 
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+ENTRYPOINT [ "/app/src/backend/entrypoint.sh" ]

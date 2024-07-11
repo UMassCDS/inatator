@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+predictions
+src/backend/sinr/pretrained_models/*

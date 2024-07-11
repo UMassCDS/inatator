@@ -1,9 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+
+from . import tools
+
 
 app = FastAPI()
 
-origins = ["http://frontend", "http://localhost", "http://localhost:3000"]
+origins = ["http://localhost:3000"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,6 +18,7 @@ app.add_middleware(
 )
 
 
-@app.get("/hello/")
-def read_root():
-    return {"Hello": "world"}
+@app.post("/generate_prediction/")
+async def generate_prediction(request: Request):
+    response = tools.generate_prediction(await request.json())
+    return JSONResponse(content=response)
