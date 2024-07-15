@@ -15,8 +15,15 @@ Estimating the geographical range of a species from sparse observations is a cha
 # Getting Started
 
 ## :hatched_chick: Installation for local development
-Make sure you update your local branch to the latest.
 
+### Cloning the repository
+1. Clone the `main` branch into your local directory.
+
+2. Run `git submodule init` and `git submodule update`
+
+Note: `src/backend/sinr/` is a github submodule, it is connected to `UMassCDS/sinr`. `ds4cg-inaturalist` has `sinr` as a submodule, you can continue working on non-sinr code as you were. If you have made changes to sinr code and need to push them, you must treat `sinr` directory as its own git repo, therefore create new branch, open PR.
+
+Make sure you update your local branch to the latest.
 
 ####  Downloading the pretrained models
 Download the pretrained models from [here](https://data.caltech.edu/records/dk5g7-rhq64/files/pretrained_models.zip?download=1), unzip them and place them in a folder at
