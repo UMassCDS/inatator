@@ -1,0 +1,3 @@
+[submodule "src/backend/sinr"]
+	path = src/backend/sinr
+	url = git@github.com:UMassCDS/inaturalist-sinr.git
