@@ -1,6 +1,6 @@
 
 [submodule "src/backend/sinr"]
 	path = src/backend/sinr
-	url = git@github.com:UMassCDS/inaturalist-sinr.git
+	url = https://github.com/UMassCDS/inaturalist-sinr.git
 	branch = 28-sinr-submodule-prep
 	

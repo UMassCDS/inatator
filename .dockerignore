@@ -1,1 +1,8 @@
 src/backend/sinr/pretrained_models/*
+annotations
+build
+predictions
+.ruff_cache
+.github
+src/frontend
+src/backend/sinr

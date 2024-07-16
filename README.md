@@ -17,7 +17,7 @@ Estimating the geographical range of a species from sparse observations is a cha
 ## :hatched_chick: Installation for local development
 1. Clone the repository `git clone git@github.com:UMassCDS/ds4cg2024-inaturalist.git`
 
-2. Navigate to cloned project's root, run `git submodule init` and then `git submodule update`
+2. Navigate to cloned project's root, run `git submodule init` and then `git submodule update --remote -- merge`
 
 3. You are all set for setting up the code.
 
