@@ -1,10 +1,21 @@
-import React, { forwardRef, useEffect, useState } from 'react';
-import $ from 'jquery';
-import 'jquery-ui-dist/jquery-ui.css';
-import 'jquery-ui-dist/jquery-ui.js';
+import React, { forwardRef, useEffect, useState } from "react";
+import $ from "jquery";
+import "jquery-ui-dist/jquery-ui.css";
+import "jquery-ui-dist/jquery-ui.js";
+
+const debounce = (func, wait) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+};
 
 const Sidebar = forwardRef((props, ref) => {
-  const [taxaNames, setTaxaNames] = useState([]);
+  const [, setTaxaNames] = useState([]);
+  const [speciesData, setSpeciesData] = useState({ name: "", common_name: "" });
+  const [taxaName, setTaxaName] = useState("");
+  const [imgURL, setImgURL] = useState("/static/inat_logo_square.png");
 
   useEffect(() => {
     // Fetch taxa names from the JSON file and initialize auto-suggest
@@ -24,19 +35,61 @@ const Sidebar = forwardRef((props, ref) => {
               alert("Please select a valid taxa name from the list.");
             }
           },
+          select: function (event, ui) {
+            setTaxaName(ui.item.value);
+          },
         });
       })
       .catch((error) => console.error("Error loading taxa names:", error));
   }, []);
 
+  const debouncedFetch = debounce((input) => {
+    fetch(`https://api.inaturalist.org/v1/taxa/${input}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setSpeciesData({
+          name: data.results[0].name,
+          common_name: data.results[0].preferred_common_name
+            ? data.results[0].preferred_common_name
+            : "No preferred common name",
+        });
+        setImgURL(
+          data.results[0].default_photo.medium_url
+            ? data.results[0].default_photo.medium_url
+            : data.results[0].default_photo.url
+        );
+      })
+      .catch((error) => console.error("Error fetching taxa info:", error));
+  }, 500);
+
+  useEffect(() => {
+    if (taxaName) {
+      const regExp = /\(([^)]+)\)/;
+      const taxaMatch = taxaName.match(regExp);
+      if (taxaMatch) {
+        debouncedFetch(taxaMatch[1]);
+      }
+    }
+  }, [taxaName, debouncedFetch]);
 
   return (
     <div className="sidebar">
       <label htmlFor="taxa_name">Taxa Name:</label>
-      <input type="text" id="taxa_name" defaultValue="Ranunculus alpestris (130712)" ref={ref.taxaName} />
+      <input
+        type="text"
+        id="taxa_name"
+        defaultValue="" //Ranunculus alpestris (130712)
+        ref={ref.taxaName}
+        onInput={(e) => setTaxaName(e.target.value)}
+      />
 
       <label htmlFor="model">Model:</label>
-      <select name="Model" id="model" defaultValue="AN_FULL_max_1000" ref={ref.model}>
+      <select
+        name="Model"
+        id="model"
+        defaultValue="AN_FULL_max_1000"
+        ref={ref.model}
+      >
         <option value="AN_FULL_max_10">AN_FULL max 10</option>
         <option value="AN_FULL_max_100">AN_FULL max 100</option>
         <option value="AN_FULL_max_1000">AN_FULL max 1000</option>
@@ -44,19 +97,46 @@ const Sidebar = forwardRef((props, ref) => {
       </select>
 
       <label htmlFor="threshold">Threshold:</label>
-      <input readOnly="True" type="number" step="0.01" id="threshold" defaultValue="0.1" min="0.1" max="0.9" ref={ref.threshold} />
+      <input
+        type="number"
+        step="0.01"
+        id="threshold"
+        defaultValue="0.1"
+        min="0.1"
+        max="0.9"
+        ref={ref.threshold}
+        readOnly={true}
+      />
 
       <label htmlFor="hexResolution">Hex Resolution:</label>
-      <input readOnly="True" type="number" id="hexResolution" defaultValue="5" min="0" max="15" ref={ref.hexResolution} />
+      <input
+        type="number"
+        id="hexResolution"
+        defaultValue={4}
+        min={1}
+        max={10}
+        ref={ref.hexResolution}
+        readOnly={true}
+      />
 
       <div className="checkbox-container">
-        <input type="checkbox" id="disable_ocean_mask" name="Disable Ocean Mask" ref={ref.disableOceanMask} />
+        <input
+          type="checkbox"
+          id="disable_ocean_mask"
+          name="Disable Ocean Mask"
+          ref={ref.disableOceanMask}
+        />
         <label htmlFor="disable_ocean_mask"> Disable Ocean Mask</label>
       </div>
-      
+
       <div className="taxa-info">
-        <img src="/static/inat_logo_square.png" alt="iNat logo" />
-        <p>Description</p>
+        <img src={imgURL} alt="species_default_image" />
+        <p>
+          <span style={{ fontWeight: "bold" }}>Name:</span> {speciesData.name}
+          <br />
+          <span style={{ fontWeight: "bold" }}>Common Name:</span>{" "}
+          {speciesData.common_name}
+        </p>
       </div>
     </div>
   );
