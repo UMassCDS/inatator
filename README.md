@@ -76,12 +76,16 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 1. Install Docker if you haven't already
 2. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
 2. Navigate project root
-3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`
+
+Note: you don't have to initialize submodule to run docker, dockerfile will set up the submodules for you while building the image.
+
+3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`.
 5. You can stop contianers with ctrl+c or using the Docker app
 6. If you want to start the application again, run `docker compose up`
 7. If you want to just build images, run `docker compose build`
 8. If you want to build and run containers, run `docker compose up --build`
 
+Note: If you want to build only one service, use `docker compose build <service-name>`, for example for backend it will be `docker compose build backend`.
 
 # Code Standards
 1. Use Docstrings, for some functions just a one-liner is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.

@@ -1,8 +1,9 @@
-src/backend/sinr/pretrained_models/*
 annotations
 build
 predictions
 .ruff_cache
 .github
 src/frontend
+
+# it will ignore sinr directory completely because it will clone it from a repo
 src/backend/sinr
