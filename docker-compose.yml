@@ -1,4 +1,17 @@
 services:
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    expose:
+      - 5433
+    ports:
+      - "5433:5433"
+    command: -p 5433
+
   frontend:
     platform: linux/amd64
     build:
@@ -8,10 +21,18 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+
   backend:
     platform: linux/amd64
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: ./src/backend/Dockerfile
+    depends_on:
+      - db
     ports:
       - "8000:8000"
+
+volumes:
+  postgres_data: 
