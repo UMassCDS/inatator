@@ -15,8 +15,19 @@ Estimating the geographical range of a species from sparse observations is a cha
 # Getting Started
 
 ## :hatched_chick: Installation for local development
-Make sure you update your local branch to the latest.
+1. Clone the repository `git clone git@github.com:UMassCDS/ds4cg2024-inaturalist.git`
 
+2. Navigate to cloned project's root, run `git submodule init` and then `git submodule update --remote --merge`
+
+3. You are all set for setting up the code.
+
+Note: to update submodules with latest changes, run `git submodule update --remote --merge`
+
+Note: `src/backend/sinr` is a submodule from `UMassCDS/inatrualist-sinr`, if you need to work on `sinr` code, follow development practices for that repository, this includes making a dedicated development branch, making PRs.
+
+Note: If you need to switch to a particular `UMassCDS/inaturalist-sinr` branch and run the prototype, navigate to `src/backend/sinr`, use `git checkout <branch-name>` to switch to a branch. Now the submodule will be at a different branch.
+
+Make sure you always update your local branch to the latest.
 
 ####  Downloading the pretrained models
 If you want to run the app locally for development purposes, download the pretrained models from [here](https://data.caltech.edu/records/dk5g7-rhq64/files/pretrained_models.zip?download=1), unzip them, and place them in a folder located at  
@@ -65,12 +76,16 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 1. Install Docker if you haven't already
 2. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
 2. Navigate project root
-3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`
+
+Note: you don't have to initialize submodule to run docker, dockerfile will set up the submodules for you while building the image.
+
+3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`.
 5. You can stop contianers with ctrl+c or using the Docker app
 6. If you want to start the application again, run `docker compose up`
 7. If you want to just build images, run `docker compose build`
 8. If you want to build and run containers, run `docker compose up --build`
 
+Note: If you want to build only one service, use `docker compose build <service-name>`, for example for backend it will be `docker compose build backend`.
 
 # Code Standards
 1. Use Docstrings, for some functions just a one-liner is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
