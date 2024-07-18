@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.exc import OperationalError
 import os
@@ -16,12 +16,3 @@ def check_db_connection():
     except OperationalError as e:
         print(e._message)
         return False
-    
-    # try:
-    #     session = SessionLocal()
-    #     session.execute(text("SELECT 1"))
-    #     session.close()
-    #     return True
-    # except OperationalError:
-    #     return False
-
