@@ -2,7 +2,7 @@
 FROM python:3.9.19-slim
 
 # Ensure the package list is up-to-date and install curl, unzip, and git
-RUN apt-get update && apt-get install -y curl unzip git
+RUN apt-get update && apt-get install -y curl unzip git libpq-dev gcc
 
 # Set environment variables to prevent Python from writing .pyc files and to buffer outputs
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -19,7 +19,7 @@ COPY ./src/backend/requirements.txt .
 
 # Install Python dependencies specified in requirements.txt without caching to reduce image size
 RUN pip install -r ./requirements.txt --no-cache-dir
-
+ 
 # Copy the backend source code, excluding the pretrained models (according to .dockerignore)
 COPY . .
 

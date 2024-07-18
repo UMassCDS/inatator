@@ -3,7 +3,7 @@ services:
     image: postgres
     restart: always
     env_file:
-      - .env
+      - .docker.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -25,7 +25,7 @@ services:
     platform: linux/amd64
     image: umasscds/inatator_backend:0.1.0
     env_file:
-      - .env
+      - .docker.env
     build:
       context: .
       dockerfile: ./src/backend/Dockerfile

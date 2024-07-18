@@ -27,6 +27,20 @@ Note: `src/backend/sinr` is a submodule from `UMassCDS/inatrualist-sinr`, if you
 
 Note: If you need to switch to a particular `UMassCDS/inaturalist-sinr` branch and run the prototype, navigate to `src/backend/sinr`, use `git checkout <branch-name>` to switch to a branch. Now the submodule will be at a different branch.
 
+## Working with database
+
+1. Notice that there are two .env files, .docker.env and .env, .env is used for your local development, .docker.env will be used in your containers.
+
+2. To run the application without containers, first run the database container by `docker compose up db` (you may have to rebuild it if you changed docker-compose.yml). Run `uvicorn src.backend.app.main:app --reload --env-file .env` at project root to run the server, then `npm start` in `src/frontend`.
+
+3. You can verify connections are working by going to `localhost:8000/health` and `localhost:8000/echo_env`. Note that these paths are included right now to assist with rapid development, will be removed for production.
+
+4. To run docker containers, `docker compose up --build` still builds and runs the same.
+
+Note: The codebase is getting bigger, therefore add database related code in `src/backend/app/db`, then make proper API routes in main, if it gets too big, we can resort to using API routers from fastapi.
+
+Note: There are two environment files because the database url for local development and docker environments are separate.
+
 Make sure you always update your local branch to the latest.
 
 ####  Downloading the pretrained models
@@ -56,11 +70,18 @@ npm i --prefix src/frontend/
 
 # :penguin: Running the iNatAtor Application
 
+## Run database:
+1. Navigate to project root
+2. Launch **postgres container**:
+```bash
+docker compose up --build db
+```
+
 ## Run backend in first terminal:
 1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
 2. Launch the **backend**:
 ```bash
- uvicorn src.backend.app.main:app --reload
+ uvicorn src.backend.app.main:app --reload --env-file .env
 ```
 ## Run **frontend** in another terminal:
 1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
