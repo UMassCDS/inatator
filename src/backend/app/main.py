@@ -2,7 +2,9 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import os
+
 from . import tools
+from .db import crud
 
 app = FastAPI()
 
@@ -15,6 +17,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/health")
+async def health_check():
+    print(os.getenv("DATABASE_URL"))
+    if crud.check_db_connection():
+        return {"status": "healthy"}
+    else:
+        return {"status": "unhealthy"}
 
 @app.get("/echo_env/")
 async def echo_env():
