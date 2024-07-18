@@ -16,6 +16,7 @@ const Sidebar = forwardRef((props, ref) => {
   const [speciesData, setSpeciesData] = useState({ name: "", common_name: "" });
   const [taxaName, setTaxaName] = useState("");
   const [imgURL, setImgURL] = useState("/static/inat_logo_square.png");
+  const [updateImgURL, setUpdateImgURL] = useState(false);
 
   useEffect(() => {
     // Fetch taxa names from the JSON file and initialize auto-suggest
@@ -37,6 +38,7 @@ const Sidebar = forwardRef((props, ref) => {
           },
           select: function (event, ui) {
             setTaxaName(ui.item.value);
+            setUpdateImgURL(true);
           },
         });
       })
@@ -63,14 +65,15 @@ const Sidebar = forwardRef((props, ref) => {
   }, 500);
 
   useEffect(() => {
-    if (taxaName) {
+    if (taxaName && updateImgURL) {
       const regExp = /\(([^)]+)\)/;
       const taxaMatch = taxaName.match(regExp);
       if (taxaMatch) {
         debouncedFetch(taxaMatch[1]);
+        setUpdateImgURL(false);
       }
     }
-  }, [taxaName, debouncedFetch]);
+  }, [taxaName, updateImgURL, debouncedFetch]);
 
   return (
     <div className="sidebar">
