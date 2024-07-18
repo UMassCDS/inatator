@@ -133,3 +133,5 @@ predictions
 annotations
 src/backend/sinr/pretrained_models/*
 *.DS_Store
+
+postgres_data/
