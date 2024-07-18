@@ -17,8 +17,8 @@ RUN curl -L -o /app/pretrained_models.zip https://data.caltech.edu/records/dk5g7
 # Copy the requirements.txt file to the working directory
 COPY ./src/backend/requirements.txt .
 
-# Install Python dependencies specified in requirements.txt
-RUN pip install -r ./requirements.txt
+# Install Python dependencies specified in requirements.txt without caching to reduce image size
+RUN pip install -r ./requirements.txt --no-cache-dir
 
 # Copy the backend source code, excluding the pretrained models (according to .dockerignore)
 COPY . .
