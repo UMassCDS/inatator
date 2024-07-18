@@ -26,8 +26,9 @@ COPY . .
 # Initialize and update git submodules
 RUN git submodule init && git submodule update --remote --merge
 
-# Unzip the pretrained models into the specified directory
-RUN unzip -o /app/pretrained_models.zip -d /app/src/backend/sinr
+# Unzip the pretrained models into the specified directory and then remove the zip file
+RUN unzip -o /app/pretrained_models.zip -d /app/src/backend/sinr && \
+    rm /app/pretrained_models.zip
 
 # Command to run the application using Uvicorn,
 # making it accessible on all network interfaces (0.0.0.0) at port 8000
