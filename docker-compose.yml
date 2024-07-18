@@ -6,8 +6,6 @@ services:
       - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    expose:
-      - 5433
     ports:
       - "5433:5433"
     command: -p 5433

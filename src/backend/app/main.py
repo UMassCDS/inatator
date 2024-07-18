@@ -1,9 +1,8 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-
+import os
 from . import tools
-
 
 app = FastAPI()
 
@@ -17,6 +16,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/echo_env/")
+async def echo_env():
+    return {"url": os.environ.get("DATABASE_URL", "ERROR"), "env": dict(os.environ)}
 
 @app.post("/generate_prediction/")
 async def generate_prediction(request: Request):
