@@ -58,20 +58,20 @@ npm i --prefix src/frontend/
 
 # :penguin: Running the iNatAtor Application
 
-## Run database:
+## Run **database** in first terminal:
 1. Navigate to project root
 2. Launch **postgres container**:
 ```bash
 docker compose up --build db
 ```
 
-## Run backend in first terminal:
+## Run **backend** in second terminal:
 1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
 2. Launch the **backend**:
 ```bash
  uvicorn src.backend.app.main:app --reload --env-file .env
 ```
-## Run **frontend** in another terminal:
+## Run **frontend** in third terminal:
 1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
 2. Launch the **frontend**:
 ```bash
