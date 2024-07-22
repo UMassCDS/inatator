@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Map from "./components/Map";
 import Sidebar from "./components/Sidebar";
 import Buttons from "./components/Buttons";
+import LoadingStatus from "./components/LoadingStatus";
 import * as h3 from "h3-js/legacy";
 import "./App.css";
 
@@ -18,6 +19,7 @@ function App() {
   const [predictionHexagonIDs, setPredictionHexagonIDs] = useState(null);
   const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState([]);
   const [hexResolution, setHexResolution] = useState(4);
+  const [barStatus, setBarStatus] = useState({loadingStatus: "", color: "#b5b5b5"});
 
   useEffect(() => {
     // Update the hexResolution state when the input value changes
@@ -45,6 +47,8 @@ function App() {
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
     };
 
+    setBarStatus({loadingStatus: "Generating", color: "#b5b5b5"});
+
     fetch("http://localhost:8000/generate_prediction/", {
       method: "POST",
       headers: {
@@ -63,8 +67,10 @@ function App() {
         if (data.annotation_hexagon_ids) {
           setAnnotationHexagonIDs(data.annotation_hexagon_ids);
         }
+        setBarStatus({loadingStatus: "Success", color: "#007bff"});
       })
       .catch((error) => {
+        setBarStatus({loadingStatus: "Failure", color: "#dc3545"});
         console.error("Error generating prediction:", error);
       });
   };
@@ -79,6 +85,8 @@ function App() {
       annotation_hexagon_ids: annotationHexagonIDs,
     };
 
+    setBarStatus({loadingStatus: "Saving", color: "#b5b5b5"});
+
     fetch("http://localhost:8000/save_annotation/", {
       method: "POST",
       headers: {
@@ -88,10 +96,12 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        alert("Annotation saved successfully!");
+        setBarStatus({loadingStatus: "Saved", color: "#28a745"});
+        // alert("Annotation saved successfully!");
         console.log("Annotation saved successfully!");
       })
       .catch((error) => {
+        setBarStatus({loadingStatus: "Failure", color: "#dc3545"});
         console.error("Error generating prediction:", error);
       });
   };
@@ -106,6 +116,8 @@ function App() {
       annotation_hexagon_ids: [],
     };
 
+    setBarStatus({loadingStatus: "Clearing", color: "#b5b5b5"});
+
     fetch("http://localhost:8000/save_annotation/", {
       method: "POST",
       headers: {
@@ -116,10 +128,12 @@ function App() {
       .then((response) => response.json())
       .then((data) => {
         setAnnotationHexagonIDs([]);
-        alert("Annotation cleared successfully!");
+        // alert("Annotation cleared successfully!");
+        setBarStatus({loadingStatus: "Cleared", color: "#28a745"});
         console.log("Annotation cleared successfully!");
       })
       .catch((error) => {
+        setBarStatus({loadingStatus: "Failure", color: "#dc3545"});
         console.error("Error generating prediction:", error);
       });
   };
@@ -152,6 +166,7 @@ function App() {
           onSaveAnnotation={handlSaveAnnotation}
           onClearAnnotation={handlClearAnnotation}
         />
+        <LoadingStatus barStatus={barStatus}/>
         <Map
           hullPoints={hullPoints}
           predictionHexagonIDs={predictionHexagonIDs}
