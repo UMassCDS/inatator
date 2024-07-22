@@ -2,7 +2,7 @@
 FROM python:3.9.19-slim
 
 # Ensure the package list is up-to-date and install curl, unzip, and git
-RUN apt-get update && apt-get install -y curl unzip git libpq-dev gcc
+RUN apt-get update && apt-get install -y curl unzip git
 
 # Set environment variables to prevent Python from writing .pyc files and to buffer outputs
 ENV PYTHONDONTWRITEBYTECODE=1

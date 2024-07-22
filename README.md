@@ -51,6 +51,8 @@ If you only run the app in Docker, there's no need to download the models; Docke
 pip install -r src/backend/requirements.txt && pip install -r src/backend/requirements-dev.txt
 ```
 
+Note: If you get errors for psycopg2-binary, installing postgres can solve it `brew install postgresql`, repeat step 3 after installing postgres.
+
 4. install js libraries needed for react
 ```bash
 npm i --prefix src/frontend/
@@ -67,9 +69,13 @@ docker compose up --build db
 
 ## Run **backend** in second terminal:
 1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
-2. Launch the **backend**:
+2. Activate environment:
 ```bash
- uvicorn src.backend.app.main:app --reload --env-file .env
+  conda activate inatator
+```
+3. Launch the **backend**:
+```bash
+  uvicorn src.backend.app.main:app --reload --env-file .env
 ```
 ## Run **frontend** in third terminal:
 1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
@@ -84,30 +90,28 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 # Running applications with Docker
 1. Install Docker if you haven't already
 2. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
-2. Navigate project root
+2. Now in terminal, navigate to project root
+3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`.
+5. You can stop containers with ctrl+c or using the Docker app
+
+Common Docker commands:
+- If you want to start the application again, run `docker compose up`
+- If you want to just build images, run `docker compose build`
+- If you want to build and run containers, run `docker compose up --build`
+- If you want to build only one service, run `docker compose build <service-name>`, for example `docker compose build backend`
 
 Note: you don't have to initialize submodule to run docker, dockerfile will set up the submodules for you while building the image.
-
-3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`.
-5. You can stop contianers with ctrl+c or using the Docker app
-6. If you want to start the application again, run `docker compose up`
-7. If you want to just build images, run `docker compose build`
-8. If you want to build and run containers, run `docker compose up --build`
-
-Note: If you want to build only one service, use `docker compose build <service-name>`, for example for backend it will be `docker compose build backend`.
 
 
 ## Working with database
 
-1. You can run the application without containers, allowing you to develop things quickly. Refer to **Running the iNatAtor Application** above for instructions.
+Sometimes you want to run the application without containers, allowing you to develop things quickly. The **Running the iNatAtor Application** section explains how to run the application locally.
 
-2. You can verify connections are working by going to `localhost:8000/health` and `localhost:8000/echo_env`. Note that these paths are included right now to assist with rapid development, will be removed for production.
-
-3. To run docker containers, `docker compose up --build` still builds and runs the same.
+You can verify connections are working by going to `localhost:8000/health` and `localhost:8000/echo_env`. Note that these paths are included right now to assist with rapid development, will be removed for production.
 
 Note: The codebase is getting bigger, therefore add database related code in `src/backend/app/db`, then make proper API routes in main, if it gets too big, we can resort to using API routers from fastapi.
 
-Note: There are two environment files because the database url for local development and docker environments are separate.
+Note: There are two environment files (.env and .docker.env) because the database url for local development and docker environments are separate.
 
 Make sure you always update your local branch to the latest.
 
