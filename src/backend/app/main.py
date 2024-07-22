@@ -1,12 +1,23 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from datetime import datetime
+from sqlalchemy.orm import Session
 import os
 
 from . import tools
-from .db import crud
+from .db import models, crud
+from .db.database import engine, SessionLocal
 
 app = FastAPI()
+models.Base.metadata.create_all(bind=engine)
+
+def get_db():
+    try:
+        db = SessionLocal()
+        yield db
+    finally:
+        db.close()
 
 origins = ["http://localhost:3000"]
 
@@ -36,6 +47,23 @@ async def generate_prediction(request: Request):
     return JSONResponse(content=response)
 
 @app.post("/save_annotation/")
-async def save_annotation(request: Request):
-    response = tools.save_annotation(await request.json())
-    return JSONResponse(content=response)
+async def save_annotation(request: Request, db: Session = Depends(get_db)):
+    # response = tools.save_annotation(await request.json())
+    body = await request.json()
+    taxa_id = int(body["taxa_name"].split("(")[-1][:-1])
+
+    annotation_model = models.Annotation()
+    annotation_model.TaxaID = taxa_id
+    annotation_model.CreatedAt = datetime.now()
+    db.add(annotation_model)
+    db.commit()
+
+    hex_indexes = body["annotation_hexagon_ids"]
+    for hex_index in hex_indexes:
+        hexagon_model = models.AnnotationHexagon()
+        hexagon_model.AnnotationID = annotation_model.AnnotationID
+        hexagon_model.HexID = hex_index
+        db.add(hexagon_model)
+    db.commit()    
+
+    return JSONResponse(content={})

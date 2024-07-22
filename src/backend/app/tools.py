@@ -37,16 +37,10 @@ def get_prediction(eval_params):
     taxa_name = eval_params["taxa_name"]
     taxa_id = get_taxa_id_by_name(taxa_name)
     eval_params["taxa_id"] = taxa_id
-    preds_file = f"predictions/{taxa_name}_preds.npy"
-    locs_file = f"predictions/{taxa_name}_locs.npy"
-
-    if os.path.isfile(preds_file) and os.path.isfile(locs_file):
-        print(f"Loading saved predictions for Taxa: {taxa_name}")
-        return np.load(preds_file), np.load(locs_file)
 
     print(f"Starting generate predictions for Taxa: {taxa_name}.\nParams {eval_params}")
     preds, locs = sinr.generate_prediction(eval_params)
-    save_preds(taxa_name, preds, locs)
+    # save_preds(taxa_name, preds, locs)
     return preds, locs
 
 
@@ -82,16 +76,12 @@ def generate_prediction(eval_params):
     hull = alphashape.alphashape(coordinates, 1)
     hull_points = list(mapping(hull)["coordinates"])
 
-    saved_annotation = load_annotation(eval_params)
-
     return dict(
         coordinates=coordinates.tolist(),
         pred_loc_combined=pred_loc_combined.tolist(),
         hull_points=hull_points,
         prediction_hexagon_ids=prediction_hexagon_ids,
-        # If there are no saved annotations, set prediction_hexagon_ids as the starting point for the annotation
-        annotation_hexagon_ids=saved_annotation["annotation_hexagon_ids"]
-        or prediction_hexagon_ids,
+        annotation_hexagon_ids=prediction_hexagon_ids,
     )
 
 
