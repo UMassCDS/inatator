@@ -17,31 +17,19 @@ Estimating the geographical range of a species from sparse observations is a cha
 ## :hatched_chick: Installation for local development
 1. Clone the repository `git clone git@github.com:UMassCDS/ds4cg2024-inaturalist.git`
 
-2. Navigate to cloned project's root, run `git submodule init` and then `git submodule update --remote --merge`
+2. Create .env and .docker.env at the project root. Copy the contents that were given to you on **slack** into these files.
 
-3. You are all set for setting up the code.
+3. Navigate to cloned project's root, run `git submodule init` and then `git submodule update --remote --merge`
+
+4. You are all set for setting up the code.
+
+Note: We need .env for local development, and .docker.env for docker containers. The difference between them is database url, which is caused by how docker manages networks.
 
 Note: to update submodules with latest changes, run `git submodule update --remote --merge`
 
 Note: `src/backend/sinr` is a submodule from `UMassCDS/inatrualist-sinr`, if you need to work on `sinr` code, follow development practices for that repository, this includes making a dedicated development branch, making PRs.
 
 Note: If you need to switch to a particular `UMassCDS/inaturalist-sinr` branch and run the prototype, navigate to `src/backend/sinr`, use `git checkout <branch-name>` to switch to a branch. Now the submodule will be at a different branch.
-
-## Working with database
-
-1. Notice that there are two .env files, .docker.env and .env, .env is used for your local development, .docker.env will be used in your containers.
-
-2. To run the application without containers, first run the database container by `docker compose up db` (you may have to rebuild it if you changed docker-compose.yml). Run `uvicorn src.backend.app.main:app --reload --env-file .env` at project root to run the server, then `npm start` in `src/frontend`.
-
-3. You can verify connections are working by going to `localhost:8000/health` and `localhost:8000/echo_env`. Note that these paths are included right now to assist with rapid development, will be removed for production.
-
-4. To run docker containers, `docker compose up --build` still builds and runs the same.
-
-Note: The codebase is getting bigger, therefore add database related code in `src/backend/app/db`, then make proper API routes in main, if it gets too big, we can resort to using API routers from fastapi.
-
-Note: There are two environment files because the database url for local development and docker environments are separate.
-
-Make sure you always update your local branch to the latest.
 
 ####  Downloading the pretrained models
 If you want to run the app locally for development purposes, download the pretrained models from [here](https://data.caltech.edu/records/dk5g7-rhq64/files/pretrained_models.zip?download=1), unzip them, and place them in a folder located at  
@@ -107,6 +95,22 @@ Note: you don't have to initialize submodule to run docker, dockerfile will set 
 8. If you want to build and run containers, run `docker compose up --build`
 
 Note: If you want to build only one service, use `docker compose build <service-name>`, for example for backend it will be `docker compose build backend`.
+
+
+## Working with database
+
+1. You can run the application without containers, allowing you to develop things quickly. Refer to **Running the iNatAtor Application** above for instructions.
+
+2. You can verify connections are working by going to `localhost:8000/health` and `localhost:8000/echo_env`. Note that these paths are included right now to assist with rapid development, will be removed for production.
+
+3. To run docker containers, `docker compose up --build` still builds and runs the same.
+
+Note: The codebase is getting bigger, therefore add database related code in `src/backend/app/db`, then make proper API routes in main, if it gets too big, we can resort to using API routers from fastapi.
+
+Note: There are two environment files because the database url for local development and docker environments are separate.
+
+Make sure you always update your local branch to the latest.
+
 
 # Code Standards
 1. Use Docstrings, for some functions just a one-liner is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
