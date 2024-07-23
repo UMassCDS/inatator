@@ -4,6 +4,7 @@ const Buttons = ({
   onGeneratePrediction,
   onSaveAnnotation,
   onClearAnnotation,
+  onLoadAnnotation,
 }) => {
   return (
     <div className="buttons">
@@ -13,7 +14,9 @@ const Buttons = ({
       <button id="save_annotation" onClick={onSaveAnnotation}>
         Save Annotation
       </button>
-      <button id="load_annotation">Load Annotation</button>
+      <button id="load_annotation" onClick={onLoadAnnotation}>
+        Load Annotation
+      </button>
       <button id="clear_annotation" onClick={onClearAnnotation}>
         Clear Annotation
       </button>

@@ -125,6 +125,33 @@ function App() {
       });
   };
 
+  const handlLoadAnnotation = () => {
+    const formData = {
+      taxa_name: formRefs.taxaName.current.value,
+      hex_resolution: Number(formRefs.hexResolution.current.value),
+      threshold: Number(formRefs.threshold.current.value),
+      model: formRefs.model.current.value,
+      disable_ocean_mask: formRefs.disableOceanMask.current.checked,
+    };
+
+    fetch(`${API_URL}/load_annotation/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.annotation_hexagon_ids) {
+          setAnnotationHexagonIDs(data.annotation_hexagon_ids);
+        }
+      })
+      .catch((error) => {
+        console.error("Error generating annotation:", error);
+      });
+  };
+
   const handleAddAnnotationHexagonIDs = (latlng) => {
     const hexResolution = Number(formRefs.hexResolution.current.value);
     const hexagonID = h3.geoToH3(latlng.lat, latlng.lng, hexResolution);
@@ -152,6 +179,7 @@ function App() {
           onGeneratePrediction={handleGeneratePrediction}
           onSaveAnnotation={handlSaveAnnotation}
           onClearAnnotation={handlClearAnnotation}
+          onLoadAnnotation={handlLoadAnnotation}
         />
         <Map
           hullPoints={hullPoints}
