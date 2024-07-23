@@ -18,7 +18,7 @@ const Buttons = ({
         Load Annotation
       </button>
       <button id="clear_annotation" onClick={onClearAnnotation}>
-        Clear Annotation
+        Start Over
       </button>
     </div>
   );

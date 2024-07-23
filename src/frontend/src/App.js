@@ -99,30 +99,7 @@ function App() {
   };
 
   const handlClearAnnotation = () => {
-    const body = {
-      taxa_name: formRefs.taxaName.current.value,
-      hex_resolution: Number(formRefs.hexResolution.current.value),
-      threshold: Number(formRefs.threshold.current.value),
-      model: formRefs.model.current.value,
-      disable_ocean_mask: formRefs.disableOceanMask.current.checked,
-      annotation_hexagon_ids: [],
-    };
-    fetch(`${API_URL}/save_annotation/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setAnnotationHexagonIDs([]);
-        alert("Annotation cleared successfully!");
-        console.log("Annotation cleared successfully!");
-      })
-      .catch((error) => {
-        console.error("Error generating prediction:", error);
-      });
+    setAnnotationHexagonIDs([]);
   };
 
   const handlLoadAnnotation = () => {
