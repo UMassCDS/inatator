@@ -27,3 +27,8 @@ async def generate_prediction(request: Request):
 async def save_annotation(request: Request):
     response = tools.save_annotation(await request.json())
     return JSONResponse(content=response)
+
+@app.post("/load_annotation/")
+async def load_annotation(request: Request):
+    response = tools.load_annotation(await request.json())
+    return JSONResponse(content=response)

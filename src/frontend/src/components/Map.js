@@ -181,20 +181,10 @@ const Map = ({
             attribution='&copy; <a href="https://www.arcgis.com/">ArcGIS</a>'
           />
         </LayersControl.BaseLayer>
-        {/* Render the PredictionPolygon if hullPoints are available */}
-        {hullPoints && (
-          <LayersControl.Overlay name="Prediction Polygon">
-            <PredictionPolygon hullPoints={hullPoints} />
-          </LayersControl.Overlay>
-        )}
+
         {/* Render the Hexagon Layer */}
         <LayersControl.Overlay checked name="Hexagon Grid">
           <HexagonLayer hexResolution={hexResolution} />
-        </LayersControl.Overlay>
-
-        {/* Render the PredictionHexagons if hexagons are available */}
-        <LayersControl.Overlay checked name="Prediction Hexagons">
-          <PredictionHexagons predictionHexagonIDs={predictionHexagonIDs} />
         </LayersControl.Overlay>
 
         {/* Custom Hexagons Layer */}
@@ -203,6 +193,19 @@ const Map = ({
             annotationHexagonIDs={annotationHexagonIDs}
           />
         </LayersControl.Overlay>
+
+        {/* Render the PredictionHexagons if hexagons are available */}
+        <LayersControl.Overlay name="Prediction Hexagons">
+          <PredictionHexagons predictionHexagonIDs={predictionHexagonIDs} />
+        </LayersControl.Overlay>
+
+        {/* Render the PredictionPolygon if hullPoints are available */}
+        {hullPoints && (
+          <LayersControl.Overlay name="Prediction Polygon">
+            <PredictionPolygon hullPoints={hullPoints} />
+          </LayersControl.Overlay>
+        )}
+
       </LayersControl>
 
       <ClickHandler onAddAnnotationHexagonIDs={onAddAnnotationHexagonIDs} />

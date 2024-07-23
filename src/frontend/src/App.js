@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Map from "./components/Map";
 import Sidebar from "./components/Sidebar";
 import Buttons from "./components/Buttons";
+import Instruction from "./components/Instruction";
 import * as h3 from "h3-js/legacy";
 import "./App.css";
 
@@ -99,29 +100,33 @@ function App() {
   };
 
   const handlClearAnnotation = () => {
-    const body = {
+    setAnnotationHexagonIDs([]);
+  };
+
+  const handlLoadAnnotation = () => {
+    const formData = {
       taxa_name: formRefs.taxaName.current.value,
       hex_resolution: Number(formRefs.hexResolution.current.value),
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
-      annotation_hexagon_ids: [],
     };
-    fetch(`${API_URL}/save_annotation/`, {
+
+    fetch(`${API_URL}/load_annotation/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(formData),
     })
       .then((response) => response.json())
       .then((data) => {
-        setAnnotationHexagonIDs([]);
-        alert("Annotation cleared successfully!");
-        console.log("Annotation cleared successfully!");
+        if (data.annotation_hexagon_ids) {
+          setAnnotationHexagonIDs(data.annotation_hexagon_ids);
+        }
       })
       .catch((error) => {
-        console.error("Error generating prediction:", error);
+        console.error("Error generating annotation:", error);
       });
   };
 
@@ -148,10 +153,12 @@ function App() {
     <div className="app-container">
       <Sidebar ref={formRefs} />
       <div className="main-content">
+        <Instruction/>
         <Buttons
           onGeneratePrediction={handleGeneratePrediction}
           onSaveAnnotation={handlSaveAnnotation}
           onClearAnnotation={handlClearAnnotation}
+          onLoadAnnotation={handlLoadAnnotation}
         />
         <Map
           hullPoints={hullPoints}
