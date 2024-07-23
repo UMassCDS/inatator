@@ -27,7 +27,7 @@ const Sidebar = forwardRef((props, ref) => {
         // Initialize jQuery UI autocomplete
         $("#taxa_name").autocomplete({
           source: data,
-          minLength: 2,
+          minLength: 4,
           change: function (event, ui) {
             // Check if the value is in the list
             if (ui.item == null) {
@@ -87,17 +87,20 @@ const Sidebar = forwardRef((props, ref) => {
       />
 
       <label htmlFor="model">Model:</label>
-      <select
+      {/* <select */}
+      <input 
+        type="text"
         name="Model"
         id="model"
         defaultValue="AN_FULL_max_1000"
         ref={ref.model}
-      >
-        <option value="AN_FULL_max_10">AN_FULL max 10</option>
+        readOnly={true}
+      />
+        {/* <option value="AN_FULL_max_10">AN_FULL max 10</option>
         <option value="AN_FULL_max_100">AN_FULL max 100</option>
         <option value="AN_FULL_max_1000">AN_FULL max 1000</option>
         <option value="Distilled_env_model">Distilled env model</option>
-      </select>
+      </select> */}
 
       <label htmlFor="threshold">Threshold:</label>
       <input
