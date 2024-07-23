@@ -193,7 +193,7 @@ const Map = ({
         </LayersControl.Overlay>
 
         {/* Render the PredictionHexagons if hexagons are available */}
-        <LayersControl.Overlay checked name="Prediction Hexagons">
+        <LayersControl.Overlay name="Prediction Hexagons">
           <PredictionHexagons predictionHexagonIDs={predictionHexagonIDs} />
         </LayersControl.Overlay>
 
