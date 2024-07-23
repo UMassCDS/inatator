@@ -1,6 +1,4 @@
 import numpy as np
-import json
-import os
 import h3
 
 import alphashape
@@ -21,16 +19,6 @@ def get_taxa_id_by_name(taxa_name: str):
     130712
     """
     return int(taxa_name.split("(")[-1][:-1])
-
-
-def save_preds(taxa_name, preds, locs):
-    # TODO save to DB
-    directory = "predictions"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    np.save(f"{directory}/{taxa_name}_preds", preds)
-    np.save(f"{directory}/{taxa_name}_locs", locs)
-
 
 def get_prediction(eval_params):
     # TODO get preds from DB
@@ -83,26 +71,3 @@ def generate_prediction(eval_params):
         prediction_hexagon_ids=prediction_hexagon_ids,
         annotation_hexagon_ids=prediction_hexagon_ids,
     )
-
-
-def save_annotation(data):
-    taxa_name = data["taxa_name"]
-    annotation_hexagon_ids = data["annotation_hexagon_ids"]
-    directory = "annotations"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    with open(f"{directory}/{taxa_name}.json", "w") as f:
-        json.dump(annotation_hexagon_ids, f)
-    print(f"Saving annotation for {taxa_name}.")
-    return {"annotation_hexagon_ids": annotation_hexagon_ids}
-
-
-def load_annotation(data):
-    directory = "annotations"
-    taxa_name = data["taxa_name"]
-    annotation_file = f"{directory}/{taxa_name}.json"
-    if os.path.isfile(annotation_file):
-        with open(annotation_file) as f:
-            annotation = json.load(f)
-        return {"annotation_hexagon_ids": annotation}
-    return {"annotation_hexagon_ids": []}

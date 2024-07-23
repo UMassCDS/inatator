@@ -17,7 +17,11 @@ Estimating the geographical range of a species from sparse observations is a cha
 ## :hatched_chick: Installation for local development
 1. Clone the repository `git clone git@github.com:UMassCDS/ds4cg2024-inaturalist.git`
 
-2. Create .env and .docker.env at the project root. Copy the contents that were given to you on **slack** into these files.
+2. You are given .env.copy and .docker.env.copy, rename these files to .env and .docker.env respectively. Set the following environment variables in each of these files for your desired database configuration: 
+    - `POSTGRES_DB`: Name of your database
+    - `POSTGRES_USER`: Username the server will use to connect to the database
+    - `POSTGRES_PASSWORD`: Password the server will use to connect to the database
+    - `DATABASE_URL`: SQLAlchemy database connection URL. This should be something like `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:PORT_NUMBER/${POSTGRES_DB}`, but refer to the [SQLAlchemy Database Engine docs](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls) for more details.
 
 3. Navigate to cloned project's root, run `git submodule init` and then `git submodule update --remote --merge`
 
@@ -51,7 +55,7 @@ If you only run the app in Docker, there's no need to download the models; Docke
 pip install -r src/backend/requirements.txt && pip install -r src/backend/requirements-dev.txt
 ```
 
-Note: If you get errors for psycopg2-binary, installing postgres can solve it `brew install postgresql`, repeat step 3 after installing postgres.
+Note: If you get errors for psycopg2-binary, installing PostgreSQL can solve it. See [PostgreSQL documentation](https://www.postgresql.org/download/) for installation instructions and repeat step 3 after installing.
 
 4. install js libraries needed for react
 ```bash
@@ -90,8 +94,8 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 # Running applications with Docker
 1. Install Docker if you haven't already
 2. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
-2. Now in terminal, navigate to project root
-3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`.
+3. Now in terminal, navigate to project root
+4. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`.
 5. You can stop containers with ctrl+c or using the Docker app
 
 Common Docker commands:
@@ -107,7 +111,7 @@ Note: you don't have to initialize submodule to run docker, dockerfile will set 
 
 Sometimes you want to run the application without containers, allowing you to develop things quickly. The **Running the iNatAtor Application** section explains how to run the application locally.
 
-You can verify connections are working by going to `localhost:8000/health` and `localhost:8000/echo_env`. Note that these paths are included right now to assist with rapid development, will be removed for production.
+You can verify connections are working by going to `localhost:8000/health`.
 
 Note: The codebase is getting bigger, therefore add database related code in `src/backend/app/db`, then make proper API routes in main, if it gets too big, we can resort to using API routers from fastapi.
 

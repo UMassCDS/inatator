@@ -6,18 +6,15 @@ from sqlalchemy.orm import Session
 import os
 
 from . import tools
-from .db import models, crud
-from .db.database import engine, SessionLocal
+from .db import models
+from .db.database import engine, SessionLocal, check_db_connection
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
 def get_db():
-    try:
-        db = SessionLocal()
+    with SessionLocal() as db:
         yield db
-    finally:
-        db.close()
 
 origins = ["http://localhost:3000"]
 
@@ -32,14 +29,10 @@ app.add_middleware(
 @app.get("/health")
 async def health_check():
     print(os.getenv("DATABASE_URL"))
-    if crud.check_db_connection():
+    if check_db_connection(engine):
         return {"status": "healthy"}
     else:
         return {"status": "unhealthy"}
-
-@app.get("/echo_env/")
-async def echo_env():
-    return {"url": os.environ.get("DATABASE_URL", "ERROR"), "env": dict(os.environ)}
 
 @app.post("/generate_prediction/")
 async def generate_prediction(request: Request):
@@ -48,9 +41,8 @@ async def generate_prediction(request: Request):
 
 @app.post("/save_annotation/")
 async def save_annotation(request: Request, db: Session = Depends(get_db)):
-    # response = tools.save_annotation(await request.json())
     body = await request.json()
-    taxa_id = int(body["taxa_name"].split("(")[-1][:-1])
+    taxa_id = tools.get_taxa_id_by_name(body["taxa_name"])
 
     annotation_model = models.Annotation()
     annotation_model.TaxaID = taxa_id
