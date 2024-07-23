@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Map from "./components/Map";
 import Sidebar from "./components/Sidebar";
 import Buttons from "./components/Buttons";
+import Instruction from "./components/Instruction";
 import * as h3 from "h3-js/legacy";
 import "./App.css";
 
@@ -152,6 +153,7 @@ function App() {
     <div className="app-container">
       <Sidebar ref={formRefs} />
       <div className="main-content">
+        <Instruction/>
         <Buttons
           onGeneratePrediction={handleGeneratePrediction}
           onSaveAnnotation={handlSaveAnnotation}
