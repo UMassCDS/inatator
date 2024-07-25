@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Buttons = ({
   onGeneratePrediction,
@@ -6,8 +6,25 @@ const Buttons = ({
   onClearAnnotation,
   onLoadAnnotation,
 }) => {
+
+  const [isPresence, setIsPresence] = useState(true);
+  const handleToggle = () => {
+    setIsPresence(!isPresence);
+  };
+
   return (
     <div className="buttons">
+
+      <div className="toggle-container">
+        <span className={`toggle-label ${isPresence ? "presence" : " absence"}`}>
+          {isPresence ? "presence" : "absence"}
+        </span>
+        <label className="switch">
+          <input type="checkbox" checked={isPresence} onChange={handleToggle} />
+          <span className="slider round"></span>
+        </label>
+      </div>
+
       <button id="generate_prediction" onClick={onGeneratePrediction}>
         Generate Prediction
       </button>
