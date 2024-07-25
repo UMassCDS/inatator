@@ -19,7 +19,7 @@ COPY ./src/backend/requirements.txt .
 
 # Install Python dependencies specified in requirements.txt without caching to reduce image size
 RUN pip install -r ./requirements.txt --no-cache-dir
-
+ 
 # Copy the backend source code, excluding the pretrained models (according to .dockerignore)
 COPY . .
 
