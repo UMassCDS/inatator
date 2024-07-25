@@ -8,6 +8,8 @@ import "./App.css";
 
 const API_URL = "http://localhost:8000";
 
+const DEFAULT_ANNOTATION_HEXAGON_IDS = {"presence": [], "absence": []}
+
 function App() {
   const formRefs = {
     taxaName: useRef(null),
@@ -19,8 +21,11 @@ function App() {
 
   const [hullPoints, setHullPoints] = useState(null);
   const [predictionHexagonIDs, setPredictionHexagonIDs] = useState(null);
-  const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState([]);
+  const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState(DEFAULT_ANNOTATION_HEXAGON_IDS);
   const [hexResolution, setHexResolution] = useState(4);
+  const [isPresence, setIsPresence] = useState(true);
+
+  const annotationType = isPresence ? "presence" : "absence"
 
   useEffect(() => {
     // Update the hexResolution state when the input value changes
@@ -100,7 +105,7 @@ function App() {
   };
 
   const handleClearAnnotation = () => {
-    setAnnotationHexagonIDs([]);
+    setAnnotationHexagonIDs(DEFAULT_ANNOTATION_HEXAGON_IDS);
   };
 
   const handleLoadAnnotation = () => {
@@ -134,18 +139,21 @@ function App() {
     const hexResolution = Number(formRefs.hexResolution.current.value);
     const hexagonID = h3.geoToH3(latlng.lat, latlng.lng, hexResolution);
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
-      // Create a Set from the previous annotation hexagon IDs
-      const annotationHexagonIDsSet = new Set(prevAnnotationHexagonIDs);
+      const newAnnotationHexagonIDs = {
+        presence: new Set(prevAnnotationHexagonIDs.presence),
+        absence: new Set(prevAnnotationHexagonIDs.absence),
+      };
 
-      // Check if the new hexagon ID is already in the Set and toggle its presence
-      if (annotationHexagonIDsSet.has(hexagonID)) {
-        annotationHexagonIDsSet.delete(hexagonID);
-      } else {
-        annotationHexagonIDsSet.add(hexagonID);
+      for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
+        const isRemoved = hexIDs.delete(hexagonID);
+        if (type === annotationType && !isRemoved) {
+          hexIDs.add(hexagonID);
+        }
       }
-
-      // Convert the Set back to an array and return it
-      return Array.from(annotationHexagonIDsSet);
+      return {
+        presence: Array.from(newAnnotationHexagonIDs.presence),
+        absence: Array.from(newAnnotationHexagonIDs.absence),
+      };
     });
   };
 
@@ -159,6 +167,8 @@ function App() {
           onSaveAnnotation={handleSaveAnnotation}
           onClearAnnotation={handleClearAnnotation}
           onLoadAnnotation={handleLoadAnnotation}
+          isPresence={isPresence}
+          setIsPresence={setIsPresence}
         />
         <Map
           hullPoints={hullPoints}

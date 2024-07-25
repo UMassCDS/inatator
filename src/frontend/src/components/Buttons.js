@@ -5,9 +5,10 @@ const Buttons = ({
   onSaveAnnotation,
   onClearAnnotation,
   onLoadAnnotation,
+  isPresence,
+  setIsPresence
 }) => {
 
-  const [isPresence, setIsPresence] = useState(true);
   const handleToggle = () => {
     setIsPresence(!isPresence);
   };

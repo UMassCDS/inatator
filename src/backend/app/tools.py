@@ -82,13 +82,18 @@ def generate_prediction(eval_params):
     hull = alphashape.alphashape(coordinates, 1)
     hull_points = list(mapping(hull)["coordinates"])
 
+    annotation_hexagon_ids = {
+        "presence": prediction_hexagon_ids,
+        "absence": list()
+    }
+
     return dict(
         coordinates=coordinates.tolist(),
         pred_loc_combined=pred_loc_combined.tolist(),
         hull_points=hull_points,
         prediction_hexagon_ids=prediction_hexagon_ids,
         # set prediction_hexagon_ids as the starting point for the annotation
-        annotation_hexagon_ids=prediction_hexagon_ids
+        annotation_hexagon_ids=annotation_hexagon_ids
     )
 
 
