@@ -45,16 +45,16 @@ async def save_annotation(request: Request, db: Session = Depends(get_db)):
     taxa_id = tools.get_taxa_id_by_name(body["taxa_name"])
 
     annotation_model = models.Annotation()
-    annotation_model.TaxaID = taxa_id
-    annotation_model.CreatedAt = datetime.now()
+    annotation_model.taxa_id = taxa_id
+    annotation_model.created_at = datetime.now()
     db.add(annotation_model)
     db.commit()
 
     hex_indexes = body["annotation_hexagon_ids"]
     for hex_index in hex_indexes:
         hexagon_model = models.AnnotationHexagon()
-        hexagon_model.AnnotationID = annotation_model.AnnotationID
-        hexagon_model.HexID = hex_index
+        hexagon_model.annotation_id = annotation_model.annotation_id
+        hexagon_model.hex_id = hex_index
         db.add(hexagon_model)
     db.commit()    
 
