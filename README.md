@@ -17,11 +17,15 @@ Estimating the geographical range of a species from sparse observations is a cha
 ## :hatched_chick: Installation for local development
 1. Clone the repository `git clone git@github.com:UMassCDS/ds4cg2024-inaturalist.git`
 
-2. You are given .env.copy and .docker.env.copy, rename these files to .env and .docker.env respectively. Set the following environment variables in each of these files for your desired database configuration: 
+2. For local development and testing, you can choose a database engine from two options, PostgreSQL or SQLite. The most important thing is to ensure the `DATABASE_URL` is configured appropriately for your database according to [SQLAlchemy Database Engine docs](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls). To aid in setting up the database we've provided example environment files, .env.copy and .docker.env.copy, where the environment variables are listed. You can copy them to .env or .docker.env and fill in the values. 
+
+    a. _PostgreSQL_: Run Postgres in a [local Postgres server](https://www.postgresql.org/docs/current/server-start.html) or Docker container (see provided docker-compose.yml). You should configure the following  environment variables in your environment file (.env or .docker.env).
     - `POSTGRES_DB`: Name of your database
     - `POSTGRES_USER`: Username the server will use to connect to the database
     - `POSTGRES_PASSWORD`: Password the server will use to connect to the database
-    - `DATABASE_URL`: SQLAlchemy database connection URL. This should be something like `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:PORT_NUMBER/${POSTGRES_DB}`, but refer to the [SQLAlchemy Database Engine docs](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls) for more details.
+    - `DATABASE_URL`: SQLAlchemy database connection URL. This should be something like `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:PORT_NUMBER/${POSTGRES_DB}`, but 
+    
+    b. _SQLite_: Storing the databases in a simple SQLite database file is useful for development and testing, but shouldn't be used in production. You only need to configure the `DATABASE_URL=sqlite://<path to desired database file>`
 
 3. Navigate to cloned project's root, run `git submodule init` and then `git submodule update --remote --merge`
 
