@@ -42,14 +42,14 @@ const Instruction = () => {
             </li>
             <br />
             <li>
-              <strong className="upload-annotation">Upload Annotation</strong>: Clicking this button loads
+              <strong className="load-annotation">Load Annotation</strong>: Clicking this button loads
               the last saved annotation for the currently selected Taxa from
               the database. <p>After loading, you can edit it and save it again. A
               new save will <b>overwrite</b> the previous one.</p>
             </li>
             <br />
             <li>
-              <strong className="start-over">Start Over</strong>: Clicking this button clears the
+              <strong className="clear-annotation">Clear Annotation</strong>: Clicking this button clears the
               current annotation from the screen, allowing you to start annotating from scratch. 
               <p>Once you complete your annotation, be sure to <b>save</b> it using the <b>Save Annotation</b> button.</p>
             </li>

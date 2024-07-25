@@ -146,14 +146,14 @@ textarea:read-only {
 
 }
 
-.upload-annotation {
+.load-annotation {
   padding: 2px 2px;
   background-color: #ffc107;
   color: white;
   border: none;
 }
 
-.start-over {
+.clear-annotation {
   padding: 2px 2px;
   background-color: #dc3545;
   color: white;
