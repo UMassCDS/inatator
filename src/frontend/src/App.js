@@ -38,7 +38,7 @@ function App() {
     };
   }, [formRefs.hexResolution]);
 
-  const handleGeneratePrediction = () => {
+  const handleGeneratePrediction = async () => {
     const formData = {
       taxa_name: formRefs.taxaName.current.value,
       hex_resolution: Number(formRefs.hexResolution.current.value),
@@ -46,6 +46,18 @@ function App() {
       model: formRefs.model.current.value,
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
     };
+
+    try {
+      const data = await fetch('/static/taxa_names.json').then((response) => response.json());
+
+      if (!data.includes(formData.taxa_name)) {
+        setBarStatus({loadingStatus: "Invalid Taxa Name", color: "#dc3545"});
+        return;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setBarStatus({loadingStatus: "Error checking taxa name", color: "#dc3545"});      
+    }
 
     setBarStatus({loadingStatus: "Generating", color: "#b5b5b5"});
 
@@ -75,7 +87,7 @@ function App() {
       });
   };
 
-  const handlSaveAnnotation = () => {
+  const handlSaveAnnotation = async () => {
     const body = {
       taxa_name: formRefs.taxaName.current.value,
       hex_resolution: Number(formRefs.hexResolution.current.value),
@@ -84,6 +96,19 @@ function App() {
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
       annotation_hexagon_ids: annotationHexagonIDs,
     };
+
+    try {
+      const data = await fetch('/static/taxa_names.json').then((response) => response.json());
+
+      if (!data.includes(body.taxa_name)) {
+        setBarStatus({loadingStatus: "Invalid Taxa Name", color: "#dc3545"});
+        return;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setBarStatus({loadingStatus: "Error checking taxa name", color: "#dc3545"});      
+    }
+
 
     setBarStatus({loadingStatus: "Saving", color: "#b5b5b5"});
 
@@ -106,7 +131,7 @@ function App() {
       });
   };
 
-  const handlClearAnnotation = () => {
+  const handlClearAnnotation = async () => {
     const body = {
       taxa_name: formRefs.taxaName.current.value,
       hex_resolution: Number(formRefs.hexResolution.current.value),
@@ -115,6 +140,19 @@ function App() {
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
       annotation_hexagon_ids: [],
     };
+
+    try {
+      const data = await fetch('/static/taxa_names.json').then((response) => response.json());
+
+      if (!data.includes(body.taxa_name)) {
+        setBarStatus({loadingStatus: "Invalid Taxa Name", color: "#dc3545"});
+        return;
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setBarStatus({loadingStatus: "Error checking taxa name", color: "#dc3545"});      
+    }
+
 
     setBarStatus({loadingStatus: "Clearing", color: "#b5b5b5"});
 

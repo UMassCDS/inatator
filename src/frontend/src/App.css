@@ -4,6 +4,16 @@ body {
   padding: 0;
 }
 
+.loading-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  height: fit-content;
+  color: white;
+  text-align: center;
+}
+
 .app-container {
   display: flex;
   flex-direction: row; /* Sidebar on the left */
