@@ -19,3 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2024-07-18
 ### Added
 - CHANGELOG
+## [Unreleased]
+### Added
+- Instruction Component: Added a new component with instructions for using the app, accessible via an expandable/collapsible button.
+- Load Annotation Functionality: Introduced the ability to load the last saved annotation for the currently selected taxon.
+### Changed
+- `Clear Annotation` Functionality: The "Clear Annotation" button now clears the current annotation from the map, allowing users to start fresh without saving changes to the database.
+- `Generate Prediction` Logic: Always sets "Prediction Hexagon IDs" as the starting point for annotations.
+- Default Map Layer Settings: The "Prediction Hexagons" map layer is now unchecked by default.
+- Sidebar Component: Made the Model field read-only for better clarity.

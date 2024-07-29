@@ -39,6 +39,11 @@ async def generate_prediction(request: Request):
     response = tools.generate_prediction(await request.json())
     return JSONResponse(content=response)
 
+@app.post("/load_annotation/")
+async def load_annotation(request: Request):
+    response = tools.load_annotation(await request.json())
+    return JSONResponse(content=response)
+
 @app.post("/save_annotation/")
 async def save_annotation(request: Request, db: Session = Depends(get_db)):
     body = await request.json()

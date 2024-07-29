@@ -69,5 +69,6 @@ def generate_prediction(eval_params):
         pred_loc_combined=pred_loc_combined.tolist(),
         hull_points=hull_points,
         prediction_hexagon_ids=prediction_hexagon_ids,
+        # set prediction_hexagon_ids as the starting point for the annotation
         annotation_hexagon_ids=prediction_hexagon_ids,
     )

@@ -4,6 +4,7 @@ const Buttons = ({
   onGeneratePrediction,
   onSaveAnnotation,
   onClearAnnotation,
+  onLoadAnnotation,
 }) => {
   const buttons = [
     { id: 'generate_prediction', text: 'Generate Prediction', onClick: onGeneratePrediction },

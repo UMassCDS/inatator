@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import Map from "./components/Map";
 import Sidebar from "./components/Sidebar";
 import Buttons from "./components/Buttons";
+import Instruction from "./components/Instruction";
 import LoadingStatus from "./components/LoadingStatus";
 import * as h3 from "h3-js/legacy";
 import "./App.css";
@@ -95,14 +96,7 @@ function App() {
 
     if (!checkTaxaValid(formData.taxa_name)) {
       return;
-    }
-
-    setBarStatus(BAR_STATUS.generating);
-
-    if (!checkTaxaValid(formData.taxa_name)) {
-      return;
-    }
-
+    } 
     setBarStatus(BAR_STATUS.generating);
 
     fetch(`${API_URL}/generate_prediction/`, {
@@ -147,7 +141,6 @@ function App() {
     if (!checkTaxaValid(body.taxa_name)) {
       return;
     }
-
     setBarStatus(BAR_STATUS.saving);
 
     fetch(`${API_URL}/save_annotation/`, {
@@ -163,7 +156,6 @@ function App() {
         setTimeout(() => {
           setBarStatus(BAR_STATUS.inactive);
         }, BAR_TIMEOUT);
-        // alert("Annotation saved successfully!");
         console.log("Annotation saved successfully!");
       })
       .catch((error) => {
@@ -172,42 +164,39 @@ function App() {
       });
   };
 
-  const handlClearAnnotation = async () => {
-    const body = {
+  const handlClearAnnotation = () => {
+    setAnnotationHexagonIDs([]);
+    setBarStatus(BAR_STATUS.clearingSuccess);
+    setTimeout(() => {
+      setBarStatus(BAR_STATUS.inactive);
+    }, BAR_TIMEOUT);
+    console.log("Annotation cleared successfully!");
+  };
+
+  const handlLoadAnnotation = () => {
+    const formData = {
       taxa_name: formRefs.taxaName.current.value,
       hex_resolution: Number(formRefs.hexResolution.current.value),
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
-      annotation_hexagon_ids: [],
     };
 
-    if (!checkTaxaValid(body.taxa_name)) {
-      return;
-    }
-    
-    setBarStatus(BAR_STATUS.clearing);
-
-    fetch(`${API_URL}/save_annotation/`, {
+    fetch(`${API_URL}/load_annotation/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(formData),
     })
       .then((response) => response.json())
       .then((data) => {
-        setAnnotationHexagonIDs([]);
-        // alert("Annotation cleared successfully!");
-        setBarStatus(BAR_STATUS.clearingSuccess);
-        setTimeout(() => {
-          setBarStatus(BAR_STATUS.inactive);
-        }, BAR_TIMEOUT);
-        console.log("Annotation cleared successfully!");
+        if (data.annotation_hexagon_ids) {
+          setAnnotationHexagonIDs(data.annotation_hexagon_ids);
+        }
       })
       .catch((error) => {
-        setBarStatus(BAR_STATUS.failure);
-        console.error("Error generating prediction:", error);
+        console.error("Error generating annotation:", error);
       });
   };
 
@@ -234,10 +223,12 @@ function App() {
     <div className="app-container">
       <Sidebar ref={formRefs} />
       <div className="main-content">
+        <Instruction/>
         <Buttons
           onGeneratePrediction={handleGeneratePrediction}
           onSaveAnnotation={handlSaveAnnotation}
           onClearAnnotation={handlClearAnnotation}
+          onLoadAnnotation={handlLoadAnnotation}
         />
         <LoadingStatus barStatus={barStatus}/>
         <Map

@@ -127,3 +127,51 @@ textarea:read-only {
   box-shadow: none;
   background-color: lightgray;
 }
+
+/* Instructions section */
+.instruction-container {
+  padding: 10px;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  margin: 10px;
+}
+
+.instructions h3 {
+  margin-top: 5;
+}
+.instructions p {
+  margin: 5px;
+}
+.instructions ul,
+.instructions ol {
+  margin-bottom: 10px;
+}
+
+.generate-prediction {
+  padding: 2px 2px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+}
+
+.save-annotation {
+  padding: 2px 2px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+
+}
+
+.load-annotation {
+  padding: 2px 2px;
+  background-color: #ffc107;
+  color: white;
+  border: none;
+}
+
+.clear-annotation {
+  padding: 2px 2px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+}
