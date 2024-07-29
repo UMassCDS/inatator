@@ -7,6 +7,20 @@ import * as h3 from "h3-js/legacy";
 import "./App.css";
 
 function App() {
+  const PATH_TO_TAXA = '/static/taxa_names.json';
+  const BAR_STATUS = {
+    inactive: {loadingStatus: "", color: "#b5b5b5"},
+    generating: {loadingStatus: "Generating", color: "#b5b5b5"},
+    generatingSuccess: {loadingStatus: "Success", color: "#007bff"},
+    saving: {loadingStatus: "Saving", color: "#b5b5b5"},
+    savingSuccess: {loadingStatus: "Saved", color: "#28a745"},
+    clearing: {loadingStatus: "Clearing", color: "#b5b5b5"},
+    clearingSuccess: {loadingStatus: "Cleared", color: "#28a745"},
+    invalid: { loadingStatus: "Invalid Taxa Name", color: "#dc3545" },
+    error: { loadingStatus: "Error checking taxa name", color: "#dc3545" },
+    failure: {loadingStatus: "Failure", color: "#dc3545"},
+  };
+
   const formRefs = {
     taxaName: useRef(null),
     threshold: useRef(null),
@@ -15,11 +29,27 @@ function App() {
     disableOceanMask: useRef(null),
   };
 
+  const [taxaNames, setTaxaNames] = useState(null);
   const [hullPoints, setHullPoints] = useState(null);
   const [predictionHexagonIDs, setPredictionHexagonIDs] = useState(null);
   const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState([]);
   const [hexResolution, setHexResolution] = useState(4);
-  const [barStatus, setBarStatus] = useState({loadingStatus: "", color: "#b5b5b5"});
+  const [barStatus, setBarStatus] = useState(BAR_STATUS.inactive);
+
+  useEffect(() => { // loads taxaNames
+    const fetchTaxaNames = async () => {
+      try {
+        const response = await fetch(PATH_TO_TAXA);
+        const data = await response.json();
+        setTaxaNames(data);
+      } catch (e) {
+        console.log(`Taxa names loading error: ${e}`);
+        setBarStatus(BAR_STATUS.error);
+      }
+    };
+
+    fetchTaxaNames();
+  }, []);
 
   useEffect(() => {
     // Update the hexResolution state when the input value changes
@@ -38,6 +68,20 @@ function App() {
     };
   }, [formRefs.hexResolution]);
 
+  const checkTaxaValid = (taxa) => {
+    try {
+    if (!taxaNames.includes(taxa)) {
+      setBarStatus(BAR_STATUS.invalid);
+      return false;
+    } else {
+      return true;
+    }} catch (error) {
+      console.log(`Error: ${error}`);
+      setBarStatus(BAR_STATUS.error);
+      return false;
+    }
+  };
+
   const handleGeneratePrediction = async () => {
     const formData = {
       taxa_name: formRefs.taxaName.current.value,
@@ -47,19 +91,11 @@ function App() {
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
     };
 
-    try {
-      const data = await fetch('/static/taxa_names.json').then((response) => response.json());
-
-      if (!data.includes(formData.taxa_name)) {
-        setBarStatus({loadingStatus: "Invalid Taxa Name", color: "#dc3545"});
-        return;
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setBarStatus({loadingStatus: "Error checking taxa name", color: "#dc3545"});      
+    if (!checkTaxaValid(formData.taxa_name)) {
+      return;
     }
 
-    setBarStatus({loadingStatus: "Generating", color: "#b5b5b5"});
+    setBarStatus(BAR_STATUS.generating);
 
     fetch("http://localhost:8000/generate_prediction/", {
       method: "POST",
@@ -79,10 +115,13 @@ function App() {
         if (data.annotation_hexagon_ids) {
           setAnnotationHexagonIDs(data.annotation_hexagon_ids);
         }
-        setBarStatus({loadingStatus: "Success", color: "#007bff"});
+        setBarStatus(BAR_STATUS.generatingSuccess);
+        setTimeout(() => {
+          setBarStatus(BAR_STATUS.inactive);
+        }, 2000);
       })
       .catch((error) => {
-        setBarStatus({loadingStatus: "Failure", color: "#dc3545"});
+        setBarStatus(BAR_STATUS.failure);
         console.error("Error generating prediction:", error);
       });
   };
@@ -97,20 +136,11 @@ function App() {
       annotation_hexagon_ids: annotationHexagonIDs,
     };
 
-    try {
-      const data = await fetch('/static/taxa_names.json').then((response) => response.json());
-
-      if (!data.includes(body.taxa_name)) {
-        setBarStatus({loadingStatus: "Invalid Taxa Name", color: "#dc3545"});
-        return;
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setBarStatus({loadingStatus: "Error checking taxa name", color: "#dc3545"});      
+    if (!checkTaxaValid(body.taxa_name)) {
+      return;
     }
 
-
-    setBarStatus({loadingStatus: "Saving", color: "#b5b5b5"});
+    setBarStatus(BAR_STATUS.saving);
 
     fetch("http://localhost:8000/save_annotation/", {
       method: "POST",
@@ -121,12 +151,15 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        setBarStatus({loadingStatus: "Saved", color: "#28a745"});
+        setBarStatus(BAR_STATUS.savingSuccess);
+        setTimeout(() => {
+          setBarStatus(BAR_STATUS.inactive);
+        }, 2000);
         // alert("Annotation saved successfully!");
         console.log("Annotation saved successfully!");
       })
       .catch((error) => {
-        setBarStatus({loadingStatus: "Failure", color: "#dc3545"});
+        setBarStatus(BAR_STATUS.failure);
         console.error("Error generating prediction:", error);
       });
   };
@@ -141,20 +174,11 @@ function App() {
       annotation_hexagon_ids: [],
     };
 
-    try {
-      const data = await fetch('/static/taxa_names.json').then((response) => response.json());
-
-      if (!data.includes(body.taxa_name)) {
-        setBarStatus({loadingStatus: "Invalid Taxa Name", color: "#dc3545"});
-        return;
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      setBarStatus({loadingStatus: "Error checking taxa name", color: "#dc3545"});      
+    if (!checkTaxaValid(body.taxa_name)) {
+      return;
     }
 
-
-    setBarStatus({loadingStatus: "Clearing", color: "#b5b5b5"});
+    setBarStatus(BAR_STATUS.clearing);
 
     fetch("http://localhost:8000/save_annotation/", {
       method: "POST",
@@ -167,11 +191,14 @@ function App() {
       .then((data) => {
         setAnnotationHexagonIDs([]);
         // alert("Annotation cleared successfully!");
-        setBarStatus({loadingStatus: "Cleared", color: "#28a745"});
+        setBarStatus(BAR_STATUS.clearingSuccess);
+        setTimeout(() => {
+          setBarStatus(BAR_STATUS.inactive);
+        }, 2000);
         console.log("Annotation cleared successfully!");
       })
       .catch((error) => {
-        setBarStatus({loadingStatus: "Failure", color: "#dc3545"});
+        setBarStatus(BAR_STATUS.failure);
         console.error("Error generating prediction:", error);
       });
   };
