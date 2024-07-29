@@ -6,6 +6,8 @@ import LoadingStatus from "./components/LoadingStatus";
 import * as h3 from "h3-js/legacy";
 import "./App.css";
 
+const API_URL = "http://localhost:8000";
+
 function App() {
   const PATH_TO_TAXA = '/static/taxa_names.json';
   const BAR_STATUS = {
@@ -97,7 +99,13 @@ function App() {
 
     setBarStatus(BAR_STATUS.generating);
 
-    fetch("http://localhost:8000/generate_prediction/", {
+    if (!checkTaxaValid(formData.taxa_name)) {
+      return;
+    }
+
+    setBarStatus(BAR_STATUS.generating);
+
+    fetch(`${API_URL}/generate_prediction/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -142,7 +150,7 @@ function App() {
 
     setBarStatus(BAR_STATUS.saving);
 
-    fetch("http://localhost:8000/save_annotation/", {
+    fetch(`${API_URL}/save_annotation/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -177,10 +185,10 @@ function App() {
     if (!checkTaxaValid(body.taxa_name)) {
       return;
     }
-
+    
     setBarStatus(BAR_STATUS.clearing);
 
-    fetch("http://localhost:8000/save_annotation/", {
+    fetch(`${API_URL}/save_annotation/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
