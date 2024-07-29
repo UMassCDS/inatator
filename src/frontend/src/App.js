@@ -7,22 +7,22 @@ import * as h3 from "h3-js/legacy";
 import "./App.css";
 
 const API_URL = "http://localhost:8000";
+const PATH_TO_TAXA = '/static/taxa_names.json';
+const BAR_STATUS = {
+  inactive: {loadingStatus: "", color: "#b5b5b5"},
+  generating: {loadingStatus: "Generating", color: "#b5b5b5"},
+  generatingSuccess: {loadingStatus: "Success", color: "#007bff"},
+  saving: {loadingStatus: "Saving", color: "#b5b5b5"},
+  savingSuccess: {loadingStatus: "Saved", color: "#28a745"},
+  clearing: {loadingStatus: "Clearing", color: "#b5b5b5"},
+  clearingSuccess: {loadingStatus: "Cleared", color: "#28a745"},
+  invalid: { loadingStatus: "Invalid Taxa Name", color: "#dc3545" },
+  error: { loadingStatus: "Error checking taxa name", color: "#dc3545" },
+  failure: {loadingStatus: "Failure", color: "#dc3545"},
+};
+const BAR_TIMEOUT = 2000;
 
 function App() {
-  const PATH_TO_TAXA = '/static/taxa_names.json';
-  const BAR_STATUS = {
-    inactive: {loadingStatus: "", color: "#b5b5b5"},
-    generating: {loadingStatus: "Generating", color: "#b5b5b5"},
-    generatingSuccess: {loadingStatus: "Success", color: "#007bff"},
-    saving: {loadingStatus: "Saving", color: "#b5b5b5"},
-    savingSuccess: {loadingStatus: "Saved", color: "#28a745"},
-    clearing: {loadingStatus: "Clearing", color: "#b5b5b5"},
-    clearingSuccess: {loadingStatus: "Cleared", color: "#28a745"},
-    invalid: { loadingStatus: "Invalid Taxa Name", color: "#dc3545" },
-    error: { loadingStatus: "Error checking taxa name", color: "#dc3545" },
-    failure: {loadingStatus: "Failure", color: "#dc3545"},
-  };
-
   const formRefs = {
     taxaName: useRef(null),
     threshold: useRef(null),
@@ -126,7 +126,7 @@ function App() {
         setBarStatus(BAR_STATUS.generatingSuccess);
         setTimeout(() => {
           setBarStatus(BAR_STATUS.inactive);
-        }, 2000);
+        }, BAR_TIMEOUT);
       })
       .catch((error) => {
         setBarStatus(BAR_STATUS.failure);
@@ -162,7 +162,7 @@ function App() {
         setBarStatus(BAR_STATUS.savingSuccess);
         setTimeout(() => {
           setBarStatus(BAR_STATUS.inactive);
-        }, 2000);
+        }, BAR_TIMEOUT);
         // alert("Annotation saved successfully!");
         console.log("Annotation saved successfully!");
       })
@@ -202,7 +202,7 @@ function App() {
         setBarStatus(BAR_STATUS.clearingSuccess);
         setTimeout(() => {
           setBarStatus(BAR_STATUS.inactive);
-        }, 2000);
+        }, BAR_TIMEOUT);
         console.log("Annotation cleared successfully!");
       })
       .catch((error) => {
