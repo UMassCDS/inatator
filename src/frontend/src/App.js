@@ -10,7 +10,7 @@ const API_URL = "http://localhost:8000";
 const PATH_TO_TAXA = '/static/taxa_names.json';
 const BAR_STATUS = {
   inactive: {loadingStatus: "", color: "#b5b5b5"},
-  generating: {loadingStatus: "Generating", color: "#b5b5b5"},
+  generating: {loadingStatus: "Generating... This can take several seconds", color: "#b5b5b5"},
   generatingSuccess: {loadingStatus: "Success", color: "#007bff"},
   saving: {loadingStatus: "Saving", color: "#b5b5b5"},
   savingSuccess: {loadingStatus: "Saved", color: "#28a745"},
