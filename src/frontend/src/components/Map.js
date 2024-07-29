@@ -146,6 +146,7 @@ const Map = ({
   onAddAnnotationHexagonIDs,
   hexResolution,
 }) => {
+  console.log('Render map');
   return (
     <MapContainer
       center={[39, 34]}

@@ -17,17 +17,27 @@ Estimating the geographical range of a species from sparse observations is a cha
 ## :hatched_chick: Installation for local development
 1. Clone the repository `git clone git@github.com:UMassCDS/ds4cg2024-inaturalist.git`
 
-2. Navigate to cloned project's root, run `git submodule init` and then `git submodule update --remote --merge`
+2. For local development and testing, you can choose a database engine from two options, PostgreSQL or SQLite. The most important thing is to ensure the `DATABASE_URL` is configured appropriately for your database according to [SQLAlchemy Database Engine docs](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls). To aid in setting up the database we've provided example environment files, .env.copy and .docker.env.copy, where the environment variables are listed. You can copy them to .env or .docker.env and fill in the values. 
 
-3. You are all set for setting up the code.
+    a. _PostgreSQL_: Run Postgres in a [local Postgres server](https://www.postgresql.org/docs/current/server-start.html) or Docker container (see provided docker-compose.yml). You should configure the following  environment variables in your environment file (.env or .docker.env).
+    - `POSTGRES_DB`: Name of your database
+    - `POSTGRES_USER`: Username the server will use to connect to the database
+    - `POSTGRES_PASSWORD`: Password the server will use to connect to the database
+    - `DATABASE_URL`: SQLAlchemy database connection URL. This should be something like `postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:PORT_NUMBER/${POSTGRES_DB}`, but 
+    
+    b. _SQLite_: Storing the databases in a simple SQLite database file is useful for development and testing, but shouldn't be used in production. You only need to configure the `DATABASE_URL=sqlite://<path to desired database file>`
+
+3. Navigate to cloned project's root, run `git submodule init` and then `git submodule update --remote --merge`
+
+4. You are all set for setting up the code.
+
+Note: We need .env for local development, and .docker.env for docker containers. The difference between them is database url, which is caused by how docker manages networks.
 
 Note: to update submodules with latest changes, run `git submodule update --remote --merge`
 
 Note: `src/backend/sinr` is a submodule from `UMassCDS/inatrualist-sinr`, if you need to work on `sinr` code, follow development practices for that repository, this includes making a dedicated development branch, making PRs.
 
 Note: If you need to switch to a particular `UMassCDS/inaturalist-sinr` branch and run the prototype, navigate to `src/backend/sinr`, use `git checkout <branch-name>` to switch to a branch. Now the submodule will be at a different branch.
-
-Make sure you always update your local branch to the latest.
 
 ####  Downloading the pretrained models
 If you want to run the app locally for development purposes, download the pretrained models from [here](https://data.caltech.edu/records/dk5g7-rhq64/files/pretrained_models.zip?download=1), unzip them, and place them in a folder located at  
@@ -49,6 +59,8 @@ If you only run the app in Docker, there's no need to download the models; Docke
 pip install -r src/backend/requirements.txt && pip install -r src/backend/requirements-dev.txt
 ```
 
+Note: If you get errors for psycopg2-binary, installing PostgreSQL can solve it. See [PostgreSQL documentation](https://www.postgresql.org/download/) for installation instructions and repeat step 3 after installing.
+
 4. install js libraries needed for react
 ```bash
 npm i --prefix src/frontend/
@@ -56,13 +68,24 @@ npm i --prefix src/frontend/
 
 # :penguin: Running the iNatAtor Application
 
-## Run backend in first terminal:
-1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
-2. Launch the **backend**:
+## Run **database** in first terminal:
+1. Navigate to project root
+2. Launch **postgres container**:
 ```bash
- uvicorn src.backend.app.main:app --reload
+docker compose up --build db
 ```
-## Run **frontend** in another terminal:
+
+## Run **backend** in second terminal:
+1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
+2. Activate environment:
+```bash
+  conda activate inatator
+```
+3. Launch the **backend**:
+```bash
+  uvicorn src.backend.app.main:app --reload --env-file .env
+```
+## Run **frontend** in third terminal:
 1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
 2. Launch the **frontend**:
 ```bash
@@ -75,17 +98,31 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 # Running applications with Docker
 1. Install Docker if you haven't already
 2. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
-2. Navigate project root
+3. Now in terminal, navigate to project root
+4. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`.
+5. You can stop containers with ctrl+c or using the Docker app
+
+Common Docker commands:
+- If you want to start the application again, run `docker compose up`
+- If you want to just build images, run `docker compose build`
+- If you want to build and run containers, run `docker compose up --build`
+- If you want to build only one service, run `docker compose build <service-name>`, for example `docker compose build backend`
 
 Note: you don't have to initialize submodule to run docker, dockerfile will set up the submodules for you while building the image.
 
-3. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`.
-5. You can stop contianers with ctrl+c or using the Docker app
-6. If you want to start the application again, run `docker compose up`
-7. If you want to just build images, run `docker compose build`
-8. If you want to build and run containers, run `docker compose up --build`
 
-Note: If you want to build only one service, use `docker compose build <service-name>`, for example for backend it will be `docker compose build backend`.
+## Working with database
+
+Sometimes you want to run the application without containers, allowing you to develop things quickly. The **Running the iNatAtor Application** section explains how to run the application locally.
+
+You can verify connections are working by going to `localhost:8000/health`.
+
+Note: The codebase is getting bigger, therefore add database related code in `src/backend/app/db`, then make proper API routes in main, if it gets too big, we can resort to using API routers from fastapi.
+
+Note: There are two environment files (.env and .docker.env) because the database url for local development and docker environments are separate.
+
+Make sure you always update your local branch to the latest.
+
 
 # Code Standards
 1. Use Docstrings, for some functions just a one-liner is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
