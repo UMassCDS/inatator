@@ -5,6 +5,8 @@ import Buttons from "./components/Buttons";
 import * as h3 from "h3-js/legacy";
 import "./App.css";
 
+const API_URL = "http://localhost:8000";
+
 function App() {
   const formRefs = {
     taxaName: useRef(null),
@@ -45,7 +47,7 @@ function App() {
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
     };
 
-    fetch("http://localhost:8000/generate_prediction/", {
+    fetch(`${API_URL}/generate_prediction/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +81,7 @@ function App() {
       annotation_hexagon_ids: annotationHexagonIDs,
     };
 
-    fetch("http://localhost:8000/save_annotation/", {
+    fetch(`${API_URL}/save_annotation/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -105,8 +107,7 @@ function App() {
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
       annotation_hexagon_ids: [],
     };
-
-    fetch("http://localhost:8000/save_annotation/", {
+    fetch(`${API_URL}/save_annotation/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
