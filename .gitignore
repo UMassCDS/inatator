@@ -103,6 +103,7 @@ celerybeat.pid
 
 # Environments
 .env
+.docker.env
 .venv
 env/
 venv/
@@ -132,3 +133,5 @@ predictions
 annotations
 src/backend/sinr/pretrained_models/*
 *.DS_Store
+
+postgres_data/
