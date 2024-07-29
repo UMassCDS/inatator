@@ -13,9 +13,16 @@ const Buttons = ({
     setIsPresence(!isPresence);
   };
 
+
+  const buttons = [
+    { id: 'generate_prediction', text: 'Generate Prediction', onClick: onGeneratePrediction },
+    { id: 'save_annotation', text: 'Save Annotation', onClick: onSaveAnnotation },
+    { id: 'load_annotation', text: 'Load Annotation', onClick: onLoadAnnotation },
+    { id: 'clear_annotation', text: 'Clear Annotation', onClick: onClearAnnotation },
+  ];
+
   return (
     <div className="buttons">
-
       <div className="toggle-container">
         <span className={`toggle-label ${isPresence ? "presence" : " absence"}`}>
           {isPresence ? "presence" : "absence"}
@@ -26,18 +33,15 @@ const Buttons = ({
         </label>
       </div>
 
-      <button id="generate_prediction" onClick={onGeneratePrediction}>
-        Generate Prediction
-      </button>
-      <button id="save_annotation" onClick={onSaveAnnotation}>
-        Save Annotation
-      </button>
-      <button id="load_annotation" onClick={onLoadAnnotation}>
-        Load Annotation
-      </button>
-      <button id="clear_annotation" onClick={onClearAnnotation}>
-        Start Over
-      </button>
+      {buttons.map((button) => (
+        <button
+          key={button.id}
+          id={button.id}
+          onClick={button.onClick}
+        >
+          {button.text}
+        </button>
+      ))}
     </div>
   );
 };

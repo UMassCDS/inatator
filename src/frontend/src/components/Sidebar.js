@@ -12,6 +12,8 @@ const debounce = (func, wait) => {
 };
 
 const Sidebar = forwardRef((props, ref) => {
+  console.log('Render sidebar');
+
   const [, setTaxaNames] = useState([]);
   const [speciesData, setSpeciesData] = useState({ name: "", common_name: "" });
   const [taxaName, setTaxaName] = useState("");
