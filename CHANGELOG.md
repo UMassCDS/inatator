@@ -4,7 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] 
+## [Unreleased]
+### Added
+- Functionality to use the state of the toggle switch.
+- Toggle slider for presence/absence data.
+- Functionality to save presence/absence annotation data to the database.
+
+### Updated
+- `save_annotation` method to save annotation with type.
+- `load_annotation` method to load the latest annotation for the given `taxa_name` and `taxa_id`.
+
+## [0.2.0] - 2024-07-29
 ### Added
 - Instruction Component: Added a new component with instructions for using the app, accessible via an expandable/collapsible button.
 - Load Annotation Functionality: Introduced the ability to load the last saved annotation for the currently selected taxon.
