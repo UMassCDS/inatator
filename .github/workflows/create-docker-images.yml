@@ -7,7 +7,7 @@ on:
 
 jobs:
   # Based on instructions from https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/
-  build-docker:
+  build-frontend-and-backend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,6 +21,5 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       - name: Build and push images
         run: |
-          docker buildx build --push \
-            --tag umasscds/ds4cg2024-inaturalist:${{ github.ref_name }} \
-            --platform linux/amd64,linux/arm64 .
+          docker-compose -f docker-compose.yml build
+          docker-compose -f docker-compose.yml push
