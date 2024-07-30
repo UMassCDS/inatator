@@ -13,6 +13,7 @@ const BAR_STATUS = {
   inactive: {loadingStatus: "", color: "#b5b5b5"},
   generating: {loadingStatus: "Generating... This can take several seconds", color: "#b5b5b5"},
   generatingSuccess: {loadingStatus: "Success", color: "#007bff"},
+  loadingSuccess: {loadingStatus: "Success", color: "#ffc107"},
   saving: {loadingStatus: "Saving", color: "#b5b5b5"},
   savingSuccess: {loadingStatus: "Saved", color: "#28a745"},
   clearing: {loadingStatus: "Clearing", color: "#b5b5b5"},
@@ -84,7 +85,7 @@ function App() {
     } else {
       return true;
     }} catch (error) {
-      console.log(`Error: ${error}`);
+      console.error(`Error: ${error}`);
       setBarStatus(BAR_STATUS.error);
       return false;
     }
@@ -187,6 +188,10 @@ function App() {
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
     };
 
+    if (!checkTaxaValid(formData.taxa_name)) {
+      return;
+    }
+
     fetch(`${API_URL}/load_annotation/`, {
       method: "POST",
       headers: {
@@ -198,6 +203,10 @@ function App() {
       .then((data) => {
         if (data.annotation_hexagon_ids) {
           setAnnotationHexagonIDs(data.annotation_hexagon_ids);
+          setBarStatus(BAR_STATUS.loadingSuccess);
+          setTimeout(() => {
+            setBarStatus(BAR_STATUS.inactive);
+          }, BAR_TIMEOUT);
         }
       })
       .catch((error) => {

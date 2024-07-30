@@ -1,13 +1,18 @@
-from fastapi import FastAPI, Request, Depends
+import os
+from copy import deepcopy
+from datetime import datetime
+
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from datetime import datetime
 from sqlalchemy.orm import Session
-import os
 
 from . import tools
 from .db import models
-from .db.database import engine, SessionLocal, check_db_connection
+from .db.database import SessionLocal, check_db_connection, engine
+
+DEFAULT_ANNOTATION_HEXAGON_IDS = {"annotation_hexagon_ids": {"presence": [], "absence": []}}
+
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
@@ -26,6 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/health")
 async def health_check():
     print(os.getenv("DATABASE_URL"))
@@ -34,15 +40,12 @@ async def health_check():
     else:
         return {"status": "unhealthy"}
 
+
 @app.post("/generate_prediction/")
 async def generate_prediction(request: Request):
     response = tools.generate_prediction(await request.json())
     return JSONResponse(content=response)
 
-@app.post("/load_annotation/")
-async def load_annotation(request: Request):
-    response = tools.load_annotation(await request.json())
-    return JSONResponse(content=response)
 
 @app.post("/save_annotation/")
 async def save_annotation(request: Request, db: Session = Depends(get_db)):
@@ -55,12 +58,45 @@ async def save_annotation(request: Request, db: Session = Depends(get_db)):
     db.add(annotation_model)
     db.commit()
 
-    hex_indexes = body["annotation_hexagon_ids"]
-    for hex_index in hex_indexes:
-        hexagon_model = models.AnnotationHexagon()
-        hexagon_model.annotation_id = annotation_model.annotation_id
-        hexagon_model.hex_id = hex_index
-        db.add(hexagon_model)
+    for hex_type, hex_indexes in body["annotation_hexagon_ids"].items():
+        for hex_index in hex_indexes:
+            hexagon_model = models.AnnotationHexagon(
+                annotation_id=annotation_model.annotation_id,
+                hex_id=hex_index,
+                type=hex_type
+            )
+            db.add(hexagon_model)
     db.commit()
 
     return JSONResponse(content={})
+
+
+@app.post("/load_annotation/")
+async def load_annotation(request: Request, db: Session = Depends(get_db)):
+    body = await request.json()
+    taxa_id = tools.get_taxa_id_by_name(body["taxa_name"])
+
+    # Query for the latest annotation for the given taxa_id
+    latest_annotation = (
+        db.query(models.Annotation)
+        .filter(models.Annotation.taxa_id == taxa_id)
+        .order_by(models.Annotation.created_at.desc())
+        .first()
+    )
+    annotation_hexagons = deepcopy(DEFAULT_ANNOTATION_HEXAGON_IDS)
+
+    if not latest_annotation:
+        return JSONResponse(content=annotation_hexagons)
+
+    # Query for the hexagons associated with the latest annotation
+    hexagons = (
+        db.query(models.AnnotationHexagon)
+        .filter(models.AnnotationHexagon.annotation_id == latest_annotation.annotation_id)
+        .all()
+    )
+
+    for hexagon in hexagons:
+        if hexagon.type not in annotation_hexagons["annotation_hexagon_ids"]:
+            annotation_hexagons["annotation_hexagon_ids"][hexagon.type] = []
+        annotation_hexagons["annotation_hexagon_ids"][hexagon.type].append(hexagon.hex_id)
+    return JSONResponse(content=annotation_hexagons)
