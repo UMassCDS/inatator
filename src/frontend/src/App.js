@@ -128,7 +128,7 @@ function App() {
       });
   };
 
-  const handlSaveAnnotation = async () => {
+  const handleSaveAnnotation = () => {
     const body = {
       taxa_name: formRefs.taxaName.current.value,
       hex_resolution: Number(formRefs.hexResolution.current.value),
@@ -159,12 +159,12 @@ function App() {
         console.log("Annotation saved successfully!");
       })
       .catch((error) => {
+        console.error("Error saving annotation:", error);
         setBarStatus(BAR_STATUS.failure);
-        console.error("Error generating prediction:", error);
       });
   };
 
-  const handlClearAnnotation = () => {
+  const handleClearAnnotation = () => {
     setAnnotationHexagonIDs([]);
     setBarStatus(BAR_STATUS.clearingSuccess);
     setTimeout(() => {
@@ -173,7 +173,7 @@ function App() {
     console.log("Annotation cleared successfully!");
   };
 
-  const handlLoadAnnotation = () => {
+  const handleLoadAnnotation = () => {
     const formData = {
       taxa_name: formRefs.taxaName.current.value,
       hex_resolution: Number(formRefs.hexResolution.current.value),
@@ -196,7 +196,7 @@ function App() {
         }
       })
       .catch((error) => {
-        console.error("Error generating annotation:", error);
+        console.error("Error loading annotation:", error);
       });
   };
 
@@ -223,12 +223,12 @@ function App() {
     <div className="app-container">
       <Sidebar ref={formRefs} />
       <div className="main-content">
-        <Instruction/>
+        <Instruction />
         <Buttons
           onGeneratePrediction={handleGeneratePrediction}
-          onSaveAnnotation={handlSaveAnnotation}
-          onClearAnnotation={handlClearAnnotation}
-          onLoadAnnotation={handlLoadAnnotation}
+          onSaveAnnotation={handleSaveAnnotation}
+          onClearAnnotation={handleClearAnnotation}
+          onLoadAnnotation={handleLoadAnnotation}
         />
         <LoadingStatus barStatus={barStatus}/>
         <Map
