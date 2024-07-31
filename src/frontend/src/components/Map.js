@@ -145,6 +145,7 @@ const Map = ({
   annotationHexagonIDs,
   onAddAnnotationHexagonIDs,
   hexResolution,
+  taxonId,
 }) => {
   console.log('Render map');
   return (
@@ -186,6 +187,13 @@ const Map = ({
         {/* Render the Hexagon Layer */}
         <LayersControl.Overlay checked name="Hexagon Grid">
           <HexagonLayer hexResolution={hexResolution} />
+        </LayersControl.Overlay>
+
+        {/* Add the iNaturalist Observations Layer */}
+        <LayersControl.Overlay checked name="iNaturalist Observations">
+          <TileLayer
+            url={`https://tiles.inaturalist.org/v1/grid/{z}/{x}/{y}.png?taxon_id=${taxonId}`}
+          />
         </LayersControl.Overlay>
 
         {/* Custom Hexagons Layer */}
