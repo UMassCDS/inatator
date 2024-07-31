@@ -2,7 +2,8 @@
 name: create-docker-images
 on:
   push:
-    branches: angzh/testCICD
+    tags:
+      - 'v*.*.*'
 
 jobs:
   # Based on instructions from https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/
