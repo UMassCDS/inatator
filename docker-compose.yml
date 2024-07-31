@@ -24,8 +24,6 @@ services:
   backend:
     platform: linux/amd64
     image: umasscds/inatator_backend:0.1.0
-    env_file:
-      - .docker.env
     build:
       context: .
       dockerfile: ./src/backend/Dockerfile
