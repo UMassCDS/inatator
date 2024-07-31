@@ -1,7 +1,7 @@
 services:
   frontend:
     platform: linux/amd64
-    image: umasscds/inatator_frontend:0.2.0
+    image: umasscds/inatator_frontend:0.1.0
     build:
       context: ./src/frontend
       dockerfile: Dockerfile
