@@ -12,7 +12,7 @@ services:
 
   frontend:
     platform: linux/amd64
-    image: umasscds/inatator_frontend:0.2.0
+    image: umasscds/inatator_frontend:0.3.0
     build:
       context: ./src/frontend
       dockerfile: Dockerfile
@@ -23,7 +23,7 @@ services:
 
   backend:
     platform: linux/amd64
-    image: umasscds/inatator_backend:0.2.0
+    image: umasscds/inatator_backend:0.3.0
     env_file:
       - .docker.env
     build:
