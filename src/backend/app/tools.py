@@ -1,6 +1,4 @@
 import numpy as np
-import json
-import os
 import h3
 
 import alphashape
@@ -22,31 +20,15 @@ def get_taxa_id_by_name(taxa_name: str):
     """
     return int(taxa_name.split("(")[-1][:-1])
 
-
-def save_preds(taxa_name, preds, locs):
-    # TODO save to DB
-    directory = "predictions"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    np.save(f"{directory}/{taxa_name}_preds", preds)
-    np.save(f"{directory}/{taxa_name}_locs", locs)
-
-
 def get_prediction(eval_params):
     # TODO get preds from DB
     taxa_name = eval_params["taxa_name"]
     taxa_id = get_taxa_id_by_name(taxa_name)
     eval_params["taxa_id"] = taxa_id
-    preds_file = f"predictions/{taxa_name}_preds.npy"
-    locs_file = f"predictions/{taxa_name}_locs.npy"
-
-    if os.path.isfile(preds_file) and os.path.isfile(locs_file):
-        print(f"Loading saved predictions for Taxa: {taxa_name}")
-        return np.load(preds_file), np.load(locs_file)
 
     print(f"Starting generate predictions for Taxa: {taxa_name}.\nParams {eval_params}")
     preds, locs = sinr.generate_prediction(eval_params)
-    save_preds(taxa_name, preds, locs)
+    # save_preds(taxa_name, preds, locs)
     return preds, locs
 
 
@@ -82,37 +64,11 @@ def generate_prediction(eval_params):
     hull = alphashape.alphashape(coordinates, 1)
     hull_points = list(mapping(hull)["coordinates"])
 
-    saved_annotation = load_annotation(eval_params)
-
     return dict(
         coordinates=coordinates.tolist(),
         pred_loc_combined=pred_loc_combined.tolist(),
         hull_points=hull_points,
         prediction_hexagon_ids=prediction_hexagon_ids,
-        # If there are no saved annotations, set prediction_hexagon_ids as the starting point for the annotation
-        annotation_hexagon_ids=saved_annotation["annotation_hexagon_ids"]
-        or prediction_hexagon_ids,
+        # set prediction_hexagon_ids as the starting point for the annotation
+        annotation_hexagon_ids=prediction_hexagon_ids,
     )
-
-
-def save_annotation(data):
-    taxa_name = data["taxa_name"]
-    annotation_hexagon_ids = data["annotation_hexagon_ids"]
-    directory = "annotations"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    with open(f"{directory}/{taxa_name}.json", "w") as f:
-        json.dump(annotation_hexagon_ids, f)
-    print(f"Saving annotation for {taxa_name}.")
-    return {"annotation_hexagon_ids": annotation_hexagon_ids}
-
-
-def load_annotation(data):
-    directory = "annotations"
-    taxa_name = data["taxa_name"]
-    annotation_file = f"{directory}/{taxa_name}.json"
-    if os.path.isfile(annotation_file):
-        with open(annotation_file) as f:
-            annotation = json.load(f)
-        return {"annotation_hexagon_ids": annotation}
-    return {"annotation_hexagon_ids": []}
