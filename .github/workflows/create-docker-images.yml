@@ -3,7 +3,7 @@ name: create-docker-images
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'testv*.*'
 
 jobs:
   # Based on instructions from https://www.docker.com/blog/multi-arch-build-and-images-the-simple-way/
