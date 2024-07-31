@@ -91,7 +91,7 @@ function App() {
       hex_resolution: Number(formRefs.hexResolution.current.value),
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
-      disable_ocean_mask: formRefs.disableOceanMask.current.checked,
+      disable_ocean_mask: formRefs.disableOceanMask.current ? formRefs.disableOceanMask.current.checked : false,
     };
 
     if (!checkTaxaValid(formData.taxa_name)) {
@@ -134,7 +134,7 @@ function App() {
       hex_resolution: Number(formRefs.hexResolution.current.value),
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
-      disable_ocean_mask: formRefs.disableOceanMask.current.checked,
+      disable_ocean_mask: formRefs.disableOceanMask.current ? formRefs.disableOceanMask.current.checked : false,
       annotation_hexagon_ids: annotationHexagonIDs,
     };
 
@@ -179,7 +179,7 @@ function App() {
       hex_resolution: Number(formRefs.hexResolution.current.value),
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
-      disable_ocean_mask: formRefs.disableOceanMask.current.checked,
+      disable_ocean_mask: formRefs.disableOceanMask.current ? formRefs.disableOceanMask.current.checked : false,
     };
 
     fetch(`${API_URL}/load_annotation/`, {

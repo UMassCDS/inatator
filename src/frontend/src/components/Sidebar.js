@@ -11,6 +11,8 @@ const debounce = (func, wait) => {
   };
 };
 
+const SHOW_DISABLE_OCEAN_MASK_CHECKBOX = false;
+
 const Sidebar = forwardRef((props, ref) => {
   console.log('Render sidebar');
 
@@ -127,6 +129,7 @@ const Sidebar = forwardRef((props, ref) => {
         readOnly={true}
       />
 
+      { SHOW_DISABLE_OCEAN_MASK_CHECKBOX &&
       <div className="checkbox-container">
         <input
           type="checkbox"
@@ -136,6 +139,7 @@ const Sidebar = forwardRef((props, ref) => {
         />
         <label htmlFor="disable_ocean_mask"> Disable Ocean Mask</label>
       </div>
+      }
 
       <div className="taxa-info">
         <img src={imgURL} alt="species_default_image" />
