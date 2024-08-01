@@ -110,7 +110,7 @@ const PredictionHexagons = ({ predictionHexagonIDs }) => {
   );
 };
 
-const AnnotationHexagonsLayer = ({ annotationHexagonIDs }) => {
+const AnnotationHexagonsLayer = ({ annotationHexagonIDs, color }) => {
   const [annotationHexagons, setAnnotationHexagons] = useState([]);
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const AnnotationHexagonsLayer = ({ annotationHexagonIDs }) => {
     annotationHexagons && (
       <Polygon
         positions={annotationHexagons}
-        pathOptions={{ color: "green", fillColor: "green" }}
+        pathOptions={{ color: color, fillColor: color }}
       />
     )
   );
@@ -189,9 +189,17 @@ const Map = ({
         </LayersControl.Overlay>
 
         {/* Custom Hexagons Layer */}
-        <LayersControl.Overlay checked name="Current Annotation">
+        <LayersControl.Overlay checked name="Annotation (Presence)">
           <AnnotationHexagonsLayer
-            annotationHexagonIDs={annotationHexagonIDs}
+            annotationHexagonIDs={annotationHexagonIDs.presence}
+            color={"green"}
+          />
+        </LayersControl.Overlay>
+
+        <LayersControl.Overlay checked name="Annotation (Absence)">
+          <AnnotationHexagonsLayer
+            annotationHexagonIDs={annotationHexagonIDs.absence}
+            color={"red"}
           />
         </LayersControl.Overlay>
 

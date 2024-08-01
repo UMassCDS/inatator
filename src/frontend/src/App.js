@@ -13,6 +13,7 @@ const BAR_STATUS = {
   inactive: {loadingStatus: "", color: "#b5b5b5"},
   generating: {loadingStatus: "Generating... This can take several seconds", color: "#b5b5b5"},
   generatingSuccess: {loadingStatus: "Success", color: "#007bff"},
+  loadingSuccess: {loadingStatus: "Success", color: "#ffc107"},
   saving: {loadingStatus: "Saving", color: "#b5b5b5"},
   savingSuccess: {loadingStatus: "Saved", color: "#28a745"},
   clearing: {loadingStatus: "Clearing", color: "#b5b5b5"},
@@ -22,6 +23,8 @@ const BAR_STATUS = {
   failure: {loadingStatus: "Failure", color: "#dc3545"},
 };
 const BAR_TIMEOUT = 2000;
+
+const DEFAULT_ANNOTATION_HEXAGON_IDS = {"presence": [], "absence": []}
 
 function App() {
   const formRefs = {
@@ -35,9 +38,12 @@ function App() {
   const [taxaNames, setTaxaNames] = useState(null);
   const [hullPoints, setHullPoints] = useState(null);
   const [predictionHexagonIDs, setPredictionHexagonIDs] = useState(null);
-  const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState([]);
+  const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState(DEFAULT_ANNOTATION_HEXAGON_IDS);
   const [hexResolution, setHexResolution] = useState(4);
   const [barStatus, setBarStatus] = useState(BAR_STATUS.inactive);
+  const [isPresence, setIsPresence] = useState(true);
+
+  const annotationType = isPresence ? "presence" : "absence"
 
   useEffect(() => { // loads taxaNames
     const fetchTaxaNames = async () => {
@@ -45,12 +51,12 @@ function App() {
         const response = await fetch(PATH_TO_TAXA);
         const data = await response.json();
         setTaxaNames(data);
+        console.log(`Taxa names loaded successfully.`);
       } catch (e) {
-        console.log(`Taxa names loading error: ${e}`);
+        console.error(`Taxa names loading error: ${e}`);
         setBarStatus(BAR_STATUS.error);
       }
     };
-
     fetchTaxaNames();
   }, []);
 
@@ -79,7 +85,7 @@ function App() {
     } else {
       return true;
     }} catch (error) {
-      console.log(`Error: ${error}`);
+      console.error(`Error: ${error}`);
       setBarStatus(BAR_STATUS.error);
       return false;
     }
@@ -165,7 +171,7 @@ function App() {
   };
 
   const handleClearAnnotation = () => {
-    setAnnotationHexagonIDs([]);
+    setAnnotationHexagonIDs(DEFAULT_ANNOTATION_HEXAGON_IDS);
     setBarStatus(BAR_STATUS.clearingSuccess);
     setTimeout(() => {
       setBarStatus(BAR_STATUS.inactive);
@@ -182,6 +188,10 @@ function App() {
       disable_ocean_mask: formRefs.disableOceanMask.current.checked,
     };
 
+    if (!checkTaxaValid(formData.taxa_name)) {
+      return;
+    }
+
     fetch(`${API_URL}/load_annotation/`, {
       method: "POST",
       headers: {
@@ -193,6 +203,10 @@ function App() {
       .then((data) => {
         if (data.annotation_hexagon_ids) {
           setAnnotationHexagonIDs(data.annotation_hexagon_ids);
+          setBarStatus(BAR_STATUS.loadingSuccess);
+          setTimeout(() => {
+            setBarStatus(BAR_STATUS.inactive);
+          }, BAR_TIMEOUT);
         }
       })
       .catch((error) => {
@@ -204,18 +218,21 @@ function App() {
     const hexResolution = Number(formRefs.hexResolution.current.value);
     const hexagonID = h3.geoToH3(latlng.lat, latlng.lng, hexResolution);
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
-      // Create a Set from the previous annotation hexagon IDs
-      const annotationHexagonIDsSet = new Set(prevAnnotationHexagonIDs);
+      const newAnnotationHexagonIDs = {
+        presence: new Set(prevAnnotationHexagonIDs.presence),
+        absence: new Set(prevAnnotationHexagonIDs.absence),
+      };
 
-      // Check if the new hexagon ID is already in the Set and toggle its presence
-      if (annotationHexagonIDsSet.has(hexagonID)) {
-        annotationHexagonIDsSet.delete(hexagonID);
-      } else {
-        annotationHexagonIDsSet.add(hexagonID);
+      for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
+        const isRemoved = hexIDs.delete(hexagonID);
+        if (type === annotationType && !isRemoved) {
+          hexIDs.add(hexagonID);
+        }
       }
-
-      // Convert the Set back to an array and return it
-      return Array.from(annotationHexagonIDsSet);
+      return {
+        presence: Array.from(newAnnotationHexagonIDs.presence),
+        absence: Array.from(newAnnotationHexagonIDs.absence),
+      };
     });
   };
 
@@ -229,6 +246,8 @@ function App() {
           onSaveAnnotation={handleSaveAnnotation}
           onClearAnnotation={handleClearAnnotation}
           onLoadAnnotation={handleLoadAnnotation}
+          isPresence={isPresence}
+          setIsPresence={setIsPresence}
         />
         <LoadingStatus barStatus={barStatus}/>
         <Map
