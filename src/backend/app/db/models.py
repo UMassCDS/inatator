@@ -13,4 +13,4 @@ class AnnotationHexagon(Base):
     annotation_hexagon_id = Column(Integer, primary_key=True, index=True)
     annotation_id = Column(Integer, ForeignKey("annotation.annotation_id"))
     hex_id = Column(String)
-    type = Column(String)
+    hex_type = Column(String)
