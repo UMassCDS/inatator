@@ -62,7 +62,7 @@ async def save_annotation(request: Request, db: Session = Depends(get_db)):
         for hex_index in hex_indexes:
             hexagon_model = models.AnnotationHexagon(
                 annotation_id=annotation_model.annotation_id,
-                hex_id=hex_index,
+                hex_index=hex_index,
                 hex_type=hex_type,
             )
             db.add(hexagon_model)
@@ -98,5 +98,5 @@ async def load_annotation(request: Request, db: Session = Depends(get_db)):
     for hexagon in hexagons:
         if hexagon.hex_type not in annotation_hexagons["annotation_hexagon_ids"]:
             annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type] = []
-        annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type].append(hexagon.hex_id)
+        annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type].append(hexagon.hex_index)
     return JSONResponse(content=annotation_hexagons)
