@@ -10,17 +10,17 @@ import "./App.css";
 const API_URL = "http://localhost:8000";
 const PATH_TO_TAXA = '/static/taxa_names.json';
 const BAR_STATUS = {
-  inactive: {loadingStatus: "", color: "#b5b5b5"},
+  inactive: {loadingStatus: "", color: "#f4f4f4"},
   generating: {loadingStatus: "Generating... This can take several seconds", color: "#b5b5b5"},
-  generatingSuccess: {loadingStatus: "Success", color: "#007bff"},
-  loadingSuccess: {loadingStatus: "Success", color: "#ffc107"},
-  saving: {loadingStatus: "Saving", color: "#b5b5b5"},
-  savingSuccess: {loadingStatus: "Saved", color: "#28a745"},
-  clearing: {loadingStatus: "Clearing", color: "#b5b5b5"},
-  clearingSuccess: {loadingStatus: "Cleared", color: "#28a745"},
-  invalid: { loadingStatus: "Invalid Taxa Name", color: "#dc3545" },
-  error: { loadingStatus: "Error checking taxa name", color: "#dc3545" },
-  failure: {loadingStatus: "Failure", color: "#dc3545"},
+  generatingSuccess: {loadingStatus: "Success", color: "#4eaee4"},
+  loadingSuccess: {loadingStatus: "Success", color: "#eda52a"},
+  saving: {loadingStatus: "Saving", color: "#f4f4f4"},
+  savingSuccess: {loadingStatus: "Saved", color: "#00b175"},
+  clearing: {loadingStatus: "Clearing", color: "#f4f4f4"},
+  clearingSuccess: {loadingStatus: "Cleared", color: "#00b175"},
+  invalid: { loadingStatus: "Invalid Taxa Name", color: "#e14b23" },
+  error: { loadingStatus: "Error checking taxa name", color: "#e14b23" },
+  failure: {loadingStatus: "Failure", color: "#e14b23"},
 };
 const BAR_TIMEOUT = 2000;
 

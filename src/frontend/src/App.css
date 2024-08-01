@@ -102,11 +102,11 @@ body {
 }
 
 .presence {
-  color: green;
+  color: #00b175;
 }
 
 .absence {
-  color: red;
+  color: #e14b23;
 }
 
 .switch {
@@ -147,7 +147,7 @@ body {
 }
 
 input:checked + .slider {
-  background-color: green;
+  background-color: #00b175;
 }
 
 input:checked + .slider:before {
@@ -155,7 +155,7 @@ input:checked + .slider:before {
 }
 
 input:not(:checked) + .slider {
-  background-color: red;
+  background-color: #e14b23;
 }
 
 .buttons button {
@@ -172,19 +172,19 @@ input:not(:checked) + .slider {
 }
 
 #generate_prediction {
-  background-color: #007bff;
+  background-color: #4eaee4;
 }
 
 #save_annotation {
-  background-color: #28a745;
+  background-color: #00b175;
 }
 
 #load_annotation {
-  background-color: #ffc107;
+  background-color: #eda52a;
 }
 
 #clear_annotation {
-  background-color: #dc3545;
+  background-color: #e14b23;
 }
 
 #map {
@@ -221,14 +221,14 @@ textarea:read-only {
 
 .generate-prediction {
   padding: 2px 2px;
-  background-color: #007bff;
+  background-color: #4eaee4;
   color: white;
   border: none;
 }
 
 .save-annotation {
   padding: 2px 2px;
-  background-color: #28a745;
+  background-color: #00b175;
   color: white;
   border: none;
 
@@ -236,14 +236,14 @@ textarea:read-only {
 
 .load-annotation {
   padding: 2px 2px;
-  background-color: #ffc107;
+  background-color: #eda52a;
   color: white;
   border: none;
 }
 
 .clear-annotation {
   padding: 2px 2px;
-  background-color: #dc3545;
+  background-color: #e14b23;
   color: white;
   border: none;
 }
