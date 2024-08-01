@@ -100,3 +100,24 @@ async def load_annotation(request: Request, db: Session = Depends(get_db)):
             annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type] = []
         annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type].append(hexagon.hex_index)
     return JSONResponse(content=annotation_hexagons)
+
+def populate_prediction_database(db):
+    eval_params= {'taxa_name': 'Libertia chilensis (59941)', 'hex_resolution': 4, 'threshold': 0.1, 'model': 'AN_FULL_max_1000', 'disable_ocean_mask': False, 'taxa_id': 59941}
+    scores_dict = tools.generate_prediction_scores(eval_params)
+
+    prediction_model = models.Prediction()
+    prediction_model.taxa_id = eval_params["taxa_id"]
+    db.add(prediction_model)
+    db.commit()
+
+    for key in scores_dict:
+        prediction_hexagon_model = models.PredictionHexagon()
+        prediction_hexagon_model.prediction_id = prediction_model.prediction_id
+        print('key', key, max(scores_dict[key]))
+        prediction_hexagon_model.hex_index = key
+        prediction_hexagon_model.hex_score = max(scores_dict[key])
+        db.add(prediction_hexagon_model)
+    db.commit()    
+
+db = next(get_db())
+populate_prediction_database(db)

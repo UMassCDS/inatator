@@ -1,5 +1,5 @@
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey
 from .database import Base
 
 class Annotation(Base):
@@ -14,3 +14,15 @@ class AnnotationHexagon(Base):
     annotation_id = Column(Integer, ForeignKey("annotation.annotation_id"))
     hex_index = Column(String)
     hex_type = Column(String)
+
+class Prediction(Base):
+    __tablename__="prediction"
+    prediction_id = Column(Integer, primary_key=True, index=True)
+    taxa_id = Column(Integer)
+
+class PredictionHexagon(Base):
+    __tablename__="prediction_hexagon"
+    prediction_hexagon_id = Column(Integer, primary_key=True, index=True)
+    prediction_id = Column(Integer, ForeignKey("prediction.prediction_id"))
+    hex_index = Column(String)
+    hex_score = Column(Float)
