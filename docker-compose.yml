@@ -4,6 +4,9 @@ services:
     image: postgres:16
     restart: always
     environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
       - DATABASE_URL
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
