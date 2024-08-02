@@ -143,14 +143,18 @@ const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
   return null;
 };
 
-const onMultiselect = (e) => {
-  console.log(e)
- // e.stuff, get the polygon into object
- //get from e.layer._latlngs -> tHIS IS AN ARRAY with the number of spots as the clicks in the polygon! 
- // h3 has a function that given a polygon it will return all hexagons inside the polygon
- // if green fill in the green layer
- // if red fill in red layer 
-}
+const onCreatedHandler = ( onAddAnnotationHexagonIDs, hexResolution ) => (e) => {
+  console.log(e.layer._latlngs);
+  // e.stuff, get the polygon into object
+  //get from e.layer._latlngs -> tHIS IS AN ARRAY with the number of spots as the clicks in the polygon! 
+  // h3 has a function that given a polygon it will return all hexagons inside the polygon
+  // if green fill in the green layer
+  // if red fill in red layer 
+  var polygon_latlngs = e.layer._latlngs[0];
+  const polygonCoords = polygon_latlngs.map(latlng => [latlng.lng, latlng.lat]);
+  var hexagonIds = h3.polyfill(polygonCoords, hexResolution);
+  onAddAnnotationHexagonIDs(hexagonIds);
+};
 
 const Map = ({
   hullPoints,
@@ -232,7 +236,7 @@ const Map = ({
       <FeatureGroup>
         <EditControl
           position="topleft"
-          onCreated = {onMultiselect}
+          onCreated = {onCreatedHandler(onAddAnnotationHexagonIDs, hexResolution)}
           draw={{
             rectangle: true,
             polygon: true,

@@ -216,19 +216,21 @@ function App() {
 //try to reuse this function to take in array, if it doesn't work just have two functions 
 // right now they just flip the color on the selection. 
   const handleAddAnnotationHexagonIDs = (hexagonIDs) => {
-    console.log("puppy")
+    console.log("hexagonIDs")
     console.log(hexagonIDs)
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
       const newAnnotationHexagonIDs = {
         presence: new Set(prevAnnotationHexagonIDs.presence),
         absence: new Set(prevAnnotationHexagonIDs.absence),
       };
-      // fix it so that I loop through the LIST of hexagonIDs
-      for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
-        // this is where the correlation between red and green happens. 
-        const isRemoved = hexIDs.delete(hexagonIDs[0]);
-        if (type === annotationType && !isRemoved) {
-          hexIDs.add(hexagonIDs[0]);
+      // TODO so that I loop through the LIST of hexagonIDs
+      for (const [newHexId] of Object.entries(hexagonIDs)){
+        for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
+          // this is where the correlation between red and green happens. 
+          const isRemoved = hexIDs.delete(newHexId);
+          if (type === annotationType && !isRemoved) {
+            hexIDs.add(newHexId);
+          }
         }
       }
       return {
