@@ -5,7 +5,6 @@ services:
     restart: always
     environment:
       - DATABASE_URL
-
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
     ports:
