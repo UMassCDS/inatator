@@ -4,10 +4,13 @@ import {
   TileLayer,
   LayersControl,
   Polygon,
+  FeatureGroup,
   useMap,
   useMapEvents,
 } from "react-leaflet";
+import { EditControl } from "react-leaflet-draw";
 import "leaflet/dist/leaflet.css";
+import "leaflet-draw/dist/leaflet.draw.css";
 import * as h3 from "h3-js/legacy";
 
 // Tools
@@ -130,14 +133,24 @@ const AnnotationHexagonsLayer = ({ annotationHexagonIDs, color }) => {
   );
 };
 
-const ClickHandler = ({ onAddAnnotationHexagonIDs }) => {
+const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
   useMapEvents({
     click: (e) => {
-      onAddAnnotationHexagonIDs(e.latlng);
+      const hexagonID = h3.geoToH3(e.latlng.lat, e.latlng.lng, hexResolution);
+      onAddAnnotationHexagonIDs([hexagonID]);
     },
   });
   return null;
 };
+
+const onMultiselect = (e) => {
+  console.log(e)
+ // e.stuff, get the polygon into object
+ //get from e.layer._latlngs -> tHIS IS AN ARRAY with the number of spots as the clicks in the polygon! 
+ // h3 has a function that given a polygon it will return all hexagons inside the polygon
+ // if green fill in the green layer
+ // if red fill in red layer 
+}
 
 const Map = ({
   hullPoints,
@@ -216,8 +229,27 @@ const Map = ({
         )}
 
       </LayersControl>
-
-      <ClickHandler onAddAnnotationHexagonIDs={onAddAnnotationHexagonIDs} />
+      <FeatureGroup>
+        <EditControl
+          position="topleft"
+          onCreated = {onMultiselect}
+          draw={{
+            rectangle: true,
+            polygon: true,
+            circle: false,
+            polyline: false,
+            marker: false,
+            circlemarker: false,
+          }}
+          edit={{
+            edit: false,
+            remove: false,
+          }}
+        />
+      </FeatureGroup>
+      <ClickHandler 
+      onAddAnnotationHexagonIDs={onAddAnnotationHexagonIDs} 
+      hexResolution={hexResolution} />
     </MapContainer>
   );
 };

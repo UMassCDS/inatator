@@ -213,20 +213,22 @@ function App() {
         console.error("Error loading annotation:", error);
       });
   };
-
-  const handleAddAnnotationHexagonIDs = (latlng) => {
-    const hexResolution = Number(formRefs.hexResolution.current.value);
-    const hexagonID = h3.geoToH3(latlng.lat, latlng.lng, hexResolution);
+//try to reuse this function to take in array, if it doesn't work just have two functions 
+// right now they just flip the color on the selection. 
+  const handleAddAnnotationHexagonIDs = (hexagonIDs) => {
+    console.log("puppy")
+    console.log(hexagonIDs)
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
       const newAnnotationHexagonIDs = {
         presence: new Set(prevAnnotationHexagonIDs.presence),
         absence: new Set(prevAnnotationHexagonIDs.absence),
       };
-
+      // fix it so that I loop through the LIST of hexagonIDs
       for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
-        const isRemoved = hexIDs.delete(hexagonID);
+        // this is where the correlation between red and green happens. 
+        const isRemoved = hexIDs.delete(hexagonIDs[0]);
         if (type === annotationType && !isRemoved) {
-          hexIDs.add(hexagonID);
+          hexIDs.add(hexagonIDs[0]);
         }
       }
       return {
