@@ -62,8 +62,8 @@ def generate_prediction(eval_params):
         {h3.geo_to_h3(lat, lon, hex_resolution) for lat, lon in coordinates}
     )
 
-    hull = alphashape.alphashape(coordinates, 1)
-    hull_points = list(mapping(hull)["coordinates"])
+    # hull = alphashape.alphashape(coordinates, 1)
+    # hull_points = list(mapping(hull)["coordinates"])
 
     annotation_hexagon_ids = {
         "presence": prediction_hexagon_ids,
