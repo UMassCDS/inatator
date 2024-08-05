@@ -213,17 +213,37 @@ function App() {
         console.error("Error loading annotation:", error);
       });
   };
-//try to reuse this function to take in array, if it doesn't work just have two functions 
-// right now they just flip the color on the selection. 
-  const handleAddAnnotationHexagonIDs = (hexagonIDs) => {
-    console.log("hexagonIDs")
-    console.log(hexagonIDs)
+
+  // click selection
+  const handleAddAnnotationHexagonIDs = (hexagonID) => {
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
       const newAnnotationHexagonIDs = {
         presence: new Set(prevAnnotationHexagonIDs.presence),
         absence: new Set(prevAnnotationHexagonIDs.absence),
       };
-      // TODO so that I loop through the LIST of hexagonIDs
+
+      for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
+        const isRemoved = hexIDs.delete(hexagonID);
+        if (type === annotationType && !isRemoved) {
+          hexIDs.add(hexagonID);
+        }
+      }
+      return {
+        presence: Array.from(newAnnotationHexagonIDs.presence),
+        absence: Array.from(newAnnotationHexagonIDs.absence),
+      };
+    });
+  };
+
+  // multi select version
+  //TODO: make it not just flip colors 
+  const handleAddAnnotationMultiSelect = (hexagonIDs) => {
+    setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
+      const newAnnotationHexagonIDs = {
+        presence: new Set(prevAnnotationHexagonIDs.presence),
+        absence: new Set(prevAnnotationHexagonIDs.absence),
+      };
+
       hexagonIDs.forEach((newHexId) => {
         for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
           // this is where the correlation between red and green happens. 
@@ -238,7 +258,7 @@ function App() {
         absence: Array.from(newAnnotationHexagonIDs.absence),
       };
     });
-  };
+  }
 
   return (
     <div className="app-container">
@@ -259,6 +279,7 @@ function App() {
           predictionHexagonIDs={predictionHexagonIDs}
           annotationHexagonIDs={annotationHexagonIDs}
           onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}
+          onAddAnnotationMultiSelect = {handleAddAnnotationMultiSelect}
           hexResolution={hexResolution}
         />
       </div>

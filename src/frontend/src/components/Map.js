@@ -137,13 +137,13 @@ const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
   useMapEvents({
     click: (e) => {
       const hexagonID = h3.geoToH3(e.latlng.lat, e.latlng.lng, hexResolution);
-      onAddAnnotationHexagonIDs([hexagonID]);
+      onAddAnnotationHexagonIDs(hexagonID);
     },
   });
   return null;
 };
 
-const onCreatedHandler = ( onAddAnnotationHexagonIDs, hexResolution ) => (e) => {
+const onCreatedHandler = ( onAddAnnotationMultiSelect, hexResolution ) => (e) => {
   console.log(e.layer._latlngs);
   // e.stuff, get the polygon into object
   //get from e.layer._latlngs -> tHIS IS AN ARRAY with the number of spots as the clicks in the polygon! 
@@ -153,7 +153,7 @@ const onCreatedHandler = ( onAddAnnotationHexagonIDs, hexResolution ) => (e) => 
   var polygon_latlngs = e.layer.getLatLngs()[0];
   const polygonCoords = polygon_latlngs.map(latlng => [latlng.lat, latlng.lng]);
   var hexagonIds = h3.polyfill(polygonCoords, hexResolution);
-  onAddAnnotationHexagonIDs(hexagonIds);
+  onAddAnnotationMultiSelect(hexagonIds);
 };
 
 const Map = ({
@@ -161,6 +161,7 @@ const Map = ({
   predictionHexagonIDs,
   annotationHexagonIDs,
   onAddAnnotationHexagonIDs,
+  onAddAnnotationMultiSelect,
   hexResolution,
 }) => {
   console.log('Render map');
@@ -236,7 +237,7 @@ const Map = ({
       <FeatureGroup>
         <EditControl
           position="topleft"
-          onCreated = {onCreatedHandler(onAddAnnotationHexagonIDs, hexResolution)}
+          onCreated = {onCreatedHandler(onAddAnnotationMultiSelect, hexResolution)}
           draw={{
             rectangle: true,
             polygon: true,
