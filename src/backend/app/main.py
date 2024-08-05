@@ -51,15 +51,19 @@ async def generate_prediction(request: Request):
         indexes=index_score_combined[:, 0]
         scores= [float(i) for i in index_score_combined[:, 1]]
         predicted_hexagons = [indexes[i] for i in range(len(indexes)) if scores[i]>= eval_params["threshold"]]
-
+    
     annotation_hexagon_ids = {
         "presence": predicted_hexagons,
         "absence": list()
     }
+    
+    if len(predicted_hexagons)==0:
+        print('No hexagon has a score above this threshold')
+        response=dict(predition_hexagon_ids=[], annotation_hexagon_ids=annotation_hexagon_ids)
+        return JSONResponse(content=response)
+
+
     response = dict(
-        # coordinates=coordinates.tolist(),
-        # pred_loc_combined=pred_loc_combined.tolist(),
-        # hull_points=hull_points,
         prediction_hexagon_ids=predicted_hexagons,
         annotation_hexagon_ids=annotation_hexagon_ids,
     )
@@ -122,5 +126,3 @@ async def load_annotation(request: Request, db: Session = Depends(get_db)):
 
 
 
-# eval_params= {'taxa_name': 'Libertia chilensis (59941)', 'hex_resolution': 4, 'threshold': 0.1, 'model': 'AN_FULL_max_1000', 'disable_ocean_mask': False, 'taxa_id': 59941}
-# tools.populate_prediction_database(eval_params, db = next(get_db()))

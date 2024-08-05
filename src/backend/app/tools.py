@@ -62,8 +62,6 @@ def generate_prediction(eval_params):
         {h3.geo_to_h3(lat, lon, hex_resolution) for lat, lon in coordinates}
     )
 
-    print('HERE',prediction_hexagon_ids)
-    print('######')
     hull = alphashape.alphashape(coordinates, 1)
     hull_points = list(mapping(hull)["coordinates"])
 
