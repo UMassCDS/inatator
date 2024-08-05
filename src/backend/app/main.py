@@ -46,7 +46,7 @@ async def generate_prediction(request: Request):
     eval_params=await request.json()
     db = next(get_db())
     predicted_hexagons=tools.get_predicted_hexagons(db, eval_params=eval_params)
-    if predicted_hexagons==None:
+    if predicted_hexagons is None:
         index_score_combined=tools.populate_prediction_database(eval_params,db)
         indexes=index_score_combined[:, 0]
         scores= [float(i) for i in index_score_combined[:, 1]]
