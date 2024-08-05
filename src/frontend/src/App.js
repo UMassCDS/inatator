@@ -26,6 +26,17 @@ const BAR_TIMEOUT = 2000;
 
 const DEFAULT_ANNOTATION_HEXAGON_IDS = {"presence": [], "absence": []}
 
+const getTaxonId = (taxaName) => {
+  if (taxaName) {
+    const regExp = /\(([^)]+)\)/;
+    const taxaMatch = taxaName.match(regExp);
+    if (taxaMatch) {
+      return taxaMatch[1];
+    }
+    return null;
+  }
+}
+
 function App() {
   const formRefs = {
     taxaName: useRef(null),
@@ -42,6 +53,7 @@ function App() {
   const [hexResolution, setHexResolution] = useState(4);
   const [barStatus, setBarStatus] = useState(BAR_STATUS.inactive);
   const [isPresence, setIsPresence] = useState(true);
+  const [taxonId, setTaxonId] = useState(null);
 
   const annotationType = isPresence ? "presence" : "absence"
 
@@ -76,6 +88,21 @@ function App() {
       hexResolutionInput?.removeEventListener("change", updateHexResolution);
     };
   }, [formRefs.hexResolution]);
+
+  useEffect(() => {
+    // Update the taxonId when the taxaName value changes
+    const updateTaxonId = () => {
+      const taxonId = getTaxonId(formRefs.taxaName.current.value)
+      setTaxonId(taxonId);
+    };
+
+    const taxaNameInput = formRefs.taxaName.current;
+    taxaNameInput?.addEventListener("change", updateTaxonId);
+
+    return () => {
+      taxaNameInput?.removeEventListener("change", updateTaxonId);
+    };
+  }, [formRefs.taxaName]);
 
   const checkTaxaValid = (taxa) => {
     try {
@@ -256,6 +283,7 @@ function App() {
           annotationHexagonIDs={annotationHexagonIDs}
           onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}
           hexResolution={hexResolution}
+          taxonId={taxonId}
         />
       </div>
     </div>
