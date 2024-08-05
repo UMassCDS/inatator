@@ -79,7 +79,7 @@ def generate_prediction(eval_params):
     )
 
 
-def generate_prediction_scores(eval_params):
+def generate_prediction_scores(eval_params, lowest_threshold=0.0001):
     preds, locs = get_prediction(eval_params)
 
     # switch lats and longs
@@ -88,7 +88,7 @@ def generate_prediction_scores(eval_params):
     # combine coordinates and predictions
     pred_loc_combined = np.column_stack((locs, preds))
     pred_loc_combined = np.float_(pred_loc_combined)
-
+    pred_loc_combined = pred_loc_combined[pred_loc_combined[:, 2] >= lowest_threshold]
     hex_resolution = eval_params['hex_resolution']
 
     # if a more detailed HeatMap needed, use `pred_loc_combined` for that
