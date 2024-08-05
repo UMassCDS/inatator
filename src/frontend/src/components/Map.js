@@ -212,10 +212,11 @@ const Map = ({
         </LayersControl.Overlay>
 
         {/* Render the PredictionHexagons if hexagons are available */}
-        <LayersControl.Overlay name="Prediction Hexagons">
-          <PredictionHexagons predictionHexagonIDs={predictionHexagonIDs} />
-        </LayersControl.Overlay>
-
+        {predictionHexagonIDs && (
+          <LayersControl.Overlay name="Prediction Hexagons">
+            <PredictionHexagons predictionHexagonIDs={predictionHexagonIDs} />
+          </LayersControl.Overlay>
+        )}
         {/* Render the PredictionPolygon if hullPoints are available */}
         {hullPoints && (
           <LayersControl.Overlay name="Prediction Polygon">
