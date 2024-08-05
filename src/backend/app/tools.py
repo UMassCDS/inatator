@@ -97,7 +97,7 @@ def generate_prediction_scores(eval_params, lowest_threshold=0.0001):
     for lat, lon, pred in pred_loc_combined:
         try:
             scores_dict[h3.geo_to_h3(lat, lon, hex_resolution)].append(pred)
-        except:
+        except Exception:
             scores_dict[h3.geo_to_h3(lat, lon, hex_resolution)]=[pred]
     hex_indexes=[]
     hex_scores=[]
@@ -133,7 +133,7 @@ def get_predicted_hexagons(db, eval_params):
     taxa_id = int(taxa_name.split("(")[-1][:-1])
     try:
         prediction_id= db.query(models.Prediction).filter(models.Prediction.taxa_id == taxa_id).all()[-1].prediction_id
-    except:
+    except Exception:
         return None
     predicted_hexagons=db.query(models.PredictionHexagon).filter(models.PredictionHexagon.prediction_id == prediction_id).all()
     predicted_hexagons=[predicted_hexagon.hex_index for predicted_hexagon in predicted_hexagons if predicted_hexagon.hex_score>= eval_params['threshold']]
