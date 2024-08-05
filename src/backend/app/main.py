@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from . import tools
-from .db import models
+from .db import models, crud
 from .db.database import SessionLocal, check_db_connection, engine
 
 DEFAULT_ANNOTATION_HEXAGON_IDS = {"annotation_hexagon_ids": {"presence": [], "absence": []}}
@@ -43,9 +43,28 @@ async def health_check():
 
 @app.post("/generate_prediction/")
 async def generate_prediction(request: Request):
-    response = tools.generate_prediction(await request.json())
-    return JSONResponse(content=response)
+    eval_params=await request.json()
+    db = next(get_db())
+    predicted_hexagons=crud.get_predicted_hexagons(db, eval_params=eval_params)
+    if predicted_hexagons==None:
+        index_score_combined=tools.populate_prediction_database(eval_params,db)
+        indexes=index_score_combined[:, 0]
+        scores= [float(i) for i in index_score_combined[:, 1]]
+        predicted_hexagons = [indexes[i] for i in range(len(indexes)) if scores[i]>= eval_params["threshold"]]
 
+    annotation_hexagon_ids = {
+        "presence": predicted_hexagons,
+        "absence": list()
+    }
+    response = dict(
+        # coordinates=coordinates.tolist(),
+        # pred_loc_combined=pred_loc_combined.tolist(),
+        # hull_points=hull_points,
+        prediction_hexagon_ids=predicted_hexagons,
+        annotation_hexagon_ids=annotation_hexagon_ids,
+    )
+
+    return JSONResponse(content=response)
 
 @app.post("/save_annotation/")
 async def save_annotation(request: Request, db: Session = Depends(get_db)):
@@ -101,22 +120,7 @@ async def load_annotation(request: Request, db: Session = Depends(get_db)):
         annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type].append(hexagon.hex_index)
     return JSONResponse(content=annotation_hexagons)
 
-def populate_prediction_database(eval_params,db):
-    scores_dict = tools.generate_prediction_scores(eval_params)
 
-    prediction_model = models.Prediction()
-    prediction_model.taxa_id = eval_params["taxa_id"]
-    db.add(prediction_model)
-    db.commit()
 
-    for key in scores_dict:
-        prediction_hexagon_model = models.PredictionHexagon()
-        prediction_hexagon_model.prediction_id = prediction_model.prediction_id
-        print('key', key, max(scores_dict[key]))
-        prediction_hexagon_model.hex_index = key
-        prediction_hexagon_model.hex_score = max(scores_dict[key])
-        db.add(prediction_hexagon_model)
-    db.commit()    
-
-eval_params= {'taxa_name': 'Libertia chilensis (59941)', 'hex_resolution': 4, 'threshold': 0.1, 'model': 'AN_FULL_max_1000', 'disable_ocean_mask': False, 'taxa_id': 59941}
-populate_prediction_database(eval_params, db = next(get_db()))
+# eval_params= {'taxa_name': 'Libertia chilensis (59941)', 'hex_resolution': 4, 'threshold': 0.1, 'model': 'AN_FULL_max_1000', 'disable_ocean_mask': False, 'taxa_id': 59941}
+# tools.populate_prediction_database(eval_params, db = next(get_db()))

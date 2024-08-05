@@ -5,6 +5,7 @@ import alphashape
 from shapely.geometry import mapping
 
 from ..sinr import sinr
+from .db import models
 
 MIN_THRESHOLD = 0.1
 MAX_THRESHOLD = 0.9
@@ -61,6 +62,8 @@ def generate_prediction(eval_params):
         {h3.geo_to_h3(lat, lon, hex_resolution) for lat, lon in coordinates}
     )
 
+    print('HERE',prediction_hexagon_ids)
+    print('######')
     hull = alphashape.alphashape(coordinates, 1)
     hull_points = list(mapping(hull)["coordinates"])
 
@@ -71,7 +74,7 @@ def generate_prediction(eval_params):
 
     return dict(
         # coordinates=coordinates.tolist(),
-        pred_loc_combined=pred_loc_combined.tolist(),
+        # pred_loc_combined=pred_loc_combined.tolist(),
         # hull_points=hull_points,
         prediction_hexagon_ids=prediction_hexagon_ids,
         # set prediction_hexagon_ids as the starting point for the annotation
@@ -98,6 +101,31 @@ def generate_prediction_scores(eval_params, lowest_threshold=0.0001):
             scores_dict[h3.geo_to_h3(lat, lon, hex_resolution)].append(pred)
         except:
             scores_dict[h3.geo_to_h3(lat, lon, hex_resolution)]=[pred]
-    # print(scored_dict)
+    hex_indexes=[]
+    hex_scores=[]
+    for key in scores_dict:
+        hex_indexes.append(key)
+        hex_scores.append(max(scores_dict[key]))
+    
+    index_score_combined = np.column_stack((hex_indexes, hex_scores))
 
-    return scores_dict
+    return index_score_combined
+
+
+def populate_prediction_database(eval_params,db):
+    index_score_combined = generate_prediction_scores(eval_params)
+
+    prediction_model = models.Prediction()
+    prediction_model.taxa_id = eval_params["taxa_id"]
+    db.add(prediction_model)
+    db.commit()
+
+    for index_score in index_score_combined:
+        prediction_hexagon_model = models.PredictionHexagon()
+        prediction_hexagon_model.prediction_id = prediction_model.prediction_id
+        prediction_hexagon_model.hex_index = index_score[0]
+        prediction_hexagon_model.hex_score = index_score[1]
+        db.add(prediction_hexagon_model)
+    db.commit()    
+
+    return index_score_combined
