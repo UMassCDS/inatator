@@ -143,8 +143,8 @@ const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
   return null;
 };
 
-const onCreatedHandler = ( onAddAnnotationMultiSelect, hexResolution ) => (e) => {
-  console.log(e.layer._latlngs);
+const onCreated = ( onAddAnnotationMultiSelect, annotationType, hexResolution ) => (e) => {
+  //console.log("annotation type in map.js " + annotateType);
   // e.stuff, get the polygon into object
   //get from e.layer._latlngs -> tHIS IS AN ARRAY with the number of spots as the clicks in the polygon! 
   // h3 has a function that given a polygon it will return all hexagons inside the polygon
@@ -153,16 +153,17 @@ const onCreatedHandler = ( onAddAnnotationMultiSelect, hexResolution ) => (e) =>
   var polygon_latlngs = e.layer.getLatLngs()[0];
   const polygonCoords = polygon_latlngs.map(latlng => [latlng.lat, latlng.lng]);
   var hexagonIds = h3.polyfill(polygonCoords, hexResolution);
-  onAddAnnotationMultiSelect(hexagonIds);
+  onAddAnnotationMultiSelect(hexagonIds, annotationType);
 };
 
 const Map = ({
   hullPoints,
   predictionHexagonIDs,
   annotationHexagonIDs,
+  annotationType,
+  hexResolution,
   onAddAnnotationHexagonIDs,
   onAddAnnotationMultiSelect,
-  hexResolution,
 }) => {
   console.log('Render map');
   return (
@@ -237,7 +238,7 @@ const Map = ({
       <FeatureGroup>
         <EditControl
           position="topleft"
-          onCreated = {onCreatedHandler(onAddAnnotationMultiSelect, hexResolution)}
+          onCreated = {onCreated(onAddAnnotationMultiSelect, annotationType, hexResolution)}
           draw={{
             rectangle: true,
             polygon: true,

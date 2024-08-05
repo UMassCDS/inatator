@@ -6,12 +6,13 @@ const Buttons = ({
   onClearAnnotation,
   onLoadAnnotation,
   isPresence,
-  setIsPresence
+  onToggle,
 }) => {
 
-  const handleToggle = () => {
-    setIsPresence(!isPresence);
-  };
+  //const handleToggle = () => {
+    //setIsPresence(!isPresence);
+    //onAnnotationTypeChange (!isPresence)
+  //};
 
 
   const buttons = [
@@ -28,7 +29,7 @@ const Buttons = ({
           {isPresence ? "presence" : "absence"}
         </span>
         <label className="switch">
-          <input type="checkbox" checked={isPresence} onChange={handleToggle} />
+          <input type="checkbox" checked={isPresence} onChange={onToggle} />
           <span className="slider round"></span>
         </label>
       </div>

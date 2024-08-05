@@ -42,8 +42,9 @@ function App() {
   const [hexResolution, setHexResolution] = useState(4);
   const [barStatus, setBarStatus] = useState(BAR_STATUS.inactive);
   const [isPresence, setIsPresence] = useState(true);
+  const [annotationType, setAnnotationType] = useState("presence");
 
-  const annotationType = isPresence ? "presence" : "absence"
+  //var annotationType = isPresence ? "presence" : "absence"
 
   useEffect(() => { // loads taxaNames
     const fetchTaxaNames = async () => {
@@ -76,6 +77,11 @@ function App() {
       hexResolutionInput?.removeEventListener("change", updateHexResolution);
     };
   }, [formRefs.hexResolution]);
+
+  useEffect(() => {
+    setAnnotationType(isPresence ? "presence" : "absence");
+  }, [isPresence]);
+
 
   const checkTaxaValid = (taxa) => {
     try {
@@ -214,6 +220,10 @@ function App() {
       });
   };
 
+  const handleToggle = () => {
+    setIsPresence((prevIsPresence) => !prevIsPresence);
+  };
+
   // click selection
   const handleAddAnnotationHexagonIDs = (hexagonID) => {
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
@@ -224,6 +234,7 @@ function App() {
 
       for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
         const isRemoved = hexIDs.delete(hexagonID);
+        console.log("click: annotationtype: " + annotationType + ", looped type: " + type)
         if (type === annotationType && !isRemoved) {
           hexIDs.add(hexagonID);
         }
@@ -237,28 +248,33 @@ function App() {
 
   // multi select version
   //TODO: make it not just flip colors 
-  const handleAddAnnotationMultiSelect = (hexagonIDs) => {
+  // TODO: not working for absence
+  console.log('multi: type0: ' + annotationType)
+
+  const handleAddAnnotationMultiSelect = (hexagonIDs, type) => {
+    console.log('multi: type1: ' + type)
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
       const newAnnotationHexagonIDs = {
         presence: new Set(prevAnnotationHexagonIDs.presence),
         absence: new Set(prevAnnotationHexagonIDs.absence),
       };
-
+      
+      console.log('multi: type2: ' + type)
       hexagonIDs.forEach((newHexId) => {
-        for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
+        for (const [setType, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
           // this is where the correlation between red and green happens. 
           const isRemoved = hexIDs.delete(newHexId);
-          if (type === annotationType && !isRemoved) {
+          if (setType === annotationType && !isRemoved) {
             hexIDs.add(newHexId);
           }
         }
-      })
+      });
       return {
         presence: Array.from(newAnnotationHexagonIDs.presence),
         absence: Array.from(newAnnotationHexagonIDs.absence),
       };
     });
-  }
+  };
 
   return (
     <div className="app-container">
@@ -271,20 +287,21 @@ function App() {
           onClearAnnotation={handleClearAnnotation}
           onLoadAnnotation={handleLoadAnnotation}
           isPresence={isPresence}
-          setIsPresence={setIsPresence}
+          onToggle={handleToggle}
         />
         <LoadingStatus barStatus={barStatus}/>
         <Map
           hullPoints={hullPoints}
           predictionHexagonIDs={predictionHexagonIDs}
           annotationHexagonIDs={annotationHexagonIDs}
+          annotationType={annotationType}
+          hexResolution={hexResolution}
           onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}
           onAddAnnotationMultiSelect = {handleAddAnnotationMultiSelect}
-          hexResolution={hexResolution}
         />
       </div>
     </div>
   );
-}
+};
 
 export default App;
