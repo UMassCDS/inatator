@@ -1,8 +1,8 @@
 import numpy as np
 import h3
 
-import alphashape
-from shapely.geometry import mapping
+# import alphashape
+# from shapely.geometry import mapping
 
 from ..sinr import sinr
 from .db import models
