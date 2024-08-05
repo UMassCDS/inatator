@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from . import tools
-from .db import models, crud
+from .db import models
 from .db.database import SessionLocal, check_db_connection, engine
 
 DEFAULT_ANNOTATION_HEXAGON_IDS = {"annotation_hexagon_ids": {"presence": [], "absence": []}}
@@ -45,7 +45,7 @@ async def health_check():
 async def generate_prediction(request: Request):
     eval_params=await request.json()
     db = next(get_db())
-    predicted_hexagons=crud.get_predicted_hexagons(db, eval_params=eval_params)
+    predicted_hexagons=tools.get_predicted_hexagons(db, eval_params=eval_params)
     if predicted_hexagons==None:
         index_score_combined=tools.populate_prediction_database(eval_params,db)
         indexes=index_score_combined[:, 0]
