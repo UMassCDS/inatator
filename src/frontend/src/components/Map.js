@@ -77,7 +77,7 @@ const PredictionPolygon = ({ hullPoints }) => {
     hullPoints && (
       <Polygon
         positions={hullPoints}
-        pathOptions={{ color: "blue", fillColor: "blue" }}
+        pathOptions={{ color: "#4eaee4", fillColor: "#4eaee4" }} // blue
       />
     )
   );
@@ -104,7 +104,7 @@ const PredictionHexagons = ({ predictionHexagonIDs }) => {
     predictionHexagons && (
       <Polygon
         positions={predictionHexagons}
-        pathOptions={{ color: "blue", fillColor: "blue" }}
+        pathOptions={{ color: "#4eaee4", fillColor: "#4eaee4" }} // blue
       />
     )
   );
@@ -192,14 +192,14 @@ const Map = ({
         <LayersControl.Overlay checked name="Annotation (Presence)">
           <AnnotationHexagonsLayer
             annotationHexagonIDs={annotationHexagonIDs.presence}
-            color={"green"}
+            color={"#00b175"}
           />
         </LayersControl.Overlay>
 
         <LayersControl.Overlay checked name="Annotation (Absence)">
           <AnnotationHexagonsLayer
             annotationHexagonIDs={annotationHexagonIDs.absence}
-            color={"red"}
+            color={"#e14b23"}
           />
         </LayersControl.Overlay>
 

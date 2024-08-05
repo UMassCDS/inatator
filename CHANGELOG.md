@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated README with new instructions and guides on how to work with database for development
 - `save_annotation` method to save annotation with type.
 - `load_annotation` method to load the latest annotation for the given `taxa_name` and `taxa_id`.
+- Updated colors in the app to be accessible to colorblind people using the [Bang Wong](https://www.nature.com/articles/nmeth.1618) palette.
+
 
 ## [0.1.0] - 2024-07-18
 ### Added
