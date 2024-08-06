@@ -62,7 +62,7 @@ Semantic Versioning uses a three-part version number format: **vMAJOR.MINOR.PATC
 - Use clear and descriptive commit messages.
 - Start with a verb in the present tense (e.g., "Add", "Fix", "Update").
 - Start with a capital letter and end with a period. 
-- Example: `Add user authentication feature.`.
+- Example: `Add user authentication feature`.
 
 ### Code Standards
 - **Docstrings**:
