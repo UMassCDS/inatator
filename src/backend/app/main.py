@@ -56,15 +56,13 @@ async def generate_prediction(request: Request, db: Session = Depends(get_db)):
     }
     
     if len(predicted_hexagons)==0:
-        print('No hexagon has a score above this threshold')
-        response=dict(predition_hexagon_ids=[], annotation_hexagon_ids=annotation_hexagon_ids)
-        return JSONResponse(content=response)
+        response=dict(annotation_hexagon_ids=annotation_hexagon_ids)
 
-
-    response = dict(
-        prediction_hexagon_ids=predicted_hexagons,
-        annotation_hexagon_ids=annotation_hexagon_ids,
-    )
+    else:
+        response = dict(
+            prediction_hexagon_ids=predicted_hexagons,
+            annotation_hexagon_ids=annotation_hexagon_ids,
+        )
 
     return JSONResponse(content=response)
 
