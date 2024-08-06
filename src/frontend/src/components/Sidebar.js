@@ -115,7 +115,6 @@ const Sidebar = forwardRef((props, ref) => {
         min="0.01"
         max="0.99"
         ref={ref.threshold}
-        // readOnly={true}
       />
 
       <label htmlFor="hexResolution">Hex Resolution:</label>
