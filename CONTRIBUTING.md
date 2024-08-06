@@ -31,8 +31,8 @@ Preparing a release involves making sure all features for the release are in the
     - Ensure all documentation is up-to-date, including the changelog and README if necessary and commit updates to the branch.
     - Update the `image` tags with the proper version number (vX.X.X) in the docker-compose.yml file. 
     - Update Changelog:
-      - Follow the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
-      - Add a new version header with the release date.
+      1. Follow the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
+      1. Add a new version header with the release date.
     - Push the release branch to the remote repository.
 5. Use the [Github managing release instructions](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) to make a formal release on Github:
      1. On GitHub.com, navigate to the main page of the repository.
@@ -43,8 +43,8 @@ Preparing a release involves making sure all features for the release are in the
      1. Select the **Target** dropdown menu, then click the branch that contains the project you want to release.
      1. In the **"Release title"** field, type a title for your release.
      1. In the **"Describe this release"** field, type a description for your release.
-       - good idea to use in release description updates added to CHANGELOG file for this release.
-    - f you're ready to publicize your release, click **Publish release**.
+            - good idea to use in release description updates added to CHANGELOG file for this release.
+     1. If you're ready to publicize your release, click **Publish release**.
 6. Merge Back: Merge the release branch back into `main`.
 
 ## Coding Conventions 
