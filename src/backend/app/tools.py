@@ -97,7 +97,7 @@ def populate_prediction_database_all_taxas(db, path_to_taxa_ids):
 
 def get_predicted_hexagons(db, eval_params):
     taxa_name = eval_params["taxa_name"]
-    taxa_id = int(taxa_name.split("(")[-1][:-1])
+    taxa_id = get_taxa_id_by_name(taxa_name)
     try:
         prediction_id= db.query(models.Prediction).filter(models.Prediction.taxa_id == taxa_id).all()[-1].prediction_id
     except Exception:
