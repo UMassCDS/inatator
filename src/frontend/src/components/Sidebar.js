@@ -11,13 +11,17 @@ const debounce = (func, wait) => {
   };
 };
 
+const SHOW_DISABLE_OCEAN_MASK_CHECKBOX = false;
+const DEFAULT_SPECIES_DATA = { name: "", common_name: "" }
+const DEFAULT_IMG_URL = "/static/inat_logo_square.png"
+
 const Sidebar = forwardRef((props, ref) => {
   console.log('Render sidebar');
 
   const [, setTaxaNames] = useState([]);
-  const [speciesData, setSpeciesData] = useState({ name: "", common_name: "" });
+  const [speciesData, setSpeciesData] = useState(DEFAULT_SPECIES_DATA);
   const [taxaName, setTaxaName] = useState("");
-  const [imgURL, setImgURL] = useState("/static/inat_logo_square.png");
+  const [imgURL, setImgURL] = useState(DEFAULT_IMG_URL);
   const [updateImgURL, setUpdateImgURL] = useState(false);
 
   useEffect(() => {
@@ -36,6 +40,8 @@ const Sidebar = forwardRef((props, ref) => {
               // If not, clear the input field
               $(this).val("");
               alert("Please select a valid taxa name from the list.");
+              setSpeciesData(DEFAULT_SPECIES_DATA);
+              setImgURL(DEFAULT_IMG_URL);
             }
           },
           select: function (event, ui) {
@@ -127,6 +133,7 @@ const Sidebar = forwardRef((props, ref) => {
         readOnly={true}
       />
 
+      { SHOW_DISABLE_OCEAN_MASK_CHECKBOX &&
       <div className="checkbox-container">
         <input
           type="checkbox"
@@ -136,14 +143,14 @@ const Sidebar = forwardRef((props, ref) => {
         />
         <label htmlFor="disable_ocean_mask"> Disable Ocean Mask</label>
       </div>
+      }
 
       <div className="taxa-info">
         <img src={imgURL} alt="species_default_image" />
         <p>
-          <span style={{ fontWeight: "bold" }}>Name:</span> {speciesData.name}
+          {speciesData.name && <span style={{ fontWeight: "bold" }}>Name:</span>} {speciesData.name}
           <br />
-          <span style={{ fontWeight: "bold" }}>Common Name:</span>{" "}
-          {speciesData.common_name}
+          {speciesData.common_name && <span style={{ fontWeight: "bold" }}>Common Name:</span>} {speciesData.common_name}
         </p>
       </div>
     </div>
