@@ -12,6 +12,7 @@ import { EditControl } from "react-leaflet-draw";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import * as h3 from "h3-js/legacy";
+import L, { featureGroup } from 'leaflet';
 
 // Tools
 const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
@@ -144,16 +145,18 @@ const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
 };
 
 const onCreated = ( onAddAnnotationMultiSelect, annotationType, hexResolution ) => (e) => {
-  //console.log("annotation type in map.js " + annotateType);
-  // e.stuff, get the polygon into object
-  //get from e.layer._latlngs -> tHIS IS AN ARRAY with the number of spots as the clicks in the polygon! 
-  // h3 has a function that given a polygon it will return all hexagons inside the polygon
-  // if green fill in the green layer
-  // if red fill in red layer 
+  console.log(`Creating annotations with type: ${annotationType}`);
   var polygon_latlngs = e.layer.getLatLngs()[0];
   const polygonCoords = polygon_latlngs.map(latlng => [latlng.lat, latlng.lng]);
   var hexagonIds = h3.polyfill(polygonCoords, hexResolution);
   onAddAnnotationMultiSelect(hexagonIds, annotationType);
+  console.log(featureGroup)
+  e.target.eachLayer((layer) => {
+    if ((layer instanceof L.Rectangle || layer instanceof L.Polygon) && layer.options.clickable === true){
+      console.log("about to delete layter")
+      e.target.removeLayer(layer);
+    }
+  })
 };
 
 const Map = ({
