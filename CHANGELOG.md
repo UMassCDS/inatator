@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - The `Taxa Name` info box now correctly clears when an invalid taxa ID is entered.
+- After changing the Taxa in the drop-down menu, the layers with predictions and annotations on the map are now cleared.
 
 ## [0.1.0] - 2024-07-18
 ### Added
