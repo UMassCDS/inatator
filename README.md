@@ -68,15 +68,17 @@ npm i --prefix src/frontend/
 
 # :penguin: Running the iNatAtor Application
 
-## Run **database** in first terminal:
-1. Navigate to project root
+## Run Application Locally
+
+### Terminal 1: Run the Database
+1. Open a terminal and navigate to the main `ds4cg2024-inaturalist` directory
 2. Launch **postgres container**:
 ```bash
 docker compose up --build db
 ```
 
-## Run **backend** in second terminal:
-1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
+### Terminal 2: Run the Backend
+1. Launch another terminal window and navigate to project root.
 2. Activate environment:
 ```bash
   conda activate inatator
@@ -85,8 +87,8 @@ docker compose up --build db
 ```bash
   uvicorn src.backend.app.main:app --reload --env-file .env
 ```
-## Run **frontend** in third terminal:
-1. Navigate to the main `ds4cg2024-inaturalist` directory if you are not already there:
+### Terminal 3: Run the Frontend
+1. Launch another terminal window and navigate to project root.
 2. Launch the **frontend**:
 ```bash
   npm start --prefix src/frontend/
@@ -95,23 +97,30 @@ docker compose up --build db
 In your web browser, open the link [http://localhost:3000/](http://localhost:3000/)
 
 
-# Running applications with Docker
-1. Install Docker if you haven't already
-2. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
-3. Now in terminal, navigate to project root
-4. Run `docker compose up --build`, for the first build it may take a while, after build the application will be ran, you can access the application through the `localhost:3000`.
-5. You can stop containers with ctrl+c or using the Docker app
+## Run Application Locally with Docker Desktop
+1. Install Docker if you haven't already. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
+2. Now in terminal, navigate to project root. Ensure you have a local version of the `.docker.env` file with secrets. 
+3. Build and Compose Docker Images: \
+  Build docker images: For the first build it may take a while.
+  ```bash
+    docker compose build
+  ```
+  To run the application:
+  ```bash
+    docker compose --env-file ./.docker.env up
+  ```
+4. You can access the application through the `localhost:3000` on your browser. You can stop containers with ctrl+c or using the Docker app.
 
-Common Docker commands:
-- If you want to start the application again, run `docker compose up`
-- If you want to just build images, run `docker compose build`
-- If you want to build and run containers, run `docker compose up --build`
-- If you want to build only one service, run `docker compose build <service-name>`, for example `docker compose build backend`
+Additional Docker commands:
+- Start the application again, run `docker compose up`
+- Just build images, run `docker compose build`
+- Build and run containers, run `docker compose up --build`
+- Build only one service, run `docker compose build <service-name>`, for example `docker compose build backend`
 
 Note: you don't have to initialize submodule to run docker, dockerfile will set up the submodules for you while building the image.
 
 
-## Working with database
+## Working with the Database
 
 Sometimes you want to run the application without containers, allowing you to develop things quickly. The **Running the iNatAtor Application** section explains how to run the application locally.
 
