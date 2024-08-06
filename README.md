@@ -101,11 +101,11 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 1. Install Docker if you haven't already. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
 2. Now in terminal, navigate to project root. Ensure you have a local version of the `.docker.env` file with secrets. 
 3. Build and Compose Docker Images: 
-  - Build docker images: For the first build it may take a while.
+  Build docker images: For the first build it may take a while.
   ```bash
     docker compose build
   ```
-  - To run the application:
+  To run the application:
   ```bash
     docker compose --env-file ./.docker.env up
   ```
