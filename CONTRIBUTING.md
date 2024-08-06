@@ -2,19 +2,19 @@
 These guidelines are designed to ensure consistency, quality, and ease of collaboration within the DS4CG-iNaturalist team. Adhering to these standards helps maintain a clean and efficient codebase, making it easier for team members to review, understand, and contribute to the project.
 
 ## Code Review Process
-1. **Reviewers Requirement**:
-  - Each piece of code must be reviewed and approved by at least two members of the DS4CG-iNaturalist team. This ensures that multiple perspectives are considered, increasing code quality and reducing the likelihood of errors.
-2. **Pull Request (PR) Guidelines**:
-  - **Size**: Keep pull requests and changes as small as possible. Smaller PRs are easier to review and test, making the review process more efficient.
-  - **Descriptions**: Every pull request must include a clear and detailed description with the following elements.
-    - **Features**: A bullet list of features or changes contributed in the PR.
-    - **Goal**: A brief explanation of the objective or problem the PR aims to address.
-    - **Link to Issues or Work Item**:  A reference to the relevant task or work item, providing context for the changes and helping track progress.
-3. **Update the ChangeLog**:
-  - **ChangeLog File**: should happen on every PR!
-    - Follow the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
-    - Version Number (if updated).
-    - Comment Sections: features, fixes, changes that went into the code. If the code version is not updated, add features/bugs in the “Unreleased” comment section. 
+1. **Reviewers Requirement**
+    - Each piece of code must be reviewed and approved by at least two members of the DS4CG-iNaturalist team. This ensures that multiple perspectives are considered, increasing code quality and reducing the likelihood of errors.
+2. **Pull Request (PR) Guidelines**
+    - **Size**: Keep pull requests and changes as small as possible. Smaller PRs are easier to review and test, making the review process more efficient.
+    - **Descriptions**: Every pull request must include a clear and detailed description with the following elements.
+        - **Features**: A bullet list of features or changes contributed in the PR.
+        - **Goal**: A brief explanation of the objective or problem the PR aims to address.
+        - **Link to Issues or Work Item**:  A reference to the relevant task or work item, providing context for the changes and helping track progress.
+3. **Update the ChangeLog**
+    - **ChangeLog File**: should happen on every PR!
+        - Follow the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
+        - Version Number (if updated).
+        - Comment Sections: features, fixes, changes that went into the code. If the code version is not updated, add features/bugs in the “Unreleased” comment section. 
 
 ## Automated Deployment Pipeline
 The DS4CG-iNaturalist project utilizes an automated pipeline to build docker images and deploy them to our DockerHub in an effort to maintain versions of our code. The deployment process involves building and pushing Docker images. These images are triggered by tagging a new code version. The process automatically builds the frontend and backend components, creating separate Docker images for each.
@@ -23,10 +23,10 @@ The DS4CG-iNaturalist project utilizes an automated pipeline to build docker ima
 Preparing a release involves making sure all features for the release are in the main branch, updating the version numbers in all code and documentation, then creating a release on GitHub and corresponding tag. The general steps are: 
 1. Ensure all features and bug fixes to be included in the release are merged into the main branch.
 2. Decide on the new version number following the [Semantic Versioning](https://semver.org/) guidelines. For example, `vX.Y.Z`.
-3. **Create a Release Branch**:
+3. Create a Release Branch:
     - Create a release branch named `release-vX.Y.Z` from `main`.
 
-4. **Tag the Release**:
+4. Tag the Release:
     - Update all version numbers and documentation in the code on the release branch:
     - Ensure all documentation is up-to-date, including the changelog and README if necessary and commit updates to the branch.
     - Update the `image` tags with the proper version number (vX.X.X) in the docker-compose.yml file. 
@@ -35,14 +35,14 @@ Preparing a release involves making sure all features for the release are in the
       - Add a new version header with the release date.
     - Push the release branch to the remote repository.
 5. Use the [Github managing release instructions](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository) to make a formal release on Github:
-     - On GitHub.com, navigate to the main page of the repository.
-     - To the right of the list of files, click **Releases**.
-     - At the top of the page, click **Draft a new release**.
-     - To choose a tag for the release, select the **Choose a tag** dropdown menu.
-     - Type a version number for your release, then click **Create new tag**.
-     - Select the **Target** dropdown menu, then click the branch that contains the project you want to release.
-     - In the **"Release title"** field, type a title for your release.
-     - In the **"Describe this release"** field, type a description for your release.
+     1. On GitHub.com, navigate to the main page of the repository.
+     1. To the right of the list of files, click **Releases**.
+     1. At the top of the page, click **Draft a new release**.
+     1. To choose a tag for the release, select the **Choose a tag** dropdown menu.
+     1. Type a version number for your release, then click **Create new tag**.
+     1. Select the **Target** dropdown menu, then click the branch that contains the project you want to release.
+     1. In the **"Release title"** field, type a title for your release.
+     1. In the **"Describe this release"** field, type a description for your release.
        - good idea to use in release description updates added to CHANGELOG file for this release.
     - f you're ready to publicize your release, click **Publish release**.
 6. Merge Back: Merge the release branch back into `main`.
