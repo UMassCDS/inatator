@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functionality to use the state of the toggle switch.
 - Toggle slider for presence/absence data.
 - Functionality to save presence/absence annotation data to the database.
+- Added iNaturalist Observations layer to the map component, which takes user observations from the iNaturalist tiles server in the same format as it is shown on the iNaturalist website.
+- docker file to set up the github actions and create a frontend and backend image to push to docker hub.
 
 ### Updated
 - `Clear Annotation` Functionality: The "Clear Annotation" button now clears the current annotation from the map, allowing users to start fresh without saving changes to the database.
@@ -26,6 +28,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated README with new instructions and guides on how to work with database for development
 - `save_annotation` method to save annotation with type.
 - `load_annotation` method to load the latest annotation for the given `taxa_name` and `taxa_id`.
+- Updated colors in the app to be accessible to colorblind people using the [Bang Wong](https://www.nature.com/articles/nmeth.1618) palette.
+- Update the file that stores taxa_names to use the common names in the drop-down menu.
+
+### Fixed
+- The `Taxa Name` info box now correctly clears when an invalid taxa ID is entered.
+- After changing the Taxa in the drop-down menu, the layers with predictions and annotations on the map are now cleared.
 
 ## [0.1.0] - 2024-07-18
 ### Added

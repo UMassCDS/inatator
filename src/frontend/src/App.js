@@ -10,21 +10,32 @@ import "./App.css";
 const API_URL = "http://localhost:8000";
 const PATH_TO_TAXA = '/static/taxa_names.json';
 const BAR_STATUS = {
-  inactive: {loadingStatus: "", color: "#b5b5b5"},
+  inactive: {loadingStatus: "", color: "#f4f4f4"},
   generating: {loadingStatus: "Generating... This can take several seconds", color: "#b5b5b5"},
-  generatingSuccess: {loadingStatus: "Success", color: "#007bff"},
-  loadingSuccess: {loadingStatus: "Success", color: "#ffc107"},
-  saving: {loadingStatus: "Saving", color: "#b5b5b5"},
-  savingSuccess: {loadingStatus: "Saved", color: "#28a745"},
-  clearing: {loadingStatus: "Clearing", color: "#b5b5b5"},
-  clearingSuccess: {loadingStatus: "Cleared", color: "#28a745"},
-  invalid: { loadingStatus: "Invalid Taxa Name", color: "#dc3545" },
-  error: { loadingStatus: "Error checking taxa name", color: "#dc3545" },
-  failure: {loadingStatus: "Failure", color: "#dc3545"},
+  generatingSuccess: {loadingStatus: "Success", color: "#4eaee4"},
+  loadingSuccess: {loadingStatus: "Success", color: "#eda52a"},
+  saving: {loadingStatus: "Saving", color: "#f4f4f4"},
+  savingSuccess: {loadingStatus: "Saved", color: "#00b175"},
+  clearing: {loadingStatus: "Clearing", color: "#f4f4f4"},
+  clearingSuccess: {loadingStatus: "Cleared", color: "#00b175"},
+  invalid: { loadingStatus: "Invalid Taxa Name", color: "#e14b23" },
+  error: { loadingStatus: "Error checking taxa name", color: "#e14b23" },
+  failure: {loadingStatus: "Failure", color: "#e14b23"},
 };
 const BAR_TIMEOUT = 2000;
 
 const DEFAULT_ANNOTATION_HEXAGON_IDS = {"presence": [], "absence": []}
+
+const getTaxonId = (taxaName) => {
+  if (taxaName) {
+    const regExp = /\(([^)]+)\)/;
+    const taxaMatch = taxaName.match(regExp);
+    if (taxaMatch) {
+      return taxaMatch[1];
+    }
+    return null;
+  }
+}
 
 function App() {
   const formRefs = {
@@ -43,6 +54,7 @@ function App() {
   const [barStatus, setBarStatus] = useState(BAR_STATUS.inactive);
   const [isPresence, setIsPresence] = useState(true);
   const [annotationType, setAnnotationType] = useState("presence");
+  const [taxonId, setTaxonId] = useState(null);
 
   //var annotationType = isPresence ? "presence" : "absence"
 
@@ -83,6 +95,24 @@ function App() {
     setAnnotationType(isPresence ? "presence" : "absence");
   }, [isPresence]);
 
+  useEffect(() => {
+    // Update the taxonId when the taxaName value changes
+    const updateTaxonId = () => {
+      const taxonId = getTaxonId(formRefs.taxaName.current.value)
+      setTaxonId(taxonId);
+      // Clear prediction and annotation layers when changing Taxa
+      setHullPoints(null);
+      setPredictionHexagonIDs(null);
+      setAnnotationHexagonIDs(DEFAULT_ANNOTATION_HEXAGON_IDS);
+    };
+
+    const taxaNameInput = formRefs.taxaName.current;
+    taxaNameInput?.addEventListener("change", updateTaxonId);
+
+    return () => {
+      taxaNameInput?.removeEventListener("change", updateTaxonId);
+    };
+  }, [formRefs.taxaName]);
 
   const checkTaxaValid = (taxa) => {
     try {
@@ -299,6 +329,7 @@ function App() {
           hexResolution={hexResolution}
           onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}
           onAddAnnotationMultiSelect = {handleAddAnnotationMultiSelect}
+          taxonId={taxonId}
         />
       </div>
     </div>
