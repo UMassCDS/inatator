@@ -44,12 +44,13 @@ def generate_prediction_scores(eval_params, lowest_threshold=0.0001):
     hex_resolution = eval_params['hex_resolution']
 
     # if a more detailed HeatMap needed, use `pred_loc_combined` for that
-    scores_dict={}
-    for lat, lon, pred in pred_loc_combined:
-        try:
-            scores_dict[h3.geo_to_h3(lat, lon, hex_resolution)].append(pred)
-        except Exception:
-            scores_dict[h3.geo_to_h3(lat, lon, hex_resolution)]=[pred]
+    scores_dict = {}
+    for lat, lng, pred in pred_loc_combined:
+        hex_index = h3.geo_to_h3(lat, lng, hex_resolution)
+        if hex_index not in scores_dict:
+            scores_dict[hex_index] = []
+        scores_dict[hex_index].append(pred)
+
     hex_indexes=[]
     hex_scores=[]
     for key in scores_dict:
