@@ -79,6 +79,7 @@ function App() {
   }, [formRefs.hexResolution]);
 
   useEffect(() => {
+    //console.log(`Updating annotationType to ${isPresence ? 'presence' : 'absence'}`);
     setAnnotationType(isPresence ? "presence" : "absence");
   }, [isPresence]);
 

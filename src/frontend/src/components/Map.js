@@ -145,7 +145,7 @@ const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
 };
 
 const onCreated = ( onAddAnnotationMultiSelect, annotationType, hexResolution ) => (e) => {
-  console.log(`Creating annotations with type: ${annotationType}`);
+  console.log(`in map: Creating annotations with type: ${annotationType}`);
   var polygon_latlngs = e.layer.getLatLngs()[0];
   const polygonCoords = polygon_latlngs.map(latlng => [latlng.lat, latlng.lng]);
   var hexagonIds = h3.polyfill(polygonCoords, hexResolution);
@@ -154,7 +154,6 @@ const onCreated = ( onAddAnnotationMultiSelect, annotationType, hexResolution ) 
   // cleaning blue select layer 
   e.target.eachLayer((layer) => {
     if ((layer instanceof L.Rectangle || layer instanceof L.Polygon) && layer.options.clickable === true){
-      console.log("about to delete layter")
       e.target.removeLayer(layer);
     }
   })
