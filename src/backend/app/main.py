@@ -126,3 +126,6 @@ async def load_annotation(request: Request, db: Session = Depends(get_db)):
 
 
 
+# path_to_taxa_ids='src/backend/sinr/web_app/taxa_02_08_2023_names.txt'
+
+# tools.populate_prediction_database_all_taxas(db = next(get_db()), path_to_taxa_ids=path_to_taxa_ids)

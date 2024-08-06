@@ -128,6 +128,21 @@ def populate_prediction_database(eval_params,db):
 
     return index_score_combined
 
+def populate_prediction_database_all_taxas(db, path_to_taxa_ids):
+    taxa_ids = []
+    taxa_names = []
+
+    with open(path_to_taxa_ids, 'r') as file:
+        for line in file:
+            parts = line.strip().split('\t')
+            taxa_ids.append(int(parts[0]))
+            taxa_names.append(parts[1])
+        
+    for i in range(len(taxa_ids)):
+        eval_params= {'taxa_name': f"{taxa_names[i]} ({taxa_ids[i]})", 'hex_resolution': 4, 'model': 'AN_FULL_max_1000', 'disable_ocean_mask': False, 'taxa_id': taxa_ids[i]}
+        populate_prediction_database(eval_params, db)
+
+
 def get_predicted_hexagons(db, eval_params):
     taxa_name = eval_params["taxa_name"]
     taxa_id = int(taxa_name.split("(")[-1][:-1])
