@@ -1,5 +1,6 @@
 import numpy as np
 import h3
+from datetime import datetime
 
 # import alphashape
 # from shapely.geometry import mapping
@@ -115,6 +116,7 @@ def populate_prediction_database(eval_params,db):
 
     prediction_model = models.Prediction()
     prediction_model.taxa_id = eval_params["taxa_id"]
+    prediction_model.created_at = datetime.now()
     db.add(prediction_model)
     db.commit()
 

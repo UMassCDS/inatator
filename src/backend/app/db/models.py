@@ -19,6 +19,7 @@ class Prediction(Base):
     __tablename__="prediction"
     prediction_id = Column(Integer, primary_key=True, index=True)
     taxa_id = Column(Integer)
+    created_at = Column(DateTime)
 
 class PredictionHexagon(Base):
     __tablename__="prediction_hexagon"
