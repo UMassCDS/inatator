@@ -41,9 +41,8 @@ async def health_check():
 
 
 @app.post("/generate_prediction/")
-async def generate_prediction(request: Request):
+async def generate_prediction(request: Request, db: Session = Depends(get_db)):
     eval_params=await request.json()
-    db = next(get_db())
     predicted_hexagons=tools.get_predicted_hexagons(db, eval_params=eval_params)
     if predicted_hexagons is None:
         index_score_combined=tools.populate_prediction_database(eval_params,db)
