@@ -28,15 +28,15 @@ const Instruction = () => {
                 (selected in the upper right corner of the map):</p>
               <ul>
                 <li><strong>Prediction Polygon</strong>: Predictions in the form of polygons outlining the boundaries. <b>Not editable</b>.</li>
-                <li><strong>Prediction Hexagons</strong>: Predictions in the form of hexagons (<b style={{ color: 'blue' }}>blue</b> color). <b>Not editable</b>.</li>
-                <li><strong>Current Annotation</strong>: Displays loaded predictions in <b style={{ color: 'green' }}>green</b>. <b>This is the <u>starting</u> point for annotation, available for editing.</b></li>
+                <li><strong>Prediction Hexagons</strong>: Predictions in the form of hexagons (<b style={{ color: '#4eaee4' }}>blue</b> color). <b>Not editable</b>.</li>
+                <li><strong>Current Annotation</strong>: Displays loaded predictions in <b style={{ color: '#00b175' }}>green</b>. <b>This is the <u>starting</u> point for annotation, available for editing.</b></li>
               </ul>
               An additional layer, <strong>Hexagon Grid</strong>, helps to see the grid of hexagons for more convenient marking of the annotation.
             </li>
             <br />
             <li>
               <strong className="save-annotation">Save Annotation</strong>: Clicking this button saves the
-              current annotation layer to the database (displaying it in <b style={{ color: 'green' }}>green</b>).
+              current annotation layer to the database (displaying it in <b style={{ color: '#00b175' }}>green</b>).
               <p>Before clicking this button, make sure that the annotation looks
               correct for the selected Taxa.</p>
             </li>
