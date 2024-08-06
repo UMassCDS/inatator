@@ -1,3 +1,4 @@
+import os
 from copy import deepcopy
 from datetime import datetime
 
@@ -54,7 +55,7 @@ async def generate_prediction(request: Request, db: Session = Depends(get_db)):
         "presence": predicted_hexagons,
         "absence": list()
     }
-    
+
     if len(predicted_hexagons)==0:
         response=dict(annotation_hexagon_ids=annotation_hexagon_ids)
 
