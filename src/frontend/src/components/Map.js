@@ -150,7 +150,8 @@ const onCreated = ( onAddAnnotationMultiSelect, annotationType, hexResolution ) 
   const polygonCoords = polygon_latlngs.map(latlng => [latlng.lat, latlng.lng]);
   var hexagonIds = h3.polyfill(polygonCoords, hexResolution);
   onAddAnnotationMultiSelect(hexagonIds, annotationType);
-  console.log(featureGroup)
+
+  // cleaning blue select layer 
   e.target.eachLayer((layer) => {
     if ((layer instanceof L.Rectangle || layer instanceof L.Polygon) && layer.options.clickable === true){
       console.log("about to delete layter")
