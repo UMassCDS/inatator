@@ -100,7 +100,10 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
 ## Run Application Locally with Docker Desktop
 1. Install Docker if you haven't already. Open Docker Desktop, you cannot run containers or build images, if docker engine is not running
 2. Now in terminal, navigate to project root. Ensure you have a local version of the `.docker.env` file with secrets. 
-3. Build and Compose Docker Images: First run `docker compose build`, then run `docker compose --env-file ./.docker.env up`. For the first build it may take a while, after build the application will be run. You can access the application through the `localhost:3000` on your browser.
+3. Build and Compose Docker Images: 
+ - First run `docker compose build`. For the first build it may take a while.
+ - To run the application use `docker compose --env-file ./.docker.env up`. 
+ - You can access the application through the `localhost:3000` on your browser.
 4. You can stop containers with ctrl+c or using the Docker app
 
 Common Docker commands:
