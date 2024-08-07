@@ -7,7 +7,7 @@ This is the code base for the iNatator project that was apart of the Data Scienc
 Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel 
 
 ## 🌍 Overview 
-The iNaturalist team is interested in improving the predictions outputted by the Geomodel by asking experts that understand species ranges to share their knowledge and incorporate it into the Geomodel. We want to improve the predictions of the GeoModel by obtaining species range data from experts and incorporating that into the model. To this end, we created a tool that allows obtaining expert feedback through annotations of species ranges in an interactive map.
+The iNaturalist team is interested in improving the predictions outputted by the Geomodel by asking experts that understand species ranges to share their knowledge and incorporate it into the Geomodel. To this end, we created a tool that allows obtaining expert feedback through annotations of species ranges in an interactive map.\
 You can use this code to, for a species of your choosing, show current Geomodel predictions from SINR models onto the map, annotate the species range map considering presence and absence data, save the annotation to the database, and retrieve previous annotations from the database.
 
  Original SINR Information: Spatial Implicit Neural Representations for Global-Scale Species Mapping - ICML 2023 ICML 2023 paper [Spatial Implicit Neural Representations for Global-Scale Species Mapping](https://arxiv.org/abs/2306.02564). 
