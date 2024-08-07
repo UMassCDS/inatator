@@ -94,7 +94,6 @@ function App() {
       const taxonId = getTaxonId(formRefs.taxaName.current.value)
       setTaxonId(taxonId);
       // Clear prediction and annotation layers when changing Taxa
-      setHullPoints(null);
       setPredictionHexagonIDs(null);
       setAnnotationHexagonIDs(DEFAULT_ANNOTATION_HEXAGON_IDS);
     };
