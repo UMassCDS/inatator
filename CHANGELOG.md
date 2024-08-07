@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `load_annotation` method to load the latest annotation for the given `taxa_name` and `taxa_id`.
 - Updated colors in the app to be accessible to colorblind people using the [Bang Wong](https://www.nature.com/articles/nmeth.1618) palette.
 - Update the file that stores taxa_names to use the common names in the drop-down menu.
+- Update the title and description in index.html.
 
 ### Fixed
 - The `Taxa Name` info box now correctly clears when an invalid taxa ID is entered.
