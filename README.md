@@ -1,16 +1,18 @@
-# Data Science for the Common Good 2024
+
 # iNaturalist GeoModel Annotator Project
 
-Code repository for 2024 Data Science for the Common Good project with iNaturalist. 
+Run a web application for experts to annotate species range maps based on predictions from the [SINR/iNaturalist Geomodel](https://github.com/elijahcole/sinr).
+This is the code base for the iNatator project that was apart of the Data Science for the Common Good program run by the Center for Data Science at UMass Amherst. 
 
 Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel 
 
-## Spatial Implicit Neural Representations for Global-Scale Species Mapping - ICML 2023
-
-This code enables the recreation of the results from our ICML 2023 paper [Spatial Implicit Neural Representations for Global-Scale Species Mapping](https://arxiv.org/abs/2306.02564). 
-
 ## 🌍 Overview 
-Estimating the geographical range of a species from sparse observations is a challenging and important geospatial prediction problem. Given a set of locations where a species has been observed, the goal is to build a model to predict whether the species is present or absent at any location. In this work, we use Spatial Implicit Neural Representations (SINRs) to jointly estimate the geographical range of thousands of species simultaneously. SINRs scale gracefully, making better predictions as we increase the number of training species and the amount of training data per species. We introduce four new range estimation and spatial representation learning benchmarks, and we use them to demonstrate that noisy and biased crowdsourced data can be combined with implicit neural representations to approximate expert-developed range maps for many species.
+The iNaturalist team is interested in improving the predictions outputted by the Geomodel by asking experts that understand species ranges to share their knowledge and incorporate it into the Geomodel. To this end, we created a tool that allows obtaining expert feedback through annotations of species ranges in an interactive map.
+
+You can use this code to, for a species of your choosing, show current Geomodel predictions from SINR models onto the map, annotate the species range map considering presence and absence data, save the annotation to the database, and retrieve previous annotations from the database.
+
+ Original SINR Information: Spatial Implicit Neural Representations for Global-Scale Species Mapping - ICML 2023 ICML 2023 paper [Spatial Implicit Neural Representations for Global-Scale Species Mapping](https://arxiv.org/abs/2306.02564). 
+
 
 # Getting Started
 
