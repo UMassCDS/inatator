@@ -15,8 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Functionality to use the state of the toggle switch.
 - Toggle slider for presence/absence data.
 - Functionality to save presence/absence annotation data to the database.
+- Incorporated prediction database framework, tables with hexagons indexes and scores. 
+- `generate_prediction` now retrieves predictions from database, or generates them and stores them if not in database.
+- Functionality to change threshold in the UI
 - Added iNaturalist Observations layer to the map component, which takes user observations from the iNaturalist tiles server in the same format as it is shown on the iNaturalist website.
 - docker file to set up the github actions and create a frontend and backend image to push to docker hub.
+
 
 ### Updated
 - `Clear Annotation` Functionality: The "Clear Annotation" button now clears the current annotation from the map, allowing users to start fresh without saving changes to the database.

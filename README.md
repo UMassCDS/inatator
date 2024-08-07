@@ -132,13 +132,6 @@ Note: There are two environment files (.env and .docker.env) because the databas
 
 Make sure you always update your local branch to the latest.
 
-
-# Code Standards
-1. Use Docstrings, for some functions just a one-liner is fine, but for more complicated functions include multi-line documentation that explains the function simply, has information about arguments, and has details about the output.
-2. Module Docstrings, include a short description of module and functions inside the module.
-3. Use a formatter if possible. We have included [ruff](https://docs.astral.sh/ruff/) for linting and formatting in the developer dependencies in `requirements-dev.txt`.
-
-
 ##  🙏 Acknowledgements
 This project was enabled by data from the Cornell Lab of Ornithology, The International Union for the Conservation of Nature, iNaturalist, NASA, USGS, JAXA, CIESIN, and UC Merced. We are especially indebted to the [iNaturalist](inaturalist.org) and [eBird](https://ebird.org) communities for their data collection efforts. We also thank Matt Stimas-Mackey and Sam Heinrich for their help with data curation. This project was funded by the [Climate Change AI Innovation Grants](https://www.climatechange.ai/blog/2022-04-13-innovation-grants) program, hosted by Climate Change AI with the support of the Quadrature Climate Foundation, Schmidt Futures, and the Canada Hub of Future Earth. This work was also supported by the Caltech Resnick Sustainability Institute and an NSF Graduate Research Fellowship (grant number DGE1745301).  
 
