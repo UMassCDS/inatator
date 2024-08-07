@@ -1,13 +1,13 @@
 
 # iNaturalist GeoModel Annotator Project
-### A Data Science for the Common Good 2024
+### The code repository for 2024 Data Science for the Common Good 2024 with iNaturalist
 
-Code repository for 2024 Data Science for the Common Good project with iNaturalist. 
+Run a web application for experts to annotate species range maps based on predictions from the [SINR/iNaturalist Geomodel](https://github.com/elijahcole/sinr). 
 
 Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel 
 
 ## Highlight
-Run a web application for experts to annotate species range maps based on predictions from the [SINR/iNaturalist Geomodel](https://github.com/elijahcole/sinr). 
+
 
 ## 🌍 Overview 
 We want to improve the predictions of the GeoModel by obtaining species range data from experts and incorporating that into the model. To this end, we ask experts that understand species ranges to select species and share their species expertise by correcting their ranges on a map. You can use this code to serve predictions from SINR models onto the map, save your annotations and interact with the annotation database. 
