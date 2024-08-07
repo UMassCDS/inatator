@@ -4,10 +4,13 @@ import {
   TileLayer,
   LayersControl,
   Polygon,
+  FeatureGroup,
   useMap,
   useMapEvents,
 } from "react-leaflet";
+import { EditControl } from "react-leaflet-draw";
 import "leaflet/dist/leaflet.css";
+import "leaflet-draw/dist/leaflet.draw.css";
 import * as h3 from "h3-js/legacy";
 
 // Tools
@@ -130,10 +133,11 @@ const AnnotationHexagonsLayer = ({ annotationHexagonIDs, color }) => {
   );
 };
 
-const ClickHandler = ({ onAddAnnotationHexagonIDs }) => {
+const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
   useMapEvents({
     click: (e) => {
-      onAddAnnotationHexagonIDs(e.latlng);
+      const hexagonID = h3.geoToH3(e.latlng.lat, e.latlng.lng, hexResolution);
+      onAddAnnotationHexagonIDs(hexagonID);
     },
   });
   return null;
@@ -143,11 +147,35 @@ const Map = ({
   hullPoints,
   predictionHexagonIDs,
   annotationHexagonIDs,
-  onAddAnnotationHexagonIDs,
   hexResolution,
   taxonId,
+  onAddAnnotationHexagonIDs,
+  onAddAnnotationMultiSelect,
 }) => {
   console.log('Render map');
+
+  const [multipleAnnotationHexagonIDs, setMultipleAnnotationHexagonIDs] = useState(null);
+
+  const handleCreated = (e) => {
+    try {
+      const layer = e.layer;
+      const polygonCoords = layer.getLatLngs()[0].map((latlng) => [latlng.lat, latlng.lng]);
+      var hexagonIds = h3.polyfill(polygonCoords, hexResolution);
+      // Add hexagons for each vertex of the polygon
+      polygonCoords.map((latlng) => hexagonIds.push(h3.geoToH3(latlng[0], latlng[1], hexResolution)));
+    // catch an error if the figure is not fully drawn
+    } catch (error) {
+      var hexagonIds = null;
+    }
+      // Clean blue select layer 
+    e.layer.remove();
+    setMultipleAnnotationHexagonIDs(hexagonIds);
+  };
+  
+  useEffect(() => {
+    multipleAnnotationHexagonIDs && onAddAnnotationMultiSelect(multipleAnnotationHexagonIDs);
+  }, [multipleAnnotationHexagonIDs]);
+
   return (
     <MapContainer
       center={[39, 34]}
@@ -225,8 +253,28 @@ const Map = ({
         )}
 
       </LayersControl>
-
-      <ClickHandler onAddAnnotationHexagonIDs={onAddAnnotationHexagonIDs} />
+      <FeatureGroup>
+        <EditControl
+          position="topleft"
+          onCreated={handleCreated}
+          draw={{
+            rectangle: true,
+            polygon: true,
+            circle: false,
+            polyline: false,
+            marker: false,
+            circlemarker: false,
+          }}
+          edit={{
+            edit: false,
+            remove: false,
+          }}
+        />
+      </FeatureGroup>
+      <ClickHandler 
+        onAddAnnotationHexagonIDs={onAddAnnotationHexagonIDs} 
+        hexResolution={hexResolution}
+      />
     </MapContainer>
   );
 };

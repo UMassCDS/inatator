@@ -4,7 +4,6 @@ import Sidebar from "./components/Sidebar";
 import Buttons from "./components/Buttons";
 import Instruction from "./components/Instruction";
 import LoadingStatus from "./components/LoadingStatus";
-import * as h3 from "h3-js/legacy";
 import "./App.css";
 
 const API_URL = "http://localhost:8000";
@@ -52,9 +51,8 @@ function App() {
   const [hexResolution, setHexResolution] = useState(4);
   const [barStatus, setBarStatus] = useState(BAR_STATUS.inactive);
   const [isPresence, setIsPresence] = useState(true);
+  const [annotationType, setAnnotationType] = useState("presence");
   const [taxonId, setTaxonId] = useState(null);
-
-  const annotationType = isPresence ? "presence" : "absence"
 
   useEffect(() => { // loads taxaNames
     const fetchTaxaNames = async () => {
@@ -87,6 +85,10 @@ function App() {
       hexResolutionInput?.removeEventListener("change", updateHexResolution);
     };
   }, [formRefs.hexResolution]);
+
+  useEffect(() => {
+    setAnnotationType(isPresence ? "presence" : "absence");
+  }, [isPresence]);
 
   useEffect(() => {
     // Update the taxonId when the taxaName value changes
@@ -240,9 +242,11 @@ function App() {
       });
   };
 
-  const handleAddAnnotationHexagonIDs = (latlng) => {
-    const hexResolution = Number(formRefs.hexResolution.current.value);
-    const hexagonID = h3.geoToH3(latlng.lat, latlng.lng, hexResolution);
+  const handleToggle = () => {
+    setIsPresence((prevIsPresence) => !prevIsPresence);
+  };
+
+  const handleAddAnnotationHexagonIDs = (hexagonID) => {
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
       const newAnnotationHexagonIDs = {
         presence: new Set(prevAnnotationHexagonIDs.presence),
@@ -262,6 +266,47 @@ function App() {
     });
   };
 
+  const handleAddAnnotationMultiSelect = (hexagonIDs) => {
+
+    setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
+      const newAnnotationHexagonIDs = {
+        presence: new Set(prevAnnotationHexagonIDs.presence),
+        absence: new Set(prevAnnotationHexagonIDs.absence),
+      };
+
+      // Calculate the current hexagons for the specified annotation type
+      const curHexIDs = newAnnotationHexagonIDs[annotationType];
+      // Determine the threshold count for deciding between adding or removing hexagons
+      const hexThresholdCount = parseInt(hexagonIDs.length * 0.35);
+      // Calculate the number of hexagons that intersect between the incoming and current hexagons
+      const intersectionCount = hexagonIDs.filter((x) => curHexIDs.has(x)).length;
+      // Decide whether to add or remove hexagons based on the intersection count
+      const isAddAnnotationMultiSelect = intersectionCount <= hexThresholdCount;
+  
+      // Update hexagon sets based on the decided action
+      for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
+        if (isAddAnnotationMultiSelect) {
+          // If adding hexagons, remove them from the other layer and add to the current layer
+          hexagonIDs.forEach((hexID) => hexIDs.delete(hexID));
+          if (type === annotationType) {
+            hexagonIDs.forEach((hexID) => hexIDs.add(hexID));
+          }
+        } else {
+          // If removing hexagons, only remove them from the current layer
+          if (type === annotationType) {
+            hexagonIDs.forEach((hexID) => hexIDs.delete(hexID));
+          }
+        }
+      }
+  
+      // Return the updated annotation hexagon IDs
+      return {
+        presence: Array.from(newAnnotationHexagonIDs.presence),
+        absence: Array.from(newAnnotationHexagonIDs.absence),
+      };
+    });
+  };
+
   return (
     <div className="app-container">
       <Sidebar ref={formRefs} />
@@ -273,19 +318,20 @@ function App() {
           onClearAnnotation={handleClearAnnotation}
           onLoadAnnotation={handleLoadAnnotation}
           isPresence={isPresence}
-          setIsPresence={setIsPresence}
+          onToggle={handleToggle}
         />
         <LoadingStatus barStatus={barStatus}/>
         <Map
           predictionHexagonIDs={predictionHexagonIDs}
           annotationHexagonIDs={annotationHexagonIDs}
-          onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}
           hexResolution={hexResolution}
           taxonId={taxonId}
+          onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}
+          onAddAnnotationMultiSelect = {handleAddAnnotationMultiSelect}
         />
       </div>
     </div>
   );
-}
+};
 
 export default App;
