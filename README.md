@@ -1,7 +1,7 @@
 
 # iNaturalist GeoModel Annotator Project
 
-Run a web application for experts to annotate species range maps based on predictions from the [SINR/iNaturalist Geomodel](https://github.com/elijahcole/sinr). \
+Run a web application for experts to annotate species range maps based on predictions from the [SINR/iNaturalist Geomodel](https://github.com/elijahcole/sinr).
 This is the code base for the iNatator project that was apart of the Data Science for the Common Good program run by the Center for Data Science at UMass Amherst. 
 
 Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel 
