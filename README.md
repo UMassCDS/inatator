@@ -6,9 +6,6 @@ Run a web application for experts to annotate species range maps based on predic
 
 Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel 
 
-## Highlight
-
-
 ## 🌍 Overview 
 We want to improve the predictions of the GeoModel by obtaining species range data from experts and incorporating that into the model. To this end, we ask experts that understand species ranges to select species and share their species expertise by correcting their ranges on a map. You can use this code to serve predictions from SINR models onto the map, save your annotations and interact with the annotation database. 
 
