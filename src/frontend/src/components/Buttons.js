@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 const Buttons = ({
   onGeneratePrediction,
@@ -8,13 +8,6 @@ const Buttons = ({
   isPresence,
   onToggle,
 }) => {
-
-  //const handleToggle = () => {
-    //setIsPresence(!isPresence);
-    //onAnnotationTypeChange (!isPresence)
-  //};
-
-
   const buttons = [
     { id: 'generate_prediction', text: 'Generate Prediction', onClick: onGeneratePrediction },
     { id: 'save_annotation', text: 'Save Annotation', onClick: onSaveAnnotation },

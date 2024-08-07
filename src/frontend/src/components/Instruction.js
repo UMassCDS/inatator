@@ -16,7 +16,7 @@ const Instruction = () => {
         <div className="instructions">
           <h3>Instructions</h3>
             <p>1. To start the annotation, please select a <b>Taxa Name</b> in the left menu. </p>
-            <p>2. You can enter <b>Taxa Name</b> or its <b>ID</b> from the <a target="_blank" href='https://www.inaturalist.org/observations?place_id=any&view=species'>iNaturalist’s</a> website.</p>
+            <p>2. You can enter <b>Taxa Name</b> or its <b>ID</b> from the <a target="_blank" rel="noreferrer" href='https://www.inaturalist.org/observations?place_id=any&view=species'>iNaturalist’s</a> website.</p>
             <p>3. After selecting the <b>Taxa Name</b>, use one of the <b>buttons</b> to manage the annotation.</p>
           
           <h4>Buttons Function:</h4>

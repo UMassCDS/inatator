@@ -4,7 +4,6 @@ import Sidebar from "./components/Sidebar";
 import Buttons from "./components/Buttons";
 import Instruction from "./components/Instruction";
 import LoadingStatus from "./components/LoadingStatus";
-import * as h3 from "h3-js/legacy";
 import "./App.css";
 
 const API_URL = "http://localhost:8000";
@@ -56,8 +55,6 @@ function App() {
   const [annotationType, setAnnotationType] = useState("presence");
   const [taxonId, setTaxonId] = useState(null);
 
-  //var annotationType = isPresence ? "presence" : "absence"
-
   useEffect(() => { // loads taxaNames
     const fetchTaxaNames = async () => {
       try {
@@ -91,7 +88,6 @@ function App() {
   }, [formRefs.hexResolution]);
 
   useEffect(() => {
-    //console.log(`Updating annotationType to ${isPresence ? 'presence' : 'absence'}`);
     setAnnotationType(isPresence ? "presence" : "absence");
   }, [isPresence]);
 
@@ -255,7 +251,6 @@ function App() {
     setIsPresence((prevIsPresence) => !prevIsPresence);
   };
 
-  // click selection
   const handleAddAnnotationHexagonIDs = (hexagonID) => {
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
       const newAnnotationHexagonIDs = {
@@ -265,7 +260,6 @@ function App() {
 
       for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
         const isRemoved = hexIDs.delete(hexagonID);
-        console.log("click: annotationtype: " + annotationType + ", looped type: " + type)
         if (type === annotationType && !isRemoved) {
           hexIDs.add(hexagonID);
         }
@@ -277,29 +271,40 @@ function App() {
     });
   };
 
-  // multi select version
-  //TODO: make it not just flip colors 
-  // TODO: not working for absence
-  console.log('multi: type0: ' + annotationType)
+  const handleAddAnnotationMultiSelect = (hexagonIDs) => {
 
-  const handleAddAnnotationMultiSelect = (hexagonIDs, type) => {
-    console.log('multi: type1: ' + type)
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
       const newAnnotationHexagonIDs = {
         presence: new Set(prevAnnotationHexagonIDs.presence),
         absence: new Set(prevAnnotationHexagonIDs.absence),
       };
-      
-      console.log('multi: type2: ' + type)
-      hexagonIDs.forEach((newHexId) => {
-        for (const [setType, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
-          // this is where the correlation between red and green happens. 
-          const isRemoved = hexIDs.delete(newHexId);
-          if (setType === annotationType && !isRemoved) {
-            hexIDs.add(newHexId);
+
+      // Calculate the current hexagons for the specified annotation type
+      const curHexIDs = newAnnotationHexagonIDs[annotationType];
+      // Determine the threshold count for deciding between adding or removing hexagons
+      const hexThresholdCount = parseInt(hexagonIDs.length * 0.35);
+      // Calculate the number of hexagons that intersect between the incoming and current hexagons
+      const intersectionCount = hexagonIDs.filter((x) => curHexIDs.has(x)).length;
+      // Decide whether to add or remove hexagons based on the intersection count
+      const isAddAnnotationMultiSelect = intersectionCount <= hexThresholdCount;
+  
+      // Update hexagon sets based on the decided action
+      for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
+        if (isAddAnnotationMultiSelect) {
+          // If adding hexagons, remove them from the other layer and add to the current layer
+          hexagonIDs.forEach((hexID) => hexIDs.delete(hexID));
+          if (type === annotationType) {
+            hexagonIDs.forEach((hexID) => hexIDs.add(hexID));
+          }
+        } else {
+          // If removing hexagons, only remove them from the current layer
+          if (type === annotationType) {
+            hexagonIDs.forEach((hexID) => hexIDs.delete(hexID));
           }
         }
-      });
+      }
+  
+      // Return the updated annotation hexagon IDs
       return {
         presence: Array.from(newAnnotationHexagonIDs.presence),
         absence: Array.from(newAnnotationHexagonIDs.absence),
@@ -325,11 +330,10 @@ function App() {
           hullPoints={hullPoints}
           predictionHexagonIDs={predictionHexagonIDs}
           annotationHexagonIDs={annotationHexagonIDs}
-          annotationType={annotationType}
           hexResolution={hexResolution}
+          taxonId={taxonId}
           onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}
           onAddAnnotationMultiSelect = {handleAddAnnotationMultiSelect}
-          taxonId={taxonId}
         />
       </div>
     </div>
