@@ -47,7 +47,6 @@ function App() {
   };
 
   const [taxaNames, setTaxaNames] = useState(null);
-  const [hullPoints, setHullPoints] = useState(null);
   const [predictionHexagonIDs, setPredictionHexagonIDs] = useState(null);
   const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState(DEFAULT_ANNOTATION_HEXAGON_IDS);
   const [hexResolution, setHexResolution] = useState(4);
@@ -95,7 +94,6 @@ function App() {
       const taxonId = getTaxonId(formRefs.taxaName.current.value)
       setTaxonId(taxonId);
       // Clear prediction and annotation layers when changing Taxa
-      setHullPoints(null);
       setPredictionHexagonIDs(null);
       setAnnotationHexagonIDs(DEFAULT_ANNOTATION_HEXAGON_IDS);
     };
@@ -145,9 +143,6 @@ function App() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.hull_points) {
-          setHullPoints(data.hull_points);
-        }
         if (data.prediction_hexagon_ids) {
           setPredictionHexagonIDs(data.prediction_hexagon_ids);
         }
@@ -282,7 +277,6 @@ function App() {
         />
         <LoadingStatus barStatus={barStatus}/>
         <Map
-          hullPoints={hullPoints}
           predictionHexagonIDs={predictionHexagonIDs}
           annotationHexagonIDs={annotationHexagonIDs}
           onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}

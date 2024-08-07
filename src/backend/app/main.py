@@ -42,10 +42,30 @@ async def health_check():
 
 
 @app.post("/generate_prediction/")
-async def generate_prediction(request: Request):
-    response = tools.generate_prediction(await request.json())
-    return JSONResponse(content=response)
+async def generate_prediction(request: Request, db: Session = Depends(get_db)):
+    eval_params=await request.json()
+    predicted_hexagons=tools.get_predicted_hexagons(db, eval_params=eval_params)
+    if predicted_hexagons is None:
+        index_score_combined=tools.populate_prediction_database(eval_params,db)
+        indexes=index_score_combined[:, 0]
+        scores= [float(i) for i in index_score_combined[:, 1]]
+        predicted_hexagons = [indexes[i] for i in range(len(indexes)) if scores[i]>= eval_params["threshold"]]
+    
+    annotation_hexagon_ids = {
+        "presence": predicted_hexagons,
+        "absence": list()
+    }
 
+    if len(predicted_hexagons)==0:
+        response=dict(annotation_hexagon_ids=annotation_hexagon_ids)
+
+    else:
+        response = dict(
+            prediction_hexagon_ids=predicted_hexagons,
+            annotation_hexagon_ids=annotation_hexagon_ids,
+        )
+
+    return JSONResponse(content=response)
 
 @app.post("/save_annotation/")
 async def save_annotation(request: Request, db: Session = Depends(get_db)):
@@ -100,3 +120,9 @@ async def load_annotation(request: Request, db: Session = Depends(get_db)):
             annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type] = []
         annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type].append(hexagon.hex_index)
     return JSONResponse(content=annotation_hexagons)
+
+
+
+# path_to_taxa_ids='src/backend/sinr/web_app/taxa_02_08_2023_names.txt'
+
+# tools.populate_prediction_database_all_taxas(db = next(get_db()), path_to_taxa_ids=path_to_taxa_ids)
