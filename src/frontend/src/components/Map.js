@@ -77,7 +77,7 @@ const PredictionPolygon = ({ hullPoints }) => {
     hullPoints && (
       <Polygon
         positions={hullPoints}
-        pathOptions={{ color: "blue", fillColor: "blue" }}
+        pathOptions={{ color: "#4eaee4", fillColor: "#4eaee4" }} // blue
       />
     )
   );
@@ -104,7 +104,7 @@ const PredictionHexagons = ({ predictionHexagonIDs }) => {
     predictionHexagons && (
       <Polygon
         positions={predictionHexagons}
-        pathOptions={{ color: "blue", fillColor: "blue" }}
+        pathOptions={{ color: "#4eaee4", fillColor: "#4eaee4" }} // blue
       />
     )
   );
@@ -145,6 +145,7 @@ const Map = ({
   annotationHexagonIDs,
   onAddAnnotationHexagonIDs,
   hexResolution,
+  taxonId,
 }) => {
   console.log('Render map');
   return (
@@ -188,26 +189,34 @@ const Map = ({
           <HexagonLayer hexResolution={hexResolution} />
         </LayersControl.Overlay>
 
+        {/* Add the iNaturalist Observations Layer */}
+        <LayersControl.Overlay checked name="iNaturalist Observations">
+          <TileLayer
+            url={`https://tiles.inaturalist.org/v1/grid/{z}/{x}/{y}.png?taxon_id=${taxonId}`}
+          />
+        </LayersControl.Overlay>
+
         {/* Custom Hexagons Layer */}
         <LayersControl.Overlay checked name="Annotation (Presence)">
           <AnnotationHexagonsLayer
             annotationHexagonIDs={annotationHexagonIDs.presence}
-            color={"green"}
+            color={"#00b175"}
           />
         </LayersControl.Overlay>
 
         <LayersControl.Overlay checked name="Annotation (Absence)">
           <AnnotationHexagonsLayer
             annotationHexagonIDs={annotationHexagonIDs.absence}
-            color={"red"}
+            color={"#e14b23"}
           />
         </LayersControl.Overlay>
 
         {/* Render the PredictionHexagons if hexagons are available */}
-        <LayersControl.Overlay name="Prediction Hexagons">
-          <PredictionHexagons predictionHexagonIDs={predictionHexagonIDs} />
-        </LayersControl.Overlay>
-
+        {predictionHexagonIDs && (
+          <LayersControl.Overlay name="Prediction Hexagons">
+            <PredictionHexagons predictionHexagonIDs={predictionHexagonIDs} />
+          </LayersControl.Overlay>
+        )}
         {/* Render the PredictionPolygon if hullPoints are available */}
         {hullPoints && (
           <LayersControl.Overlay name="Prediction Polygon">
