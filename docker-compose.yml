@@ -1,4 +1,18 @@
 services:
+  db:
+    container_name: inatator_db
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - DATABASE_URL
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
   frontend:
     platform: linux/amd64
     image: umasscds/inatator_frontend:0.1.0
@@ -9,11 +23,19 @@ services:
       - "3000:3000"
     depends_on:
       - backend
+
   backend:
     platform: linux/amd64
     image: umasscds/inatator_backend:0.1.0
+    environment:
+      - DATABASE_URL
     build:
       context: .
       dockerfile: ./src/backend/Dockerfile
+    depends_on:
+      - db
     ports:
       - "8000:8000"
+
+volumes:
+  postgres_data: 

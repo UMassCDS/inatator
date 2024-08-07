@@ -1,12 +1,9 @@
 import numpy as np
-import json
-import os
 import h3
-
-import alphashape
-from shapely.geometry import mapping
+from datetime import datetime
 
 from ..sinr import sinr
+from .db import models
 
 MIN_THRESHOLD = 0.1
 MAX_THRESHOLD = 0.9
@@ -22,35 +19,19 @@ def get_taxa_id_by_name(taxa_name: str):
     """
     return int(taxa_name.split("(")[-1][:-1])
 
-
-def save_preds(taxa_name, preds, locs):
-    # TODO save to DB
-    directory = "predictions"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    np.save(f"{directory}/{taxa_name}_preds", preds)
-    np.save(f"{directory}/{taxa_name}_locs", locs)
-
-
 def get_prediction(eval_params):
     # TODO get preds from DB
     taxa_name = eval_params["taxa_name"]
     taxa_id = get_taxa_id_by_name(taxa_name)
     eval_params["taxa_id"] = taxa_id
-    preds_file = f"predictions/{taxa_name}_preds.npy"
-    locs_file = f"predictions/{taxa_name}_locs.npy"
-
-    if os.path.isfile(preds_file) and os.path.isfile(locs_file):
-        print(f"Loading saved predictions for Taxa: {taxa_name}")
-        return np.load(preds_file), np.load(locs_file)
 
     print(f"Starting generate predictions for Taxa: {taxa_name}.\nParams {eval_params}")
     preds, locs = sinr.generate_prediction(eval_params)
-    save_preds(taxa_name, preds, locs)
+    # save_preds(taxa_name, preds, locs)
     return preds, locs
 
 
-def generate_prediction(eval_params):
+def generate_prediction_scores(eval_params, lowest_threshold=0.0001):
     preds, locs = get_prediction(eval_params)
 
     # switch lats and longs
@@ -59,57 +40,76 @@ def generate_prediction(eval_params):
     # combine coordinates and predictions
     pred_loc_combined = np.column_stack((locs, preds))
     pred_loc_combined = np.float_(pred_loc_combined)
-
-    # leave only predictions above threshold.
-    # threshold should be beatween MIN_THRESHOLD and MAX_THRESHOLD:
-    #   (MIN_THRESHOLD <= threshold <= MAX_THRESHOLD)
-    threshold = min(
-        max(eval_params.get("threshold", MIN_THRESHOLD), MIN_THRESHOLD), MAX_THRESHOLD
-    )
-    hex_resolution = min(
-        max(eval_params.get("hex_resolution", MIN_HEX_RESOLUTION), MIN_HEX_RESOLUTION),
-        MAX_HEX_RESOLUTION,
-    )
+    pred_loc_combined = pred_loc_combined[pred_loc_combined[:, 2] >= lowest_threshold]
+    hex_resolution = eval_params['hex_resolution']
 
     # if a more detailed HeatMap needed, use `pred_loc_combined` for that
-    pred_loc_combined = pred_loc_combined[pred_loc_combined[:, 2] >= threshold]
-    coordinates = pred_loc_combined[:, [0, 1]]
+    scores_dict = {}
+    for lat, lng, pred in pred_loc_combined:
+        hex_index = h3.geo_to_h3(lat, lng, hex_resolution)
+        if hex_index not in scores_dict:
+            scores_dict[hex_index] = []
+        scores_dict[hex_index].append(pred)
 
-    prediction_hexagon_ids = list(
-        {h3.geo_to_h3(lat, lon, hex_resolution) for lat, lon in coordinates}
+    hex_indexes=[]
+    hex_scores=[]
+    for key in scores_dict:
+        hex_indexes.append(key)
+        hex_scores.append(max(scores_dict[key]))
+    
+    index_score_combined = np.column_stack((hex_indexes, hex_scores))
+
+    return index_score_combined
+
+
+def populate_prediction_database(eval_params,db):
+    index_score_combined = generate_prediction_scores(eval_params)
+
+    prediction_model = models.Prediction()
+    prediction_model.taxa_id = eval_params["taxa_id"]
+    prediction_model.created_at = datetime.now()
+    db.add(prediction_model)
+    db.commit()
+
+    for index_score in index_score_combined:
+        prediction_hexagon_model = models.PredictionHexagon()
+        prediction_hexagon_model.prediction_id = prediction_model.prediction_id
+        prediction_hexagon_model.hex_index = index_score[0]
+        prediction_hexagon_model.hex_score = index_score[1]
+        db.add(prediction_hexagon_model)
+    db.commit()    
+
+    return index_score_combined
+
+def populate_prediction_database_all_taxas(db, path_to_taxa_ids):
+    taxa_ids = []
+    taxa_names = []
+
+    with open(path_to_taxa_ids, 'r') as file:
+        for line in file:
+            parts = line.strip().split('\t')
+            taxa_ids.append(int(parts[0]))
+            taxa_names.append(parts[1])
+        
+    for i in range(len(taxa_ids)):
+        eval_params= {'taxa_name': f"{taxa_names[i]} ({taxa_ids[i]})", 'hex_resolution': 4, 'model': 'AN_FULL_max_1000', 'disable_ocean_mask': False, 'taxa_id': taxa_ids[i]}
+        populate_prediction_database(eval_params, db)
+
+
+def get_predicted_hexagons(db, eval_params):
+    taxa_name = eval_params["taxa_name"]
+    taxa_id = get_taxa_id_by_name(taxa_name)
+    latest_prediction = (
+        db.query(models.Prediction)
+        .filter(models.Prediction.taxa_id == taxa_id)
+        .order_by(models.Prediction.created_at.desc())
+        .first()
     )
 
-    hull = alphashape.alphashape(coordinates, 1)
-    hull_points = list(mapping(hull)["coordinates"])
-
-    return dict(
-        coordinates=coordinates.tolist(),
-        pred_loc_combined=pred_loc_combined.tolist(),
-        hull_points=hull_points,
-        prediction_hexagon_ids=prediction_hexagon_ids,
-        # set prediction_hexagon_ids as the starting point for the annotation
-        annotation_hexagon_ids=prediction_hexagon_ids
-    )
-
-
-def save_annotation(data):
-    taxa_name = data["taxa_name"]
-    annotation_hexagon_ids = data["annotation_hexagon_ids"]
-    directory = "annotations"
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-    with open(f"{directory}/{taxa_name}.json", "w") as f:
-        json.dump(annotation_hexagon_ids, f)
-    print(f"Saving annotation for {taxa_name}.")
-    return {"annotation_hexagon_ids": annotation_hexagon_ids}
-
-
-def load_annotation(data):
-    directory = "annotations"
-    taxa_name = data["taxa_name"]
-    annotation_file = f"{directory}/{taxa_name}.json"
-    if os.path.isfile(annotation_file):
-        with open(annotation_file) as f:
-            annotation = json.load(f)
-        return {"annotation_hexagon_ids": annotation}
-    return {"annotation_hexagon_ids": []}
+    if latest_prediction is None:
+        return None
+    
+    prediction_id=latest_prediction.prediction_id
+    predicted_hexagons=db.query(models.PredictionHexagon).filter(models.PredictionHexagon.prediction_id == prediction_id).all()
+    predicted_hexagons=[predicted_hexagon.hex_index for predicted_hexagon in predicted_hexagons if predicted_hexagon.hex_score>= eval_params['threshold']]
+    return predicted_hexagons
