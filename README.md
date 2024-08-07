@@ -1,16 +1,19 @@
-# Data Science for the Common Good 2024
+
 # iNaturalist GeoModel Annotator Project
+### A Data Science for the Common Good 2024
 
 Code repository for 2024 Data Science for the Common Good project with iNaturalist. 
 
 Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel 
 
-## Spatial Implicit Neural Representations for Global-Scale Species Mapping - ICML 2023
-
-This code enables the recreation of the results from our ICML 2023 paper [Spatial Implicit Neural Representations for Global-Scale Species Mapping](https://arxiv.org/abs/2306.02564). 
+## Highlight
+Run a web application for experts to annotate species range maps based on predictions from the [SINR/iNaturalist Geomodel](https://github.com/elijahcole/sinr). 
 
 ## 🌍 Overview 
-Estimating the geographical range of a species from sparse observations is a challenging and important geospatial prediction problem. Given a set of locations where a species has been observed, the goal is to build a model to predict whether the species is present or absent at any location. In this work, we use Spatial Implicit Neural Representations (SINRs) to jointly estimate the geographical range of thousands of species simultaneously. SINRs scale gracefully, making better predictions as we increase the number of training species and the amount of training data per species. We introduce four new range estimation and spatial representation learning benchmarks, and we use them to demonstrate that noisy and biased crowdsourced data can be combined with implicit neural representations to approximate expert-developed range maps for many species.
+We want to improve the predictions of the GeoModel by obtaining species range data from experts and incorporating that into the model. To this end, we ask experts that understand species ranges to select species and share their species expertise by correcting their ranges on a map. You can use this code to serve predictions from SINR models onto the map, save your annotations and interact with the annotation database. 
+
+ Original SINR Information: Spatial Implicit Neural Representations for Global-Scale Species Mapping - ICML 2023 ICML 2023 paper [Spatial Implicit Neural Representations for Global-Scale Species Mapping](https://arxiv.org/abs/2306.02564). 
+
 
 # Getting Started
 
