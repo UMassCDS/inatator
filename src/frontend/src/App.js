@@ -266,7 +266,7 @@ function App() {
     });
   };
 
-  const handleAddAnnotationMultiSelect = (hexagonIDs) => {
+  const handleAddAnnotationMultiSelect = (hexagonIDs, isAddAnnotationMultiSelect) => {
 
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
       const newAnnotationHexagonIDs = {
@@ -274,15 +274,6 @@ function App() {
         absence: new Set(prevAnnotationHexagonIDs.absence),
       };
 
-      // Calculate the current hexagons for the specified annotation type
-      const curHexIDs = newAnnotationHexagonIDs[annotationType];
-      // Determine the threshold count for deciding between adding or removing hexagons
-      const hexThresholdCount = parseInt(hexagonIDs.length * 0.35);
-      // Calculate the number of hexagons that intersect between the incoming and current hexagons
-      const intersectionCount = hexagonIDs.filter((x) => curHexIDs.has(x)).length;
-      // Decide whether to add or remove hexagons based on the intersection count
-      const isAddAnnotationMultiSelect = intersectionCount <= hexThresholdCount;
-  
       // Update hexagon sets based on the decided action
       for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
         if (isAddAnnotationMultiSelect) {
