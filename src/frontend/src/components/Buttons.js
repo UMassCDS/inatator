@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 const Buttons = ({
   onGeneratePrediction,
@@ -6,14 +6,8 @@ const Buttons = ({
   onClearAnnotation,
   onLoadAnnotation,
   isPresence,
-  setIsPresence
+  onToggle,
 }) => {
-
-  const handleToggle = () => {
-    setIsPresence(!isPresence);
-  };
-
-
   const buttons = [
     { id: 'generate_prediction', text: 'Generate Prediction', onClick: onGeneratePrediction },
     { id: 'save_annotation', text: 'Save Annotation', onClick: onSaveAnnotation },
@@ -28,7 +22,7 @@ const Buttons = ({
           {isPresence ? "presence" : "absence"}
         </span>
         <label className="switch">
-          <input type="checkbox" checked={isPresence} onChange={handleToggle} />
+          <input type="checkbox" checked={isPresence} onChange={onToggle} />
           <span className="slider round"></span>
         </label>
       </div>
