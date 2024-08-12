@@ -38,7 +38,7 @@ const Instruction = () => {
             </li>
             <br />
             <li>
-              <strong className="save-annotation">Save Annotation</strong>: Clicking this button saves the current annotation layer to the database (displaying it in <b style={{ color: '#00b175' }}>green</b>).
+              <strong className="save-annotation">Save Annotation</strong>: Clicking this button saves the current annotation layers to the database (both <b style={{ color: '#00b175' }}>presence</b> and <b style={{ color: '#e14b23' }}>absence</b> hexagons).
               <p>Before clicking this button, make sure that the annotation looks correct for the selected Taxa.</p>
             </li>
             <br />
