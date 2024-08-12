@@ -30,6 +30,9 @@ RUN git submodule init && git submodule update --remote --merge
 RUN unzip -o /app/pretrained_models.zip -d /app/src/backend/sinr && \
     rm /app/pretrained_models.zip
 
+# Expose port 8000 to allow external access
+EXPOSE 8000
+
 # Command to run the application using Uvicorn,
 # making it accessible on all network interfaces (0.0.0.0) at port 8000
 CMD ["uvicorn", "src.backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -111,7 +111,7 @@ In your web browser, open the link [http://localhost:3000/](http://localhost:300
   ```bash
     docker compose --env-file ./.docker.env up
   ```
-4. You can access the application through the `localhost:3000` on your browser. You can stop containers with ctrl+c or using the Docker app.
+4. You can access the application through the [http://localhost](http://localhost) on your browser. You can stop containers with ctrl+c or using the Docker app.
 
 Additional Docker commands:
 - Start the application again, run `docker compose up`

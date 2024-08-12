@@ -21,7 +21,7 @@ def get_db():
     with SessionLocal() as db:
         yield db
 
-origins = ["http://localhost:3000"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
