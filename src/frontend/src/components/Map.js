@@ -167,15 +167,16 @@ const Map = ({
   const [isAddAnnotationMultiSelect, setIsAddAnnotationMultiSelect] = useState(true);
 
   const handleCreated = (e) => {
+    var hexagonIds = null;
     try {
       const layer = e.layer;
       const polygonCoords = layer.getLatLngs()[0].map((latlng) => [latlng.lat, latlng.lng]);
-      var hexagonIds = h3.polyfill(polygonCoords, hexResolution);
+      hexagonIds = h3.polyfill(polygonCoords, hexResolution);
       // Add hexagons for each vertex of the polygon
       polygonCoords.map((latlng) => hexagonIds.push(h3.geoToH3(latlng[0], latlng[1], hexResolution)));
     // catch an error if the figure is not fully drawn
     } catch (error) {
-      var hexagonIds = null;
+      hexagonIds = null;
     }
       // Clean blue select layer 
     e.layer.remove();
@@ -184,7 +185,7 @@ const Map = ({
     // set to false to remove hexagons if the user draws a rectangle.
     setIsAddAnnotationMultiSelect(e.layerType === 'polygon');
   };
-  
+
   useEffect(() => {
     multipleAnnotationHexagonIDs && onAddAnnotationMultiSelect(multipleAnnotationHexagonIDs, isAddAnnotationMultiSelect);
   }, [multipleAnnotationHexagonIDs, isAddAnnotationMultiSelect]);
