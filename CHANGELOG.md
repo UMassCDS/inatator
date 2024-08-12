@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added postgres docker image that builds with docker compose along with other services
 - Functionality to use the state of the toggle switch.
 - Toggle slider for presence/absence data.
+- A selection/drawing tool is available on the map, allowing users to draw either a rectangle or a polygon.
+  - A toggle allows users to switch between the types of hexagons (presence or absence).
+  - Users can:
+    - Draw a polygon to add annotation hexagons to the map.
+    - Draw a rectangle to remove annotation hexagons from the map.
 - Functionality to save presence/absence annotation data to the database.
 - Incorporated prediction database framework, tables with hexagons indexes and scores. 
 - `generate_prediction` now retrieves predictions from database, or generates them and stores them if not in database.
@@ -35,9 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated colors in the app to be accessible to colorblind people using the [Bang Wong](https://www.nature.com/articles/nmeth.1618) palette.
 - Update the file that stores taxa_names to use the common names in the drop-down menu.
 - Update the title and description in index.html.
-    - A drawing tool allows users to select a rectangle or polygon on the map.
-    - Users can toggle to add or remove hexagons (presence or absence).
-    - The selected area is automatically filled with or cleared of hexagons based on the chosen type.
 
 ### Fixed
 - The `Taxa Name` info box now correctly clears when an invalid taxa ID is entered.
