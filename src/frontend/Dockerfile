@@ -1,21 +1,18 @@
 # Use an official Node runtime as a parent image for building the React application
-FROM node:14-alpine as build
+FROM node:20-bullseye-slim as build
 
 # Set the working directory in the container to /app
 WORKDIR /app
 
-# Add the node_modules/.bin directory to the PATH for easier npm script execution
-ENV PATH /app/node_modules/.bin:$PATH
-
-# Copy the package.json and package-lock.json files to the working directory
-COPY package.json package.json
-COPY package-lock.json package-lock.json
+# Copy package.json files to the working directory
+COPY package.json .
 
 # Install dependencies using npm and install react-scripts globally with silent flag
-RUN npm install react-scripts -g --silent
+RUN npm install 
 
 # Copy the entire local directory's contents into the container at /app
-COPY . .
+COPY src/ ./src/
+COPY public/ ./public/
 
 # Build the React application
 RUN npm run build
