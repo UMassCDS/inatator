@@ -17,7 +17,7 @@ You can use this code to, for a species of your choosing, show current Geomodel 
 # Getting Started
 
 ## :hatched_chick: Installation for local development
-1. Clone the repository `git clone git@github.com:UMassCDS/ds4cg2024-inaturalist.git`
+1. Clone the repository `git clone git@github.com:UMassCDS/inatator.git`
 
 2. For local development and testing, you can choose a database engine from two options, PostgreSQL or SQLite. The most important thing is to ensure the `DATABASE_URL` is configured appropriately for your database according to [SQLAlchemy Database Engine docs](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls). To aid in setting up the database we've provided example environment files, .env.copy and .docker.env.copy, where the environment variables are listed. You can copy them to .env or .docker.env and fill in the values. 
 
