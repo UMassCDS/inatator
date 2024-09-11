@@ -2,6 +2,7 @@ import React, { forwardRef, useEffect, useState } from "react";
 import $ from "jquery";
 import "jquery-ui-dist/jquery-ui.css";
 import "jquery-ui-dist/jquery-ui.js";
+import "../styles/Sidebar.css";
 
 const debounce = (func, wait) => {
   let timeout;
@@ -12,11 +13,11 @@ const debounce = (func, wait) => {
 };
 
 const SHOW_DISABLE_OCEAN_MASK_CHECKBOX = false;
-const DEFAULT_SPECIES_DATA = { name: "", common_name: "" }
-const DEFAULT_IMG_URL = "/static/inat_logo_square.png"
+const DEFAULT_SPECIES_DATA = { name: "", common_name: "" };
+const DEFAULT_IMG_URL = "/static/inat_logo_square.png";
 
 const Sidebar = forwardRef((props, ref) => {
-  console.log('Render sidebar');
+  console.log("Render sidebar");
 
   const [, setTaxaNames] = useState([]);
   const [speciesData, setSpeciesData] = useState(DEFAULT_SPECIES_DATA);
@@ -96,7 +97,7 @@ const Sidebar = forwardRef((props, ref) => {
 
       <label htmlFor="model">Model:</label>
       {/* <select */}
-      <input 
+      <input
         type="text"
         name="Model"
         id="model"
@@ -104,7 +105,7 @@ const Sidebar = forwardRef((props, ref) => {
         ref={ref.model}
         readOnly={true}
       />
-        {/* <option value="AN_FULL_max_10">AN_FULL max 10</option>
+      {/* <option value="AN_FULL_max_10">AN_FULL max 10</option>
         <option value="AN_FULL_max_100">AN_FULL max 100</option>
         <option value="AN_FULL_max_1000">AN_FULL max 1000</option>
         <option value="Distilled_env_model">Distilled env model</option>
@@ -132,24 +133,30 @@ const Sidebar = forwardRef((props, ref) => {
         readOnly={true}
       />
 
-      { SHOW_DISABLE_OCEAN_MASK_CHECKBOX &&
-      <div className="checkbox-container">
-        <input
-          type="checkbox"
-          id="disable_ocean_mask"
-          name="Disable Ocean Mask"
-          ref={ref.disableOceanMask}
-        />
-        <label htmlFor="disable_ocean_mask"> Disable Ocean Mask</label>
-      </div>
-      }
+      {SHOW_DISABLE_OCEAN_MASK_CHECKBOX && (
+        <div className="checkbox-container">
+          <input
+            type="checkbox"
+            id="disable_ocean_mask"
+            name="Disable Ocean Mask"
+            ref={ref.disableOceanMask}
+          />
+          <label htmlFor="disable_ocean_mask"> Disable Ocean Mask</label>
+        </div>
+      )}
 
       <div className="taxa-info">
         <img src={imgURL} alt="species_default_image" />
         <p>
-          {speciesData.name && <span style={{ fontWeight: "bold" }}>Name:</span>} {speciesData.name}
+          {speciesData.name && (
+            <span style={{ fontWeight: "bold" }}>Name:</span>
+          )}{" "}
+          {speciesData.name}
           <br />
-          {speciesData.common_name && <span style={{ fontWeight: "bold" }}>Common Name:</span>} {speciesData.common_name}
+          {speciesData.common_name && (
+            <span style={{ fontWeight: "bold" }}>Common Name:</span>
+          )}{" "}
+          {speciesData.common_name}
         </p>
       </div>
     </div>

@@ -4,26 +4,29 @@ import Sidebar from "./components/Sidebar";
 import Buttons from "./components/Buttons";
 import Instruction from "./components/Instruction";
 import LoadingStatus from "./components/LoadingStatus";
-import "./App.css";
+import "./styles/App.css";
 
 const API_URL = "http://localhost:8000";
-const PATH_TO_TAXA = '/static/taxa_names.json';
+const PATH_TO_TAXA = "/static/taxa_names.json";
 const BAR_STATUS = {
-  inactive: {loadingStatus: "", color: "#f4f4f4"},
-  generating: {loadingStatus: "Generating... This can take several seconds", color: "#b5b5b5"},
-  generatingSuccess: {loadingStatus: "Success", color: "#4eaee4"},
-  loadingSuccess: {loadingStatus: "Success", color: "#eda52a"},
-  saving: {loadingStatus: "Saving", color: "#f4f4f4"},
-  savingSuccess: {loadingStatus: "Saved", color: "#00b175"},
-  clearing: {loadingStatus: "Clearing", color: "#f4f4f4"},
-  clearingSuccess: {loadingStatus: "Cleared", color: "#00b175"},
+  inactive: { loadingStatus: "", color: "#f4f4f4" },
+  generating: {
+    loadingStatus: "Generating... This can take several seconds",
+    color: "#b5b5b5",
+  },
+  generatingSuccess: { loadingStatus: "Success", color: "#4eaee4" },
+  loadingSuccess: { loadingStatus: "Success", color: "#eda52a" },
+  saving: { loadingStatus: "Saving", color: "#f4f4f4" },
+  savingSuccess: { loadingStatus: "Saved", color: "#00b175" },
+  clearing: { loadingStatus: "Clearing", color: "#f4f4f4" },
+  clearingSuccess: { loadingStatus: "Cleared", color: "#00b175" },
   invalid: { loadingStatus: "Invalid Taxa Name", color: "#e14b23" },
   error: { loadingStatus: "Error checking taxa name", color: "#e14b23" },
-  failure: {loadingStatus: "Failure", color: "#e14b23"},
+  failure: { loadingStatus: "Failure", color: "#e14b23" },
 };
 const BAR_TIMEOUT = 2000;
 
-const DEFAULT_ANNOTATION_HEXAGON_IDS = {"presence": [], "absence": []}
+const DEFAULT_ANNOTATION_HEXAGON_IDS = { presence: [], absence: [] };
 
 const getTaxonId = (taxaName) => {
   if (taxaName) {
@@ -34,7 +37,7 @@ const getTaxonId = (taxaName) => {
     }
     return null;
   }
-}
+};
 
 function App() {
   const formRefs = {
@@ -47,14 +50,17 @@ function App() {
 
   const [taxaNames, setTaxaNames] = useState(null);
   const [predictionHexagonIDs, setPredictionHexagonIDs] = useState(null);
-  const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState(DEFAULT_ANNOTATION_HEXAGON_IDS);
+  const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState(
+    DEFAULT_ANNOTATION_HEXAGON_IDS
+  );
   const [hexResolution, setHexResolution] = useState(4);
   const [barStatus, setBarStatus] = useState(BAR_STATUS.inactive);
   const [isPresence, setIsPresence] = useState(true);
   const [annotationType, setAnnotationType] = useState("presence");
   const [taxonId, setTaxonId] = useState(null);
 
-  useEffect(() => { // loads taxaNames
+  useEffect(() => {
+    // loads taxaNames
     const fetchTaxaNames = async () => {
       try {
         const response = await fetch(PATH_TO_TAXA);
@@ -93,7 +99,7 @@ function App() {
   useEffect(() => {
     // Update the taxonId when the taxaName value changes
     const updateTaxonId = () => {
-      const taxonId = getTaxonId(formRefs.taxaName.current.value)
+      const taxonId = getTaxonId(formRefs.taxaName.current.value);
       setTaxonId(taxonId);
       // Clear prediction and annotation layers when changing Taxa
       setPredictionHexagonIDs(null);
@@ -110,12 +116,13 @@ function App() {
 
   const checkTaxaValid = (taxa) => {
     try {
-    if (!taxaNames.includes(taxa)) {
-      setBarStatus(BAR_STATUS.invalid);
-      return false;
-    } else {
-      return true;
-    }} catch (error) {
+      if (!taxaNames.includes(taxa)) {
+        setBarStatus(BAR_STATUS.invalid);
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
       console.error(`Error: ${error}`);
       setBarStatus(BAR_STATUS.error);
       return false;
@@ -128,12 +135,14 @@ function App() {
       hex_resolution: Number(formRefs.hexResolution.current.value),
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
-      disable_ocean_mask: formRefs.disableOceanMask.current ? formRefs.disableOceanMask.current.checked : false,
+      disable_ocean_mask: formRefs.disableOceanMask.current
+        ? formRefs.disableOceanMask.current.checked
+        : false,
     };
 
     if (!checkTaxaValid(formData.taxa_name)) {
       return;
-    } 
+    }
     setBarStatus(BAR_STATUS.generating);
 
     fetch(`${API_URL}/generate_prediction/`, {
@@ -168,7 +177,9 @@ function App() {
       hex_resolution: Number(formRefs.hexResolution.current.value),
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
-      disable_ocean_mask: formRefs.disableOceanMask.current ? formRefs.disableOceanMask.current.checked : false,
+      disable_ocean_mask: formRefs.disableOceanMask.current
+        ? formRefs.disableOceanMask.current.checked
+        : false,
       annotation_hexagon_ids: annotationHexagonIDs,
     };
 
@@ -213,7 +224,9 @@ function App() {
       hex_resolution: Number(formRefs.hexResolution.current.value),
       threshold: Number(formRefs.threshold.current.value),
       model: formRefs.model.current.value,
-      disable_ocean_mask: formRefs.disableOceanMask.current ? formRefs.disableOceanMask.current.checked : false,
+      disable_ocean_mask: formRefs.disableOceanMask.current
+        ? formRefs.disableOceanMask.current.checked
+        : false,
     };
 
     if (!checkTaxaValid(formData.taxa_name)) {
@@ -266,8 +279,10 @@ function App() {
     });
   };
 
-  const handleAddAnnotationMultiSelect = (hexagonIDs, isAddAnnotationMultiSelect) => {
-
+  const handleAddAnnotationMultiSelect = (
+    hexagonIDs,
+    isAddAnnotationMultiSelect
+  ) => {
     setAnnotationHexagonIDs((prevAnnotationHexagonIDs) => {
       const newAnnotationHexagonIDs = {
         presence: new Set(prevAnnotationHexagonIDs.presence),
@@ -289,7 +304,7 @@ function App() {
           }
         }
       }
-  
+
       // Return the updated annotation hexagon IDs
       return {
         presence: Array.from(newAnnotationHexagonIDs.presence),
@@ -311,18 +326,18 @@ function App() {
           isPresence={isPresence}
           onToggle={handleToggle}
         />
-        <LoadingStatus barStatus={barStatus}/>
+        <LoadingStatus barStatus={barStatus} />
         <Map
           predictionHexagonIDs={predictionHexagonIDs}
           annotationHexagonIDs={annotationHexagonIDs}
           hexResolution={hexResolution}
           taxonId={taxonId}
           onAddAnnotationHexagonIDs={handleAddAnnotationHexagonIDs}
-          onAddAnnotationMultiSelect = {handleAddAnnotationMultiSelect}
+          onAddAnnotationMultiSelect={handleAddAnnotationMultiSelect}
         />
       </div>
     </div>
   );
-};
+}
 
 export default App;
