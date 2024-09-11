@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- styles/ directory: Broke up the App.css file into smaller components
+
+### Updated
+- package-lock.json: Lock file was updated when ran with `npm i`, removal of testing libraries for react suggest a change in react's dependencies.
 
 ## [1.0.0] - 2024-08-12
 ### Added

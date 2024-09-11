@@ -1,0 +1,10 @@
+.loading-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  height: fit-content;
+  font-size: small;
+  color: white;
+  text-align: center;
+}
