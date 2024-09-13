@@ -11,19 +11,12 @@
   display: flex;
   justify-content: center;
   gap: 1vw;
-  /* padding: 1%; */
-  /* padding: 10px;
-  background-color: #f4f4f4;
-  border-bottom: 1px solid #ddd; */
 }
 
 .toggle-container {
   display: flex;
   align-items: center;
   padding: 1%;
-  /* margin: 1vw; */
-  /* margin-bottom: 0px;
-  margin-right: 20px; */
 }
 
 .toggle-label {

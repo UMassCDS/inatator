@@ -1,5 +1,4 @@
 .sidebar {
-  /* width: 300px; */
   width: fit-content;
   padding: 2vw;
   background-color: #f4f4f4;
@@ -9,15 +8,9 @@
   align-items: flex-start;
 }
 
-/* .sidebar label {
-  margin-top: 1%;
-} */
-
 .sidebar label,
 .sidebar input,
 .sidebar select {
-  /* margin-top: 5px;
-  margin-bottom: 10px; */
   width: 100%;
   padding: 2%;
 }
@@ -44,13 +37,7 @@
 }
 
 .taxa-info img {
-  width: 20vw; /* Ensures the image takes full width of its container */
-  height: fit-content; /* Maintains aspect ratio */
-  object-fit: contain; /* Ensures the image maintains aspect ratio and fits inside the container */
-  /* margin-bottom: 10px; */
-  /* align-self: center; */
+  width: 20vw;
+  height: fit-content;
+  object-fit: contain;
 }
-
-/* .ui-autocomplete {
-  width: fit-content !important;
-} */
