@@ -11,7 +11,7 @@
   display: flex;
   justify-content: center;
   gap: 1vw;
-  padding: 1%;
+  /* padding: 1%; */
   /* padding: 10px;
   background-color: #f4f4f4;
   border-bottom: 1px solid #ddd; */
@@ -91,7 +91,7 @@ input:not(:checked) + .slider {
 }
 
 .buttons button {
-  padding: 10px 20px;
+  padding: 0.8em 1.6em;
   color: #f4f4f4;
   border: none;
   border-radius: 5px;

@@ -6,13 +6,15 @@ body {
 
 .app-container {
   display: flex;
-  flex-direction: row; /* Sidebar on the left */
-  /* height: 100vh; Utilize entire screen */
+  flex-direction: row;
+  height: 100vh;
   width: 100vw;
 }
 
 .main-content {
   flex-grow: 1;
+  height: auto;
+  width: fit-content;
   display: flex;
   flex-direction: column;
 }
