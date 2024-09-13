@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Responsive styles that dynamically render based on screen size
 - Reformatted autocomplete results
 - Trimmed down autocomplete results to display top 15 results, instead of hundreds
+- Hover effects over buttons for more responsiveness
 
 ### Updated
 - package-lock.json: Lock file was updated when ran with `npm i`, removal of testing libraries for react suggest a change in react's dependencies.
