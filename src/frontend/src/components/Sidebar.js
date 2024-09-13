@@ -33,7 +33,11 @@ const Sidebar = forwardRef((props, ref) => {
         setTaxaNames(data);
         // Initialize jQuery UI autocomplete
         $("#taxa_name").autocomplete({
-          source: data,
+          source: function (request, response) {
+            var results = $.ui.autocomplete.filter(data, request.term);
+
+            response(results.slice(0, 15)); // Limits results to 15 only
+          },
           minLength: 4,
           change: function (event, ui) {
             // Check if the value is in the list
@@ -48,6 +52,11 @@ const Sidebar = forwardRef((props, ref) => {
           select: function (event, ui) {
             setTaxaName(ui.item.value);
             setUpdateImgURL(true);
+          },
+          open: function (event, ui) {
+            $(".ui-autocomplete")
+              .css("width", "fit-content")
+              .css("z-index", "9999");
           },
         });
       })

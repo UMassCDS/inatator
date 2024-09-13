@@ -33,7 +33,7 @@ const Buttons = ({
   ];
 
   return (
-    <div className="buttons">
+    <div className="buttons-topbar">
       <div className="toggle-container">
         <span
           className={`toggle-label ${isPresence ? "presence" : " absence"}`}
@@ -46,11 +46,13 @@ const Buttons = ({
         </label>
       </div>
 
-      {buttons.map((button) => (
-        <button key={button.id} id={button.id} onClick={button.onClick}>
-          {button.text}
-        </button>
-      ))}
+      <div className="buttons">
+        {buttons.map((button) => (
+          <button key={button.id} id={button.id} onClick={button.onClick}>
+            {button.text}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
