@@ -1,3 +1,9 @@
+.instruction-container {
+  padding: 1em;
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ddd;
+}
+
 .instructions h3 {
   margin-top: 2%;
 }
