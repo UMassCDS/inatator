@@ -16,7 +16,7 @@ function Instruction() {
         position="left"
         withCloseButton={false}
         overlayProps={{ backgroundOpacity: 0.5, blur: 0.4 }}
-        size="sm"
+        size="33%"
       >
         {
           <div className="instructions">
