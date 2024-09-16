@@ -8,8 +8,10 @@ import {
   useCombobox,
   Combobox,
   InputBase,
+  LoadingOverlay,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { useDisclosure } from "@mantine/hooks";
 
 const MAX_OPTION_SIZE = 7;
 
@@ -29,6 +31,44 @@ function getFilteredOptions(data, searchQuery, limit) {
   return result;
 }
 
+// function that handles inat api calls and loading status
+const useTaxaInfo = (handlers) => {
+  const [taxaInfo, setTaxaInfo] = useState(null);
+
+  const fetchTaxaInfo = async (taxaValue) => {
+    if (!taxaValue) {
+      setTaxaInfo(null);
+      return;
+    }
+
+    try {
+      const split = taxaValue.split("(")[1];
+      const taxaid = split ? split.slice(0, split.length - 1) : null;
+
+      if (taxaid) {
+        handlers.open();
+        try {
+          const response = await fetch(
+            `https://api.inaturalist.org/v1/taxa/${taxaid}`
+          );
+          const data = await response.json();
+          setTaxaInfo(data.results[0]);
+        } catch (error) {
+          console.error("Error fetching taxa info:", error);
+          setTaxaInfo(null);
+        } finally {
+          handlers.close();
+        }
+      }
+    } catch (error) {
+      console.error("Error in parsing taxa value:", error);
+      setTaxaInfo(null);
+    }
+  };
+
+  return { taxaInfo, fetchTaxaInfo };
+};
+
 function Sidebar({ onFormChange }) {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -38,7 +78,9 @@ function Sidebar({ onFormChange }) {
   const [search, setSearch] = useState("");
 
   const [taxaNames, setTaxaNames] = useState([]);
-  const [taxaInfo, setTaxaInfo] = useState(null);
+
+  const [visible, handlers] = useDisclosure(false);
+  const { taxaInfo, fetchTaxaInfo } = useTaxaInfo(handlers);
 
   // Set initial form values, geomodel may need to be tweaked
   const form = useForm({
@@ -72,31 +114,6 @@ function Sidebar({ onFormChange }) {
     </Combobox.Option>
   ));
 
-  // inat api fetch function
-  useEffect(() => {
-    if (!taxaValue) {
-      setTaxaInfo(null);
-      return;
-    }
-
-    try {
-      const split = taxaValue.split("(")[1]; // extract taxa id
-      const taxaid = split ? split.slice(0, split.length - 1) : null;
-
-      if (taxaid) {
-        fetch(`https://api.inaturalist.org/v1/taxa/${taxaid}`)
-          .then((response) => response.json())
-          .then((data) => {
-            setTaxaInfo(data.results[0]);
-          })
-          .catch((error) => console.error("Error fetching taxa info:", error));
-      }
-    } catch (error) {
-      console.error("Error in fetching taxa info:", error);
-      setTaxaInfo(null);
-    }
-  }, [taxaValue]);
-
   // form changes are reflected on state
   useEffect(() => {
     onFormChange(form.values);
@@ -104,7 +121,7 @@ function Sidebar({ onFormChange }) {
 
   return (
     <>
-      {/* Combobox has autocomplete style and forces user to select a valid option */}
+      {/* combobox has autocomplete style and forces user to select a valid option */}
       <Combobox
         store={combobox}
         withinPortal={false}
@@ -113,7 +130,7 @@ function Sidebar({ onFormChange }) {
           form.setFieldValue("taxa", val);
           setSearch(val);
           combobox.closeDropdown();
-          console.log(form.values);
+          fetchTaxaInfo(val);
         }}
       >
         <Combobox.Target>
@@ -178,6 +195,10 @@ function Sidebar({ onFormChange }) {
       />
       {taxaInfo && (
         <div style={{ marginTop: "5%" }}>
+          <LoadingOverlay
+            visible={visible}
+            overlayProps={{ radius: "sm", blur: 2 }}
+          />
           <Image
             src={
               taxaInfo.default_photo.medium_url || taxaInfo.default_photo.url

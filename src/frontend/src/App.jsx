@@ -1,10 +1,10 @@
 import "./styles/App.css";
 import "@mantine/core/styles.css";
 import { AppShell, Burger, Group, MantineProvider } from "@mantine/core";
-// import Instruction from "./components/Instruction";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
+import Instruction from "./components/Instruction";
 
 function App() {
   const [sideBarOpened, { toggle }] = useDisclosure();
@@ -44,7 +44,9 @@ function App() {
           <AppShell.Navbar p="md">
             <Sidebar onFormChange={handleSideBarChange} />
           </AppShell.Navbar>
-          <AppShell.Main>Main</AppShell.Main>
+          <AppShell.Main>
+            <Instruction />
+          </AppShell.Main>
         </AppShell>
       }
     </MantineProvider>
