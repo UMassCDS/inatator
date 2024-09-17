@@ -93,12 +93,12 @@ function Sidebar({ onFormChange }) {
   });
 
   useEffect(() => {
+    console.log("Loaded taxa_names.json");
     // Fetch taxa json metadata
     fetch("/static/taxa_names.json")
       .then((response) => response.json())
       .then((data) => {
         setTaxaNames(data); //data.map((name) => ({ value: name, label: name }))
-        console.log("Loaded taxa_names.json");
       });
   }, []);
 

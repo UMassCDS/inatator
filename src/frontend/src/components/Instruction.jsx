@@ -2,7 +2,8 @@
 // import "../styles/Instruction.css";
 
 import { useDisclosure } from "@mantine/hooks";
-import { Drawer, Button } from "@mantine/core";
+import { Drawer, ActionIcon } from "@mantine/core";
+import { IconHelp } from "@tabler/icons-react";
 import "../styles/Instruction.css";
 
 function Instruction() {
@@ -143,7 +144,9 @@ function Instruction() {
           </div>
         }
       </Drawer>
-      <Button onClick={open}>Instructions</Button>
+      <ActionIcon variant="default" size="md" onClick={open}>
+        <IconHelp />
+      </ActionIcon>
     </>
   );
 }

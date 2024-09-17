@@ -1,14 +1,14 @@
-import React from "react";
-import "../styles/Button.css";
+/* eslint-disable react/prop-types */
+import { Button, Group, Switch } from "@mantine/core";
 
-const Buttons = ({
+function ButtonsPanel({
   onGeneratePrediction,
   onSaveAnnotation,
   onClearAnnotation,
   onLoadAnnotation,
   isPresence,
   onToggle,
-}) => {
+}) {
   const buttons = [
     {
       id: "generate_prediction",
@@ -33,28 +33,20 @@ const Buttons = ({
   ];
 
   return (
-    <div className="buttons-topbar">
-      <div className="toggle-container">
-        <span
-          className={`toggle-label ${isPresence ? "presence" : " absence"}`}
+    <Group>
+      <Switch checked={isPresence} onChange={onToggle}></Switch>
+      {buttons.map((value) => (
+        <Button
+          key={value.id}
+          id={value.id}
+          onClick={value.onClick}
+          variant="filled"
         >
-          {isPresence ? "presence" : "absence"}
-        </span>
-        <label className="switch">
-          <input type="checkbox" checked={isPresence} onChange={onToggle} />
-          <span className="slider round"></span>
-        </label>
-      </div>
-
-      <div className="buttons">
-        {buttons.map((button) => (
-          <button key={button.id} id={button.id} onClick={button.onClick}>
-            {button.text}
-          </button>
-        ))}
-      </div>
-    </div>
+          {value.text}
+        </Button>
+      ))}
+    </Group>
   );
-};
+}
 
-export default Buttons;
+export default ButtonsPanel;

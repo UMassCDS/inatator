@@ -1,9 +1,11 @@
 import "./styles/App.css";
 import "@mantine/core/styles.css";
-import { AppShell, Burger, Group, MantineProvider } from "@mantine/core";
+import { AppShell, Burger, Group, MantineProvider, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
+// import Instruction from "./components/Instruction";
+import ButtonsPanel from "./components/Buttons";
 import Instruction from "./components/Instruction";
 
 function App() {
@@ -27,25 +29,31 @@ function App() {
           padding="md"
         >
           <AppShell.Header>
-            <Group h="100%" px="md">
-              <Burger
-                opened={sideBarOpened}
-                onClick={toggle}
-                hiddenFrom="sm"
-                size="sm"
-              />
-              <img
-                src="/static/favicon.ico"
-                alt="Logo"
-                style={{ height: "30px" }}
-              />
+            <Group justify="space-between" h="100%" px="md">
+              <Group h="100%" px="md">
+                <Burger
+                  opened={sideBarOpened}
+                  onClick={toggle}
+                  hiddenFrom="sm"
+                  size="sm"
+                />
+                <img
+                  src="/static/favicon.ico"
+                  alt="Logo"
+                  style={{ height: "30px" }}
+                />
+                <Text size="lg" fw={700}>
+                  iNatator
+                </Text>
+              </Group>
+              <Instruction />
             </Group>
           </AppShell.Header>
           <AppShell.Navbar p="md">
             <Sidebar onFormChange={handleSideBarChange} />
           </AppShell.Navbar>
           <AppShell.Main>
-            <Instruction />
+            <ButtonsPanel />
           </AppShell.Main>
         </AppShell>
       }
