@@ -1,13 +1,14 @@
 /* eslint-disable react/prop-types */
 import { Button, Group, Switch } from "@mantine/core";
+import { useState } from "react";
+import "../styles/Buttons.css";
 
 function ButtonsPanel({
   onGeneratePrediction,
   onSaveAnnotation,
   onClearAnnotation,
   onLoadAnnotation,
-  isPresence,
-  onToggle,
+  onSwitchChange,
 }) {
   const buttons = [
     {
@@ -32,9 +33,22 @@ function ButtonsPanel({
     },
   ];
 
+  const [isPresence, setIsPresence] = useState(true);
+
   return (
     <Group>
-      <Switch checked={isPresence} onChange={onToggle}></Switch>
+      <Group>
+        <Switch
+          className={`custom-switch ${isPresence ? "presence" : "absence"}`}
+          checked={isPresence}
+          onChange={(event) => {
+            setIsPresence(event.currentTarget.checked);
+            onSwitchChange(event.currentTarget.checked);
+          }}
+          size="md"
+          label={isPresence ? "presence" : "absence"}
+        />
+      </Group>
       {buttons.map((value) => (
         <Button
           key={value.id}

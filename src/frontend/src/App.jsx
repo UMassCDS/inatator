@@ -4,16 +4,43 @@ import { AppShell, Burger, Group, MantineProvider, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
-// import Instruction from "./components/Instruction";
 import ButtonsPanel from "./components/Buttons";
 import Instruction from "./components/Instruction";
+import {
+  parseTaxaID,
+  handleAddAnnotationHexagonIDs,
+  handleAddAnnotationMultiSelect,
+  handleClearAnnotation,
+  handleGeneratePrediction,
+  handleLoadAnnotation,
+  handleSaveAnnotation,
+} from "./util";
+
+const OCEAN_MASK = false;
 
 function App() {
   const [sideBarOpened, { toggle }] = useDisclosure();
   const [sideBarData, setSideBarData] = useState({});
+  const [isPresence, setIsPresence] = useState(true);
+  const [predictionHexagonIDs, setPredictionHexagonIDs] = useState([]);
+  const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState({
+    presence: [],
+    absence: [],
+  });
+
+  const handler = {
+    setPredictionHexagonIDs: (data) => setPredictionHexagonIDs(data),
+    setAnnotationHexagonIDs: (data) => setAnnotationHexagonIDs(data),
+  };
 
   const handleSideBarChange = (data) => {
     setSideBarData(data);
+    console.log(data);
+  };
+
+  const handleSwitchChange = (data) => {
+    setIsPresence(data);
+    console.log(data);
   };
 
   return (
@@ -53,7 +80,44 @@ function App() {
             <Sidebar onFormChange={handleSideBarChange} />
           </AppShell.Navbar>
           <AppShell.Main>
-            <ButtonsPanel />
+            <ButtonsPanel
+              onSwitchChange={handleSwitchChange}
+              onGeneratePrediction={() => {
+                const payloadData = {
+                  taxa_name: sideBarData.taxa,
+                  hex_resolution: sideBarData.hexResolution,
+                  threshold: sideBarData.threshold,
+                  model: sideBarData.geomodel,
+                  disable_ocean_mask: OCEAN_MASK,
+                };
+
+                handleGeneratePrediction(payloadData, handler);
+              }}
+              onSaveAnnotation={() => {
+                const payloadData = {
+                  taxa_name: sideBarData.taxa,
+                  hex_resolution: sideBarData.hexResolution,
+                  threshold: sideBarData.threshold,
+                  model: sideBarData.geomodel,
+                  disable_ocean_mask: OCEAN_MASK,
+                  annotation_hexagon_ids: annotationHexagonIDs,
+                };
+
+                handleSaveAnnotation(payloadData, handler);
+              }}
+              onLoadAnnotation={() => {
+                const payloadData = {
+                  taxa_name: sideBarData.taxa,
+                  hex_resolution: sideBarData.hexResolution,
+                  threshold: sideBarData.threshold,
+                  model: sideBarData.geomodel,
+                  disable_ocean_mask: OCEAN_MASK,
+                };
+
+                handleLoadAnnotation(payloadData, handler);
+              }}
+              onClearAnnotation={() => handleClearAnnotation(null, handler)}
+            />
           </AppShell.Main>
         </AppShell>
       }

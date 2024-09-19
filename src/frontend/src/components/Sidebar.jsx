@@ -12,6 +12,7 @@ import {
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
+import { parseTaxaID } from "../util";
 
 const MAX_OPTION_SIZE = 7;
 
@@ -42,8 +43,7 @@ const useTaxaInfo = (handlers) => {
     }
 
     try {
-      const split = taxaValue.split("(")[1];
-      const taxaid = split ? split.slice(0, split.length - 1) : null;
+      const taxaid = parseTaxaID(taxaValue);
 
       if (taxaid) {
         handlers.open();
@@ -98,7 +98,7 @@ function Sidebar({ onFormChange }) {
     fetch("/static/taxa_names.json")
       .then((response) => response.json())
       .then((data) => {
-        setTaxaNames(data); //data.map((name) => ({ value: name, label: name }))
+        setTaxaNames(data);
       });
   }, []);
 

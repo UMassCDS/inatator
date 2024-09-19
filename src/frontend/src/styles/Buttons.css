@@ -1,4 +1,48 @@
-.buttons-topbar {
+.custom-switch.presence .mantine-Switch-track {
+  background-color: var(--presence-color, #00b175);
+}
+
+.custom-switch.absence .mantine-Switch-track {
+  background-color: var(--absence-color, #e14b23);
+}
+
+button {
+  transition: all 0.1s ease;
+}
+
+button:hover {
+  filter: drop-shadow(0px 3px #6e6e6e);
+}
+
+button:active {
+  filter: brightness(0.7) drop-shadow(0px 3px #6e6e6e);
+}
+
+#generate_prediction {
+  background-color: #4eaee4;
+}
+
+#save_annotation {
+  background-color: #00b175;
+}
+
+#load_annotation {
+  background-color: #eda52a;
+}
+
+#clear_annotation {
+  background-color: #e14b23;
+}
+
+/* .absence-switch:checked {
+  color: #e14b23;
+}
+
+.absence-switch {
+  color: #00b175;
+} */
+
+/* .buttons-topbar {
   display: flex;
   justify-content: center;
   gap: 1vw;
@@ -38,9 +82,8 @@
   position: relative;
   display: inline-block;
   width: 34px; /*Should stay px*/
-  height: 20px; /*this is a prefab component*/
-}
-
+/* height: 20px; /*this is a prefab component*/
+/* } 
 .switch input {
   opacity: 0;
   width: 0;
@@ -114,4 +157,4 @@ input:not(:checked) + .slider {
 
 #clear_annotation {
   background-color: #e14b23;
-}
+} */
