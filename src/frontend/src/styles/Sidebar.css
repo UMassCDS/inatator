@@ -1,6 +1,6 @@
 .sidebar {
-  width: 300px;
-  padding: 20px;
+  width: fit-content;
+  padding: 2vw;
   background-color: #f4f4f4;
   border-right: 1px solid #ddd;
   display: flex;
@@ -8,19 +8,15 @@
   align-items: flex-start;
 }
 
-.sidebar label {
-  margin-top: 10px;
-}
-
+.sidebar label,
 .sidebar input,
 .sidebar select {
-  margin-top: 5px;
-  margin-bottom: 10px;
   width: 100%;
-  padding: 5px;
+  padding: 2%;
 }
 
-.checkbox-container {
+/*Not used, keep for future updates*/
+/* .checkbox-container {
   display: flex;
   align-items: baseline;
   margin-top: 5px;
@@ -29,20 +25,19 @@
 .checkbox-container input {
   flex: content;
   margin-right: 5px;
-}
+} */
 
 .taxa-info {
-  margin-top: 20px;
+  margin-top: 1vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  align-items: start;
+  justify-content: start;
+  text-align: start;
 }
 
 .taxa-info img {
-  width: 200; /* Ensures the image takes full width of its container */
-  height: 200px; /* Maintains aspect ratio */
-  object-fit: contain; /* Ensures the image maintains aspect ratio and fits inside the container */
-  margin-bottom: 10px;
+  width: 20vw;
+  height: fit-content;
+  object-fit: contain;
 }

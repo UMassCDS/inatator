@@ -1,44 +1,45 @@
 .instruction-container {
-  padding: 10px;
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  margin: 10px;
+  padding: 1em;
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ddd;
 }
 
 .instructions h3 {
-  margin-top: 5;
+  margin-top: 2%;
 }
+
 .instructions p {
-  margin: 5px;
+  margin: 1%;
 }
+
 .instructions ul,
 .instructions ol {
-  margin-bottom: 10px;
+  margin-bottom: 2%;
 }
 
 .generate-prediction {
-  padding: 2px 2px;
+  padding: 0.1em 0.1em;
   background-color: #4eaee4;
   color: white;
   border: none;
 }
 
 .save-annotation {
-  padding: 2px 2px;
+  padding: 0.1em 0.1em;
   background-color: #00b175;
   color: white;
   border: none;
 }
 
 .load-annotation {
-  padding: 2px 2px;
+  padding: 0.1em 0.1em;
   background-color: #eda52a;
   color: white;
   border: none;
 }
 
 .clear-annotation {
-  padding: 2px 2px;
+  padding: 0.1em 0.1em;
   background-color: #e14b23;
   color: white;
   border: none;

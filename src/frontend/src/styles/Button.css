@@ -1,21 +1,26 @@
+.buttons-topbar {
+  display: flex;
+  justify-content: center;
+  gap: 1vw;
+  padding: 1%;
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ddd;
+}
+
 .buttons {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  padding: 10px;
-  background-color: #f4f4f4;
-  border-bottom: 1px solid #ddd;
+  gap: 1vw;
 }
 
 .toggle-container {
   display: flex;
   align-items: center;
-  margin-bottom: 0px;
-  margin-right: 20px;
+  padding: 1%;
 }
 
 .toggle-label {
-  width: 80px; /* Adjust width as needed */
+  width: 80px;
   text-align: right;
   margin-right: 10px;
   font-weight: bold;
@@ -32,8 +37,8 @@
 .switch {
   position: relative;
   display: inline-block;
-  width: 34px;
-  height: 20px;
+  width: 34px; /*Should stay px*/
+  height: 20px; /*this is a prefab component*/
 }
 
 .switch input {
@@ -49,7 +54,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: #f4f4f4;
   transition: 0.4s;
   border-radius: 34px;
 }
@@ -61,7 +66,7 @@
   width: 14px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: #f4f4f4;
   transition: 0.4s;
   border-radius: 50%;
 }
@@ -79,16 +84,20 @@ input:not(:checked) + .slider {
 }
 
 .buttons button {
-  padding: 10px 20px;
-  color: white;
+  padding: 0.8em 1.6em;
+  color: #f4f4f4;
   border: none;
-  /* border-radius: 5px; */
+  border-radius: 5px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+}
+
+.buttons button:hover {
+  filter: drop-shadow(0px 3px #6e6e6e);
 }
 
 .buttons button:active {
-  filter: brightness(0.8);
+  filter: brightness(0.7) drop-shadow(0px 3px #6e6e6e);
 }
 
 #generate_prediction {

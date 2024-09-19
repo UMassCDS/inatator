@@ -2,9 +2,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5px;
+  padding: 0.5em;
   height: fit-content;
   font-size: small;
-  color: white;
+  color: #f4f4f4;
   text-align: center;
 }
