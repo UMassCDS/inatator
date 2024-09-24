@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import { parseTaxaID } from "../util";
 
-const MAX_OPTION_SIZE = 7;
+const MAX_OPTION_SIZE = 7; // Number of suggestions in autocomplete box
 
 function getFilteredOptions(data, searchQuery, limit) {
   const result = [];
@@ -37,6 +37,7 @@ const useTaxaInfo = (handlers) => {
   const [taxaInfo, setTaxaInfo] = useState(null);
 
   const fetchTaxaInfo = async (taxaValue) => {
+    handlers.open();
     if (!taxaValue) {
       setTaxaInfo(null);
       return;
@@ -46,7 +47,6 @@ const useTaxaInfo = (handlers) => {
       const taxaid = parseTaxaID(taxaValue);
 
       if (taxaid) {
-        handlers.open();
         try {
           const response = await fetch(
             `https://api.inaturalist.org/v1/taxa/${taxaid}`
@@ -61,6 +61,7 @@ const useTaxaInfo = (handlers) => {
         }
       }
     } catch (error) {
+      handlers.close();
       console.error("Error in parsing taxa value:", error);
       setTaxaInfo(null);
     }
@@ -117,7 +118,7 @@ function Sidebar({ onFormChange }) {
   // form changes are reflected on state
   useEffect(() => {
     onFormChange(form.values);
-  }, [form.values, onFormChange]);
+  }, [form.values]);
 
   return (
     <>

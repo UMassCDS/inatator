@@ -1,3 +1,6 @@
+// functions to interact with the backend API
+// functions handle errors by printing
+
 const API_URL = "http://localhost:8000";
 
 export async function generatePrediction(data) {
@@ -7,7 +10,9 @@ export async function generatePrediction(data) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).then((response) => response.json());
+  })
+    .then((response) => response.json())
+    .catch((error) => console.error("Error generating prediction:", error));
   return response;
 }
 

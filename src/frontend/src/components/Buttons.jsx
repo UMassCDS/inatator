@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Button, Group, Switch } from "@mantine/core";
+import { Button, Group, Switch, Flex } from "@mantine/core";
 import { useState } from "react";
 import "../styles/Buttons.css";
 
@@ -9,7 +9,9 @@ function ButtonsPanel({
   onClearAnnotation,
   onLoadAnnotation,
   onSwitchChange,
+  isValidTaxa,
 }) {
+  // Buttons component, gets passed in logic handlers that manage state of the app
   const buttons = [
     {
       id: "generate_prediction",
@@ -33,32 +35,41 @@ function ButtonsPanel({
     },
   ];
 
-  const [isPresence, setIsPresence] = useState(true);
+  const [isPresence, setIsPresence] = useState(true); // state variable for the switch component
 
   return (
-    <Group>
-      <Group>
+    <Group style={{ padding: "1%", width: "100%", flex: "0 0 auto" }}>
+      <Flex
+        gap="xs"
+        direction="row"
+        justify="space-between"
+        align="center"
+        style={{ width: "100%" }}
+      >
         <Switch
+          disabled={!isValidTaxa}
           className={`custom-switch ${isPresence ? "presence" : "absence"}`}
           checked={isPresence}
           onChange={(event) => {
             setIsPresence(event.currentTarget.checked);
             onSwitchChange(event.currentTarget.checked);
           }}
+          style={{ height: "2em" }}
           size="md"
           label={isPresence ? "presence" : "absence"}
         />
-      </Group>
-      {buttons.map((value) => (
-        <Button
-          key={value.id}
-          id={value.id}
-          onClick={value.onClick}
-          variant="filled"
-        >
-          {value.text}
-        </Button>
-      ))}
+        {buttons.map((value) => (
+          <Button
+            disabled={!isValidTaxa}
+            key={value.id}
+            id={value.id}
+            onClick={value.onClick}
+            variant="filled"
+          >
+            {value.text}
+          </Button>
+        ))}
+      </Flex>
     </Group>
   );
 }

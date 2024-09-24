@@ -1,13 +1,11 @@
-// import React, { useState } from "react";
-// import "../styles/Instruction.css";
-
 import { useDisclosure } from "@mantine/hooks";
 import { Drawer, ActionIcon } from "@mantine/core";
 import { IconHelp } from "@tabler/icons-react";
 import "../styles/Instruction.css";
 
 function Instruction() {
-  const [opened, { open, close }] = useDisclosure(false);
+  // Instructions component, served as a drawer
+  const [opened, { open, close }] = useDisclosure(false); // Opens or closes the drawer when its clicked
 
   return (
     <>

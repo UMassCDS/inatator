@@ -18,6 +18,14 @@ button:active {
   filter: brightness(0.7) drop-shadow(0px 3px #6e6e6e);
 }
 
+button:disabled {
+  border-color: light-dark(
+    var(--mantine-color-gray-3),
+    var(--mantine-color-dark-4)
+  );
+  background-color: white !important;
+}
+
 #generate_prediction {
   background-color: #4eaee4;
 }

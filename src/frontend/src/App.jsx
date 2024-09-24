@@ -1,11 +1,20 @@
 import "./styles/App.css";
 import "@mantine/core/styles.css";
-import { AppShell, Burger, Group, MantineProvider, Text } from "@mantine/core";
+import {
+  AppShell,
+  Burger,
+  Flex,
+  Group,
+  LoadingOverlay,
+  MantineProvider,
+  Text,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import ButtonsPanel from "./components/Buttons";
 import Instruction from "./components/Instruction";
+import Map from "./components/Map";
 import {
   parseTaxaID,
   handleAddAnnotationHexagonIDs,
@@ -14,35 +23,53 @@ import {
   handleGeneratePrediction,
   handleLoadAnnotation,
   handleSaveAnnotation,
-} from "./util";
+} from "./util"; // handler functions to be passed into components
 
 const OCEAN_MASK = false;
+const HEX_RESOLUTION = 4;
 
 function App() {
+  // State variables to handle interactions and data
   const [sideBarOpened, { toggle }] = useDisclosure();
-  const [sideBarData, setSideBarData] = useState({});
+  const [sideBarData, setSideBarData] = useState({
+    taxa: "",
+    geomodel: "AN_FULL_max_1000",
+    threshold: 0.1,
+    hexResolution: 4,
+  });
   const [isPresence, setIsPresence] = useState(true);
-  const [predictionHexagonIDs, setPredictionHexagonIDs] = useState([]);
+  const [predictionHexagonIDs, setPredictionHexagonIDs] = useState(null);
   const [annotationHexagonIDs, setAnnotationHexagonIDs] = useState({
     presence: [],
     absence: [],
   });
+  const [isValidTaxa, setIsValidTaxa] = useState(false);
+  const [isLoading, loadingHandlers] = useDisclosure(false);
 
+  // handler is an object that wraps state functions
+  // handler is passed into imported handler functions
+  // handler manages app state
   const handler = {
     setPredictionHexagonIDs: (data) => setPredictionHexagonIDs(data),
     setAnnotationHexagonIDs: (data) => setAnnotationHexagonIDs(data),
+    loadingHandlers: loadingHandlers,
   };
 
+  // handler passed into sidebar component
   const handleSideBarChange = (data) => {
     setSideBarData(data);
-    console.log(data);
+    setAnnotationHexagonIDs({ presence: [], absence: [] });
+    if (parseTaxaID(data.taxa)) {
+      setIsValidTaxa(true);
+    }
   };
 
+  // handler passed into buttons component
   const handleSwitchChange = (data) => {
     setIsPresence(data);
-    console.log(data);
   };
 
+  // creates appshell(template for the application)
   return (
     <MantineProvider>
       {
@@ -80,44 +107,78 @@ function App() {
             <Sidebar onFormChange={handleSideBarChange} />
           </AppShell.Navbar>
           <AppShell.Main>
-            <ButtonsPanel
-              onSwitchChange={handleSwitchChange}
-              onGeneratePrediction={() => {
-                const payloadData = {
-                  taxa_name: sideBarData.taxa,
-                  hex_resolution: sideBarData.hexResolution,
-                  threshold: sideBarData.threshold,
-                  model: sideBarData.geomodel,
-                  disable_ocean_mask: OCEAN_MASK,
-                };
+            <Flex direction="column" style={{ position: "relative" }}>
+              <ButtonsPanel // Buttons component
+                isValidTaxa={isValidTaxa}
+                onSwitchChange={handleSwitchChange}
+                onGeneratePrediction={() => {
+                  const payloadData = {
+                    taxa_name: sideBarData.taxa,
+                    hex_resolution: sideBarData.hexResolution,
+                    threshold: sideBarData.threshold,
+                    model: sideBarData.geomodel,
+                    disable_ocean_mask: OCEAN_MASK,
+                  };
 
-                handleGeneratePrediction(payloadData, handler);
-              }}
-              onSaveAnnotation={() => {
-                const payloadData = {
-                  taxa_name: sideBarData.taxa,
-                  hex_resolution: sideBarData.hexResolution,
-                  threshold: sideBarData.threshold,
-                  model: sideBarData.geomodel,
-                  disable_ocean_mask: OCEAN_MASK,
-                  annotation_hexagon_ids: annotationHexagonIDs,
-                };
+                  handleGeneratePrediction(payloadData, handler);
+                }}
+                onSaveAnnotation={() => {
+                  const payloadData = {
+                    taxa_name: sideBarData.taxa,
+                    hex_resolution: sideBarData.hexResolution,
+                    threshold: sideBarData.threshold,
+                    model: sideBarData.geomodel,
+                    disable_ocean_mask: OCEAN_MASK,
+                    annotation_hexagon_ids: annotationHexagonIDs,
+                  };
 
-                handleSaveAnnotation(payloadData, handler);
-              }}
-              onLoadAnnotation={() => {
-                const payloadData = {
-                  taxa_name: sideBarData.taxa,
-                  hex_resolution: sideBarData.hexResolution,
-                  threshold: sideBarData.threshold,
-                  model: sideBarData.geomodel,
-                  disable_ocean_mask: OCEAN_MASK,
-                };
+                  handleSaveAnnotation(payloadData, handler);
+                }}
+                onLoadAnnotation={() => {
+                  const payloadData = {
+                    taxa_name: sideBarData.taxa,
+                    hex_resolution: sideBarData.hexResolution,
+                    threshold: sideBarData.threshold,
+                    model: sideBarData.geomodel,
+                    disable_ocean_mask: OCEAN_MASK,
+                  };
 
-                handleLoadAnnotation(payloadData, handler);
-              }}
-              onClearAnnotation={() => handleClearAnnotation(null, handler)}
-            />
+                  handleLoadAnnotation(payloadData, handler);
+                }}
+                onClearAnnotation={() => handleClearAnnotation(null, handler)}
+              />
+              <LoadingOverlay
+                visible={isLoading}
+                overlayProps={{ radius: "lg", blur: 0.2 }}
+                style={{ zIndex: 1, position: "absolute" }}
+              />
+              <div style={{ zIndex: 0 }}>
+                <Map
+                  predictionHexagonIDs={predictionHexagonIDs}
+                  annotationHexagonIDs={annotationHexagonIDs}
+                  hexResolution={HEX_RESOLUTION}
+                  taxonId={parseTaxaID(sideBarData.taxa)}
+                  onAddAnnotationHexagonIDs={(hexagonID) =>
+                    handleAddAnnotationHexagonIDs(
+                      hexagonID,
+                      handler,
+                      isPresence
+                    )
+                  }
+                  onAddAnnotationMultiSelect={(
+                    hexagonIDs,
+                    isAddAnnotationMultiSelect
+                  ) =>
+                    handleAddAnnotationMultiSelect(
+                      hexagonIDs,
+                      isAddAnnotationMultiSelect,
+                      handler,
+                      isPresence
+                    )
+                  }
+                />
+              </div>
+            </Flex>
           </AppShell.Main>
         </AppShell>
       }
