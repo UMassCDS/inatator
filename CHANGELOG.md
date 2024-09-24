@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README updated to reflect new application url and instruction on running Vite
 - Converted old JS components into JSX components and updated components with mantine counterparts
 - frontend dockerfile to build vite before serving
+- Broke up functions in App.js into separate functions in utils.js, makes it more readable
+
+### Removed
+- old css files that are now unused
+- loadingbarstatus.js, now we use loading overlays and display errors with alerts
 
 ## [1.0.0] - 2024-08-12
 ### Added
