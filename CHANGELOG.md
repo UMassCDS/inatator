@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - package-lock.json: Lock file was updated when ran with `npm i`, removal of testing libraries for react suggest a change in react's dependencies.
 - README updated to reflect new application url and instruction on running Vite
 - Converted old JS components into JSX components and updated components with mantine counterparts
+- frontend dockerfile to build vite before serving
 
 ## [1.0.0] - 2024-08-12
 ### Added
