@@ -11,6 +11,7 @@ import {
   InputBase,
   LoadingOverlay,
   Tooltip,
+  Stack,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
@@ -85,12 +86,14 @@ function Sidebar({ onFormChange }) {
   const [taxaNames, setTaxaNames] = useState([]);
 
   const [visible, handlers] = useDisclosure(false);
+  const [imgLoading, imgLoadingHandlers] = useDisclosure(false);
   const { taxaInfo, fetchTaxaInfo } = useTaxaInfo(handlers);
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const cycleImage = () => {
     if (taxaInfo && taxaInfo.taxon_photos) {
+      imgLoadingHandlers.open();
       setCurrentImageIndex(
         (prevIndex) => (prevIndex + 1) % taxaInfo.taxon_photos.length
       );
@@ -135,7 +138,7 @@ function Sidebar({ onFormChange }) {
   }, [form.values]);
 
   return (
-    <>
+    <Stack gap="md">
       {/* combobox has autocomplete style and forces user to select a valid option */}
       <Combobox
         store={combobox}
@@ -210,24 +213,54 @@ function Sidebar({ onFormChange }) {
         {...form.getInputProps("hexResolution")}
       />
       {taxaInfo && (
-        <div style={{ marginTop: "5%", padding: "10px", textAlign: "center" }}>
+        <div
+          style={{
+            marginTop: "5%",
+            padding: "10px",
+            textAlign: "center",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
           <LoadingOverlay
             visible={visible}
             overlayProps={{ radius: "sm", blur: 2 }}
           />
 
-          <Image
-            src={
-              taxaInfo.taxon_photos[currentImageIndex]?.photo.original_url ||
-              taxaInfo.default_photo.medium_url ||
-              taxaInfo.default_photo.url
-            }
-            alt={taxaInfo.name}
-            width={200}
-            height={200}
-            fit="contain"
-            style={{ borderRadius: "10px", marginBottom: "15px" }}
-          />
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "auto",
+            }}
+          >
+            <LoadingOverlay
+              visible={imgLoading}
+              overlayProps={{ radius: "sm", blur: 2 }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                borderRadius: "10px",
+              }}
+            />
+            <Image
+              src={
+                taxaInfo.taxon_photos[currentImageIndex]?.photo.original_url ||
+                taxaInfo.default_photo.medium_url ||
+                taxaInfo.default_photo.url
+              }
+              alt={taxaInfo.name}
+              width={200}
+              height={200}
+              fit="contain"
+              style={{ borderRadius: "10px", marginBottom: "15px" }}
+              onLoad={() => imgLoadingHandlers.close()}
+            />
+          </div>
 
           <Tooltip label="Cycle to next image">
             <ActionIcon
@@ -278,7 +311,7 @@ function Sidebar({ onFormChange }) {
           )}
         </div>
       )}
-    </>
+    </Stack>
   );
 }
 
