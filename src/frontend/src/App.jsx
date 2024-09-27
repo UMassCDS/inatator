@@ -1,4 +1,3 @@
-import "./styles/App.css";
 import "@mantine/core/styles.css";
 import {
   AppShell,

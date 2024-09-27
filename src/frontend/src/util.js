@@ -12,10 +12,6 @@ export async function handleGeneratePrediction(data, handler) {
   try {
     handler.loadingHandlers.open();
     const response = await generatePrediction(data);
-    if (response instanceof Error) {
-      console.error("Error generating prediction:", response.message);
-      alert("Operation failed. Please try again later.");
-    }
 
     if (response.prediction_hexagon_ids) {
       handler.setPredictionHexagonIDs(response.prediction_hexagon_ids);
@@ -25,9 +21,10 @@ export async function handleGeneratePrediction(data, handler) {
     }
     handler.loadingHandlers.close();
   } catch (error) {
-    handler.loadingHandlers.close();
     console.error("Error generating prediction:", error);
     alert("An unexpected error occurred.");
+  } finally {
+    handler.loadingHandlers.close();
   }
 }
 
@@ -43,9 +40,10 @@ export async function handleSaveAnnotation(data, handler) {
 
     handler.loadingHandlers.close();
   } catch (error) {
-    handler.loadingHandlers.close();
     console.error("Error save annotation:", error);
     alert("An unexpected error occurred.");
+  } finally {
+    handler.loadingHandlers.close();
   }
 }
 
@@ -56,9 +54,10 @@ export async function handleClearAnnotation(data, handler) {
     handler.setAnnotationHexagonIDs({ presence: [], absence: [] });
     handler.loadingHandlers.close();
   } catch (error) {
-    handler.loadingHandlers.close();
     console.error("Error clear annotation:", error);
     alert("An unexpected error occurred.");
+  } finally {
+    handler.loadingHandlers.close();
   }
 }
 
@@ -77,9 +76,10 @@ export async function handleLoadAnnotation(data, handler) {
     }
     handler.loadingHandlers.close();
   } catch (error) {
-    handler.loadingHandlers.close();
     console.error("Error load annotation:", error);
     alert("An unexpected error occurred.");
+  } finally {
+    handler.loadingHandlers.close();
   }
 }
 
