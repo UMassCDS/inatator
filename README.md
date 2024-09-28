@@ -93,10 +93,10 @@ docker compose up --build db
 1. Launch another terminal window and navigate to project root.
 2. Launch the **frontend**:
 ```bash
-  npm start --prefix src/frontend/
+  npm run dev --prefix src/frontend/
 ```
 
-In your web browser, open the link [http://localhost:3000/](http://localhost:3000/)
+In your web browser, open the link [http://localhost:5173/](http://localhost:5173/)
 
 
 ## Run Application Locally with Docker Desktop

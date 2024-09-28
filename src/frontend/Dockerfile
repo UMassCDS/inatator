@@ -1,27 +1,26 @@
-# Use an official Node runtime as a parent image for building the React application
+# Build stage
 FROM node:20-bullseye-slim as build
 
-# Set the working directory in the container to /app
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json files to the working directory
-COPY package.json .
+# Copy package.json and package-lock.json (if available)
+COPY package*.json ./
 
-# Install dependencies using npm and install react-scripts globally with silent flag
-RUN npm install 
+# Install dependencies
+RUN npm install
 
-# Copy the entire local directory's contents into the container at /app
-COPY src/ ./src/
-COPY public/ ./public/
+# Copy the rest of the application code
+COPY . .
 
-# Build the React application
+# Build the Vite React application
 RUN npm run build
 
-# Use the official Nginx stable image for serving the built React application
+# Serve stage
 FROM nginx:stable-alpine
 
-# Copy the build output from the previous stage to the Nginx html directory
-COPY --from=build /app/build /usr/share/nginx/html
+# Copy the build output from the build stage to the Nginx html directory
+COPY --from=build /app/dist /usr/share/nginx/html
 
 # Expose port 80 to allow external access
 EXPOSE 80

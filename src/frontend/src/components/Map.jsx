@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -14,6 +15,9 @@ import "leaflet-draw/dist/leaflet.draw.css";
 import * as h3 from "h3-js/legacy";
 import L from "leaflet";
 import "../styles/Map.css";
+window.type = true; // sets global type variable, used by leaflet-draw, without it the rectangle select fails
+// An ongoing issue: https://github.com/Leaflet/Leaflet.draw/issues/1026
+// Might need to switch map libraries because of it
 
 // Customizing the tooltip messages
 L.drawLocal.draw.toolbar.buttons.rectangle = "REMOVE annotation hexagons";
@@ -27,7 +31,7 @@ L.drawLocal.draw.handlers.polygon.tooltip.cont =
 L.drawLocal.draw.handlers.polygon.tooltip.end =
   "Click the first point to finish drawing and fill the shape with hexagons";
 
-// Tools
+// Helper function
 const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
   if (hexagonIDs) {
     const hexagons = hexagonIDs.map((hexID) =>
@@ -38,8 +42,8 @@ const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
   return null;
 };
 
-// Component to generate and display hexagons
-const HexagonLayer = ({ hexResolution }) => {
+// Hexagon render layer, after certain zoom it will display gray hexagons on screen
+function HexagonLayer({ hexResolution }) {
   const [hexagons, setHexagons] = useState([]);
   const map = useMap();
 
@@ -78,10 +82,10 @@ const HexagonLayer = ({ hexResolution }) => {
       }}
     />
   );
-};
+}
 
-// Component for Prediction Polygon
-const PredictionPolygon = ({ hullPoints }) => {
+// Not used
+function PredictionPolygon({ hullPoints }) {
   const map = useMap();
 
   useEffect(() => {
@@ -98,9 +102,10 @@ const PredictionPolygon = ({ hullPoints }) => {
       />
     )
   );
-};
+}
 
-const PredictionHexagons = ({ predictionHexagonIDs }) => {
+// Layer for prediction hexagons, uses handler functions to manage state
+function PredictionHexagons({ predictionHexagonIDs }) {
   const map = useMap();
 
   const [predictionHexagons, setPredictionHexagons] = useState(null);
@@ -125,9 +130,10 @@ const PredictionHexagons = ({ predictionHexagonIDs }) => {
       />
     )
   );
-};
+}
 
-const AnnotationHexagonsLayer = ({ annotationHexagonIDs, color }) => {
+// Annotation hexagon layer, uses handlers to manage state
+function AnnotationHexagonsLayer({ annotationHexagonIDs, color }) {
   const [annotationHexagons, setAnnotationHexagons] = useState([]);
 
   useEffect(() => {
@@ -145,8 +151,9 @@ const AnnotationHexagonsLayer = ({ annotationHexagonIDs, color }) => {
       />
     )
   );
-};
+}
 
+// Creates a listener on map
 const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
   useMapEvents({
     click: (e) => {
@@ -157,7 +164,7 @@ const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
   return null;
 };
 
-const Map = ({
+function Map({
   hullPoints,
   predictionHexagonIDs,
   annotationHexagonIDs,
@@ -165,21 +172,22 @@ const Map = ({
   taxonId,
   onAddAnnotationHexagonIDs,
   onAddAnnotationMultiSelect,
-}) => {
-  console.log("Render map");
-
+}) {
   const [multipleAnnotationHexagonIDs, setMultipleAnnotationHexagonIDs] =
     useState(null);
   const [isAddAnnotationMultiSelect, setIsAddAnnotationMultiSelect] =
     useState(true);
 
+  // Function to register created polygons on the map
   const handleCreated = (e) => {
+    console.log(e);
     var hexagonIds = null;
     try {
       const layer = e.layer;
       const polygonCoords = layer
         .getLatLngs()[0]
         .map((latlng) => [latlng.lat, latlng.lng]);
+      console.log(polygonCoords);
       hexagonIds = h3.polyfill(polygonCoords, hexResolution);
       // Add hexagons for each vertex of the polygon
       polygonCoords.map((latlng) =>
@@ -187,6 +195,7 @@ const Map = ({
       );
       // catch an error if the figure is not fully drawn
     } catch (error) {
+      console.error("Error ocurred in map:", error);
       hexagonIds = null;
     }
     // Clean blue select layer
@@ -243,7 +252,7 @@ const Map = ({
           </LayersControl.BaseLayer>
 
           {/* Render the Hexagon Layer */}
-          <LayersControl.Overlay checked name="Hexagon Grid">
+          <LayersControl.Overlay name="Hexagon Grid">
             <HexagonLayer hexResolution={hexResolution} />
           </LayersControl.Overlay>
 
@@ -307,6 +316,6 @@ const Map = ({
       </MapContainer>
     </div>
   );
-};
+}
 
 export default Map;

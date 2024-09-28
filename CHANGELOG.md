@@ -11,9 +11,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reformatted autocomplete results
 - Trimmed down autocomplete results to display top 15 results, instead of hundreds
 - Hover effects over buttons for more responsiveness
+- mantine component library components
+- frontend is switched to vite+react, recommended by mantine library
+- Application now uses Vite build tool
+- Added new visuals for loading status
 
 ### Updated
 - package-lock.json: Lock file was updated when ran with `npm i`, removal of testing libraries for react suggest a change in react's dependencies.
+- README updated to reflect new application url and instruction on running Vite
+- Converted old JS components into JSX components and updated components with mantine counterparts
+- frontend dockerfile to build vite before serving
+- Broke up functions in App.js into separate functions in utils.js, makes it more readable
+
+### Removed
+- old css files that are now unused
+- loadingbarstatus.js, now we use loading overlays and display errors with alerts
 
 ## [1.0.0] - 2024-08-12
 ### Added

@@ -1,0 +1,43 @@
+.custom-switch.presence .mantine-Switch-track {
+  background-color: var(--presence-color, #00b175);
+}
+
+.custom-switch.absence .mantine-Switch-track {
+  background-color: var(--absence-color, #e14b23);
+}
+
+button {
+  transition: all 0.1s ease;
+}
+
+button:hover {
+  filter: drop-shadow(0px 3px #6e6e6e);
+}
+
+button:active {
+  filter: brightness(0.7) drop-shadow(0px 3px #6e6e6e);
+}
+
+button:disabled {
+  border-color: light-dark(
+    var(--mantine-color-gray-3),
+    var(--mantine-color-dark-4)
+  );
+  background-color: white !important;
+}
+
+#generate_prediction {
+  background-color: #4eaee4;
+}
+
+#save_annotation {
+  background-color: #00b175;
+}
+
+#load_annotation {
+  background-color: #eda52a;
+}
+
+#clear_annotation {
+  background-color: #e14b23;
+}
