@@ -3,6 +3,7 @@
 
 const API_URL = "http://localhost:8000";
 
+// Errors from api functions must be handled by the callers, in util.js
 export async function generatePrediction(data) {
   const response = await fetch(`${API_URL}/generate_prediction/`, {
     method: "POST",
@@ -10,10 +11,13 @@ export async function generatePrediction(data) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .catch((error) => console.error("Error generating prediction:", error));
-  return response;
+  });
+
+  if (!response.ok) {
+    throw new Error("Fetch error, status:", response.status);
+  }
+
+  return await response.json();
 }
 
 export async function saveAnnotation(data) {
@@ -23,11 +27,12 @@ export async function saveAnnotation(data) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .catch((error) => console.error("Error saving annotation:", error));
+  });
+  if (!response.ok) {
+    throw new Error("Fetch error, status:", response.status);
+  }
 
-  return response;
+  return await response.json();
 }
 
 export async function loadAnnotation(data) {
@@ -37,9 +42,10 @@ export async function loadAnnotation(data) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .catch((error) => console.error("Error loading annotation:", error));
+  });
+  if (!response.ok) {
+    throw new Error("Fetch error, status:", response.status);
+  }
 
-  return response;
+  return await response.json();
 }
