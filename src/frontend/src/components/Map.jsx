@@ -31,15 +31,43 @@ L.drawLocal.draw.handlers.polygon.tooltip.cont =
 L.drawLocal.draw.handlers.polygon.tooltip.end =
   "Click the first point to finish drawing and fill the shape with hexagons";
 
+// Helper functions
+const dropSplits = (boundary) => {
+  const left = [];
+  const right = [];
+
+  // iterates 6 times per hexagon
+  for (let i = 0; i < boundary.length; i++) {
+    const point = boundary[i];
+    if (point[1] < 0) {
+      left.push(point);
+    } else {
+      right.push(point);
+    }
+  }
+
+  if (left.length === 0 || right.length === 0) {
+    return left.length === 0 ? right : left;
+  } else {
+    return null;
+  }
+};
+
 // Helper function
 const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
-  if (hexagonIDs) {
-    const hexagons = hexagonIDs.map((hexID) =>
-      h3.h3ToGeoBoundary(hexID, false).map(([lat, lng]) => [lat, lng])
-    );
-    return hexagons;
+  if (!hexagonIDs) {
+    return null;
   }
-  return null;
+  const hexagons = hexagonIDs
+    .map((hexID) => {
+      const boundary = h3
+        .h3ToGeoBoundary(hexID, false)
+        .map(([lat, lng]) => [lat, lng]);
+      return dropSplits(boundary);
+    })
+    .filter((b) => b !== null);
+
+  return hexagons;
 };
 
 // Hexagon render layer, after certain zoom it will display gray hexagons on screen
@@ -158,7 +186,9 @@ const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
   useMapEvents({
     click: (e) => {
       const hexagonID = h3.geoToH3(e.latlng.lat, e.latlng.lng, hexResolution);
-      onAddAnnotationHexagonIDs(hexagonID);
+      if (dropSplits(h3.h3ToGeoBoundary(hexagonID)) !== null) {
+        onAddAnnotationHexagonIDs(hexagonID);
+      }
     },
   });
   return null;
@@ -220,6 +250,12 @@ function Map({
         center={[39, 34]}
         zoom={3}
         style={{ height: "100%", width: "100%" }}
+        maxBounds={[
+          [-90, -180],
+          [90, 180],
+        ]}
+        worldCopyJump:false
+        maxBoundsViscosity={0.8}
       >
         <LayersControl position="topright">
           {/* Base Layers */}
@@ -260,6 +296,7 @@ function Map({
           <LayersControl.Overlay checked name="iNaturalist Observations">
             <TileLayer
               url={`https://tiles.inaturalist.org/v1/grid/{z}/{x}/{y}.png?taxon_id=${taxonId}`}
+              noWrap:true
             />
           </LayersControl.Overlay>
 
