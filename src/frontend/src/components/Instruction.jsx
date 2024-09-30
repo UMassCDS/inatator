@@ -40,6 +40,13 @@ function Instruction() {
               <b>buttons</b> to manage the annotation.
             </p>
 
+            <p>
+              <b>Note:</b> You can only annotate the center map. If you zoom
+              out, you will see multiple maps, this is because Leaflet uses
+              tiles. You cannot annotate the maps other than the one in the
+              center, while zoomed in you cannot scroll to other maps either.
+            </p>
+
             <h4>Buttons Function:</h4>
             <ol>
               <li>
