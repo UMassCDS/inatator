@@ -270,7 +270,7 @@ function Sidebar({ onFormChange }) {
                 !taxaInfo.taxon_photos || taxaInfo.taxon_photos.length <= 1
               }
               color="blue"
-              variant="light"
+              variant="default"
             >
               <IconPlayerTrackNext />
             </ActionIcon>
