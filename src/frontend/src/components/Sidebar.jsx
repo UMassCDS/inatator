@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useForm } from "@mantine/form";
 import {
+  TypographyStylesProvider,
   Select,
   NumberInput,
   Text,
@@ -9,10 +10,14 @@ import {
   Combobox,
   InputBase,
   LoadingOverlay,
+  Tooltip,
+  Stack,
 } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
+import { ActionIcon } from "@mantine/core";
 import { parseTaxaID } from "../util";
+import { IconPlayerTrackNext } from "@tabler/icons-react";
 
 const MAX_OPTION_SIZE = 7; // Number of suggestions in autocomplete box
 
@@ -81,7 +86,19 @@ function Sidebar({ onFormChange }) {
   const [taxaNames, setTaxaNames] = useState([]);
 
   const [visible, handlers] = useDisclosure(false);
+  const [imgLoading, imgLoadingHandlers] = useDisclosure(false);
   const { taxaInfo, fetchTaxaInfo } = useTaxaInfo(handlers);
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const cycleImage = () => {
+    if (taxaInfo && taxaInfo.taxon_photos) {
+      imgLoadingHandlers.open();
+      setCurrentImageIndex(
+        (prevIndex) => (prevIndex + 1) % taxaInfo.taxon_photos.length
+      );
+    }
+  };
 
   // Set initial form values, geomodel may need to be tweaked
   const form = useForm({
@@ -121,12 +138,13 @@ function Sidebar({ onFormChange }) {
   }, [form.values]);
 
   return (
-    <>
+    <Stack gap="md">
       {/* combobox has autocomplete style and forces user to select a valid option */}
       <Combobox
         store={combobox}
         withinPortal={false}
         onOptionSubmit={(val) => {
+          setCurrentImageIndex(0);
           setTaxaValue(val);
           form.setFieldValue("taxa", val);
           setSearch(val);
@@ -195,27 +213,105 @@ function Sidebar({ onFormChange }) {
         {...form.getInputProps("hexResolution")}
       />
       {taxaInfo && (
-        <div style={{ marginTop: "5%" }}>
+        <div
+          style={{
+            marginTop: "5%",
+            padding: "10px",
+            textAlign: "center",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
+          }}
+        >
           <LoadingOverlay
             visible={visible}
             overlayProps={{ radius: "sm", blur: 2 }}
           />
-          <Image
-            src={
-              taxaInfo.default_photo.medium_url || taxaInfo.default_photo.url
-            }
-            alt={taxaInfo.name}
-            width={200}
-            height={200}
-            fit="contain"
-          />
-          <Text fw={700}>
+
+          <div
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "auto",
+            }}
+          >
+            <LoadingOverlay
+              visible={imgLoading}
+              overlayProps={{ radius: "sm", blur: 2 }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                borderRadius: "10px",
+              }}
+            />
+            <Image
+              src={
+                taxaInfo.taxon_photos[currentImageIndex]?.photo.original_url ||
+                taxaInfo.default_photo.medium_url ||
+                taxaInfo.default_photo.url
+              }
+              alt={taxaInfo.name}
+              width={200}
+              height={200}
+              fit="contain"
+              style={{ borderRadius: "10px", marginBottom: "15px" }}
+              onLoad={() => imgLoadingHandlers.close()}
+            />
+          </div>
+
+          <Tooltip label="Cycle to next image">
+            <ActionIcon
+              onClick={cycleImage}
+              style={{ marginTop: "10px", marginBottom: "10px" }}
+              disabled={
+                !taxaInfo.taxon_photos || taxaInfo.taxon_photos.length <= 1
+              }
+              color="blue"
+              variant="default"
+            >
+              <IconPlayerTrackNext />
+            </ActionIcon>
+          </Tooltip>
+
+          <Text fw={700} size="lg" mt="md">
             Common Name: {taxaInfo.preferred_common_name || "No common name"}
           </Text>
-          <Text fs>Scientific Name: {taxaInfo.name}</Text>
+          <Text size="sm" mb="md">
+            Scientific Name: {taxaInfo.name}
+          </Text>
+
+          {taxaInfo.wikipedia_url && (
+            <Text>
+              <a
+                href={taxaInfo.wikipedia_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#4eaee4", fontWeight: 500 }}
+              >
+                Wikipedia Page
+              </a>
+            </Text>
+          )}
+
+          {taxaInfo.observations_count && (
+            <Text mt="xs">
+              Number of observations: {taxaInfo.observations_count}
+            </Text>
+          )}
+
+          {taxaInfo.wikipedia_summary && (
+            <TypographyStylesProvider mt="lg" style={{ textAlign: "left" }}>
+              <div
+                dangerouslySetInnerHTML={{ __html: taxaInfo.wikipedia_summary }}
+              />
+            </TypographyStylesProvider>
+          )}
         </div>
       )}
-    </>
+    </Stack>
   );
 }
 

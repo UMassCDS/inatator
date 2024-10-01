@@ -102,8 +102,17 @@ function App() {
               <Instruction />
             </Group>
           </AppShell.Header>
-          <AppShell.Navbar p="md">
-            <Sidebar onFormChange={handleSideBarChange} />
+          <AppShell.Navbar
+            p="md"
+            style={{
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <div style={{ flexGrow: 1, overflow: "auto" }}>
+              <Sidebar onFormChange={handleSideBarChange} />
+            </div>
           </AppShell.Navbar>
           <AppShell.Main>
             <Flex direction="column" style={{ position: "relative" }}>
