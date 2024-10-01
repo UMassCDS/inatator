@@ -1,10 +1,28 @@
 /* eslint-disable no-unused-vars */
 import { generatePrediction, saveAnnotation, loadAnnotation } from "./api"; // import necessary functions from api
+import * as h3 from "h3-js";
 
 // parses taxa id from given string if it exists,
 export function parseTaxaID(taxaString) {
   const split = taxaString.split("(")[1];
   return split ? split.slice(0, split.length - 1) : null;
+}
+
+export function crossesDateLine(boundary) {
+  const left = [];
+  const right = [];
+
+  // iterates 6 times per hexagon
+  for (let i = 0; i < boundary.length; i++) {
+    const point = boundary[i];
+    if (point[1] < 0 && Math.abs(point[1]) > 90) {
+      left.push(point);
+    } else {
+      right.push(point);
+    }
+  }
+
+  return left.length !== 0 && right.length !== 0;
 }
 
 export async function handleGeneratePrediction(data, handler) {
@@ -32,6 +50,18 @@ export async function handleSaveAnnotation(data, handler) {
   // function with error handling, saves on screen annotations
   try {
     handler.loadingHandlers.open();
+    // clean annotation data to exclude dateline points
+    const crossesDlById = (id) =>
+      crossesDateLine(
+        h3.cellToBoundary(id, false).map(([lat, lng]) => [lat, lng])
+      );
+    data.annotation_hexagon_ids.absence = Array.from(
+      data.annotation_hexagon_ids.absence
+    ).filter((id) => !crossesDlById(id));
+    data.annotation_hexagon_ids.presence = Array.from(
+      data.annotation_hexagon_ids.presence
+    ).filter((id) => !crossesDlById(id));
+
     const response = await saveAnnotation(data);
     if (response instanceof Error) {
       console.error("Error save annotation:", response.message);
@@ -66,10 +96,6 @@ export async function handleLoadAnnotation(data, handler) {
   try {
     handler.loadingHandlers.open();
     const response = await loadAnnotation(data);
-    if (response instanceof Error) {
-      console.error("Error save annotation:", response.message);
-      alert("Operation failed. Please try again later.");
-    }
 
     if (response.annotation_hexagon_ids) {
       handler.setAnnotationHexagonIDs(response.annotation_hexagon_ids);
@@ -98,8 +124,8 @@ export function handleAddAnnotationHexagonIDs(hexagonID, handler, switchData) {
       }
     }
     return {
-      presence: Array.from(newAnnotationHexagonIDs.presence),
-      absence: Array.from(newAnnotationHexagonIDs.absence),
+      presence: newAnnotationHexagonIDs.presence,
+      absence: newAnnotationHexagonIDs.absence,
     };
   });
 }
@@ -120,7 +146,6 @@ export function handleAddAnnotationMultiSelect(
     // Update hexagon sets based on the decided action
     for (const [type, hexIDs] of Object.entries(newAnnotationHexagonIDs)) {
       if (isAddAnnotationMultiSelect) {
-        console.log("Adding");
         // If adding hexagons, remove them from the other layer and add to the current layer
         hexagonIDs.forEach((hexID) => hexIDs.delete(hexID));
         if (type === (isPresence ? "presence" : "absence")) {
@@ -137,8 +162,8 @@ export function handleAddAnnotationMultiSelect(
 
     // Return the updated annotation hexagon IDs
     return {
-      presence: Array.from(newAnnotationHexagonIDs.presence),
-      absence: Array.from(newAnnotationHexagonIDs.absence),
+      presence: newAnnotationHexagonIDs.presence,
+      absence: newAnnotationHexagonIDs.absence,
     };
   });
 }

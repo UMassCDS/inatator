@@ -12,9 +12,11 @@ import {
 import { EditControl } from "react-leaflet-draw";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
-import * as h3 from "h3-js/legacy";
+import * as h3 from "h3-js";
 import L from "leaflet";
 import "../styles/Map.css";
+import { crossesDateLine } from "../util";
+
 window.type = true; // sets global type variable, used by leaflet-draw, without it the rectangle select fails
 // An ongoing issue: https://github.com/Leaflet/Leaflet.draw/issues/1026
 // Might need to switch map libraries because of it
@@ -31,43 +33,17 @@ L.drawLocal.draw.handlers.polygon.tooltip.cont =
 L.drawLocal.draw.handlers.polygon.tooltip.end =
   "Click the first point to finish drawing and fill the shape with hexagons";
 
-// Helper functions
-const dropSplits = (boundary) => {
-  const left = [];
-  const right = [];
-
-  // iterates 6 times per hexagon
-  for (let i = 0; i < boundary.length; i++) {
-    const point = boundary[i];
-    if (point[1] < 0) {
-      left.push(point);
-    } else {
-      right.push(point);
-    }
-  }
-
-  if (left.length === 0 || right.length === 0) {
-    return left.length === 0 ? right : left;
-  } else {
-    return null;
-  }
-};
-
 // Helper function
 const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
   if (!hexagonIDs) {
     return null;
   }
-  const hexagons = hexagonIDs
-    .map((hexID) => {
-      const boundary = h3
-        .h3ToGeoBoundary(hexID, false)
-        .map(([lat, lng]) => [lat, lng]);
-      return dropSplits(boundary);
-    })
-    .filter((b) => b !== null);
 
-  return hexagons;
+  return Array.from(hexagonIDs)
+    .map((hexID) =>
+      h3.cellToBoundary(hexID, false).map(([lat, lng]) => [lat, lng])
+    )
+    .filter((boundary) => !crossesDateLine(boundary));
 };
 
 // Hexagon render layer, after certain zoom it will display gray hexagons on screen
@@ -90,7 +66,7 @@ function HexagonLayer({ hexResolution }) {
       [sw.lat, sw.lng],
     ];
 
-    const hexIdxs = h3.polyfill(screenBounds, hexResolution); // fills onscreen rectangle with h3
+    const hexIdxs = h3.polygonToCells(screenBounds, hexResolution); // fills onscreen rectangle with h3
 
     const hexagonsData = h3IDsToGeoBoundary({ hexagonIDs: hexIdxs });
     setHexagons(hexagonsData); // sets and renders screen
@@ -109,26 +85,6 @@ function HexagonLayer({ hexResolution }) {
         opacity: 0.4,
       }}
     />
-  );
-}
-
-// Not used
-function PredictionPolygon({ hullPoints }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (hullPoints) {
-      map.flyToBounds(hullPoints, { maxZoom: 5 });
-    }
-  }, [hullPoints, map]);
-
-  return (
-    hullPoints && (
-      <Polygon
-        positions={hullPoints}
-        pathOptions={{ color: "#4eaee4", fillColor: "#4eaee4" }} // blue
-      />
-    )
   );
 }
 
@@ -185,10 +141,12 @@ function AnnotationHexagonsLayer({ annotationHexagonIDs, color }) {
 const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
   useMapEvents({
     click: (e) => {
-      const hexagonID = h3.geoToH3(e.latlng.lat, e.latlng.lng, hexResolution);
-      if (dropSplits(h3.h3ToGeoBoundary(hexagonID)) !== null) {
-        onAddAnnotationHexagonIDs(hexagonID);
-      }
+      const hexagonID = h3.latLngToCell(
+        e.latlng.lat,
+        e.latlng.lng,
+        hexResolution
+      );
+      onAddAnnotationHexagonIDs(hexagonID);
     },
   });
   return null;
@@ -218,10 +176,10 @@ function Map({
         .getLatLngs()[0]
         .map((latlng) => [latlng.lat, latlng.lng]);
       console.log(polygonCoords);
-      hexagonIds = h3.polyfill(polygonCoords, hexResolution);
+      hexagonIds = h3.polygonToCells(polygonCoords, hexResolution);
       // Add hexagons for each vertex of the polygon
       polygonCoords.map((latlng) =>
-        hexagonIds.push(h3.geoToH3(latlng[0], latlng[1], hexResolution))
+        hexagonIds.push(h3.latLngToCell(latlng[0], latlng[1], hexResolution))
       );
       // catch an error if the figure is not fully drawn
     } catch (error) {
