@@ -279,12 +279,6 @@ function Map({
               <PredictionHexagons predictionHexagonIDs={predictionHexagonIDs} />
             </LayersControl.Overlay>
           )}
-          {/* Render the PredictionPolygon if hullPoints are available */}
-          {hullPoints && (
-            <LayersControl.Overlay name="Prediction Polygon">
-              <PredictionPolygon hullPoints={hullPoints} />
-            </LayersControl.Overlay>
-          )}
         </LayersControl>
         <FeatureGroup>
           <EditControl
