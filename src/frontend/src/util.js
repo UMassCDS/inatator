@@ -8,21 +8,97 @@ export function parseTaxaID(taxaString) {
   return split ? split.slice(0, split.length - 1) : null;
 }
 
-export function crossesDateLine(boundary) {
-  const left = [];
-  const right = [];
+export function findDateLineIntersections(boundary) {
+  const intersections = [];
 
-  // iterates 6 times per hexagon
+  // Making assumption that the h3 boundary has some order, not random
   for (let i = 0; i < boundary.length; i++) {
-    const point = boundary[i];
-    if (point[1] < 0 && Math.abs(point[1]) > 90) {
-      left.push(point);
-    } else {
-      right.push(point);
+    const p1 = boundary[i];
+    const p2 = boundary[(i + 1) % boundary.length];
+
+    if (Math.abs(p1[1] - p2[1]) > 180) {
+      let [x1, y1, z1] = [
+        Math.cos(p1[1]) * Math.sin(p1[0]),
+        Math.sin(p1[1]) * Math.sin(p1[0]),
+        Math.cos(p1[0]),
+      ];
+
+      let [x2, y2, z2] = [
+        Math.cos(p2[1]) * Math.sin(p2[0]),
+        Math.sin(p2[1]) * Math.sin(p2[0]),
+        Math.cos(p2[0]),
+      ];
+
+      const t = y2 / (y2 - y1);
+
+      let [x, y, z] = [t * x1 + (1 - t) * x2, 0, t * z1 + (1 - t) * z2];
+
+      const interLat = Math.atan(z / x);
+
+      intersections.push({
+        p: p1,
+        pIdx: i,
+        lat: p1[0],
+        // lat: interLat,
+        lng: 180 * Math.sign(p1[1]),
+      });
+
+      intersections.push({
+        p: p2,
+        pIdx: (i + 1) % boundary.length,
+        lat: p2[0],
+        // lat: interLat,
+        lng: 180 * Math.sign(p2[1]),
+      });
     }
   }
 
-  return left.length !== 0 && right.length !== 0;
+  return intersections;
+}
+
+export function crossesDateLine(boundary) {
+  let crossesDateline = false;
+  for (let i = 0; i < boundary.length; i++) {
+    const p1 = boundary[i];
+    const p2 = boundary[(i + 1) % boundary.length];
+    if (Math.abs(p1[1] - p2[1]) > 180) {
+      crossesDateline = true;
+      break;
+    }
+  }
+  return crossesDateline;
+}
+
+export function processHexagon(boundary) {
+  if (!crossesDateLine(boundary)) {
+    return [boundary];
+  }
+
+  const intersections = findDateLineIntersections(boundary);
+  console.log(intersections);
+  const leftPoly = [];
+  const rightPoly = [];
+
+  let currentPoly = leftPoly;
+  // let i = 0;
+  for (let i = 0; i < boundary.length; i++) {
+    const p = boundary[i];
+    if (p[1] < 0) {
+      leftPoly.push(p);
+      const inter = intersections.find((int) => int.pIdx === i);
+      if (inter) {
+        leftPoly.push([inter.lat, inter.lng]);
+      }
+    } else {
+      rightPoly.push(p);
+      const inter = intersections.find((int) => int.pIdx === i);
+      if (inter) {
+        rightPoly.push([inter.lat, inter.lng]);
+      }
+    }
+  }
+
+  return [leftPoly, rightPoly];
 }
 
 export async function handleGeneratePrediction(data, handler) {
@@ -51,16 +127,16 @@ export async function handleSaveAnnotation(data, handler) {
   try {
     handler.loadingHandlers.open();
     // clean annotation data to exclude dateline points
-    const crossesDlById = (id) =>
-      crossesDateLine(
-        h3.cellToBoundary(id, false).map(([lat, lng]) => [lat, lng])
-      );
-    data.annotation_hexagon_ids.absence = Array.from(
-      data.annotation_hexagon_ids.absence
-    ).filter((id) => !crossesDlById(id));
-    data.annotation_hexagon_ids.presence = Array.from(
-      data.annotation_hexagon_ids.presence
-    ).filter((id) => !crossesDlById(id));
+    // const crossesDlById = (id) =>
+    //   crossesDateLine(
+    //     h3.cellToBoundary(id, false).map(([lat, lng]) => [lat, lng])
+    //   );
+    // data.annotation_hexagon_ids.absence = Array.from(
+    //   data.annotation_hexagon_ids.absence
+    // ).filter((id) => !crossesDlById(id));
+    // data.annotation_hexagon_ids.presence = Array.from(
+    //   data.annotation_hexagon_ids.presence
+    // ).filter((id) => !crossesDlById(id));
 
     const response = await saveAnnotation(data);
     if (response instanceof Error) {

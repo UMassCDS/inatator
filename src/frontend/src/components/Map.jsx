@@ -15,7 +15,7 @@ import "leaflet-draw/dist/leaflet.draw.css";
 import * as h3 from "h3-js";
 import L from "leaflet";
 import "../styles/Map.css";
-import { crossesDateLine } from "../util";
+import { crossesDateLine, processHexagon } from "../util";
 
 window.type = true; // sets global type variable, used by leaflet-draw, without it the rectangle select fails
 // An ongoing issue: https://github.com/Leaflet/Leaflet.draw/issues/1026
@@ -39,11 +39,19 @@ const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
     return null;
   }
 
-  return Array.from(hexagonIDs)
-    .map((hexID) =>
-      h3.cellToBoundary(hexID, false).map(([lat, lng]) => [lat, lng])
-    )
-    .filter((boundary) => !crossesDateLine(boundary));
+  return Array.from(hexagonIDs).flatMap((hexID) => {
+    const boundary = h3
+      .cellToBoundary(hexID, false)
+      .map(([lat, lng]) => [lat, lng]);
+
+    return processHexagon(boundary);
+  });
+
+  // return Array.from(hexagonIDs)
+  //   .map((hexID) =>
+  //     h3.cellToBoundary(hexID, false).map(([lat, lng]) => [lat, lng])
+  //   )
+  //   .filter((boundary) => !crossesDateLine(boundary));
 };
 
 // Hexagon render layer, after certain zoom it will display gray hexagons on screen
@@ -153,7 +161,6 @@ const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
 };
 
 function Map({
-  hullPoints,
   predictionHexagonIDs,
   annotationHexagonIDs,
   hexResolution,
@@ -208,12 +215,13 @@ function Map({
         center={[39, 34]}
         zoom={3}
         style={{ height: "100%", width: "100%" }}
-        maxBounds={[
-          [-90, -180],
-          [90, 180],
-        ]}
-        worldCopyJump:false
-        maxBoundsViscosity={0.8}
+        // maxBounds={[
+        //   [-90, -180],
+        //   [90, 180],
+        // ]}
+        worldCopyJump:true
+
+        // maxBoundsViscosity={0.8}
       >
         <LayersControl position="topright">
           {/* Base Layers */}
