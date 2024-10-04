@@ -8,6 +8,7 @@ export function parseTaxaID(taxaString) {
 }
 
 function sortBoundaryClockwise(boundary) {
+  // sorts points in a coordinate system clockwise, so that it doesn't 'collapse'
   let points = boundary.map((p) => ({ x: p[0], y: p[1] }));
 
   points.sort((a, b) => a.y - b.y);
@@ -37,9 +38,9 @@ function sortBoundaryClockwise(boundary) {
 }
 
 export function findDateLineIntersections(boundary) {
+  // finds intersection points of a line that crosses the dateline
   const intersections = [];
 
-  // Making assumption that the h3 boundary has some order, not random
   for (let i = 0; i < boundary.length; i++) {
     const p1 = boundary[i];
     const p2 = boundary[(i + 1) % boundary.length];
@@ -72,6 +73,7 @@ export function findDateLineIntersections(boundary) {
 }
 
 export function crossesDateLine(boundary) {
+  // checks if a polygon
   let crossesDateline = false;
   for (let i = 0; i < boundary.length; i++) {
     const p1 = boundary[i];
@@ -85,11 +87,11 @@ export function crossesDateLine(boundary) {
 }
 
 export function processHexagon(boundary) {
-  if (!crossesDateLine(boundary)) {
-    return [boundary];
-  }
-
+  // checks if hexagon crosses dateline, if so splits to render it properly
   const sortedBoundary = sortBoundaryClockwise(boundary);
+  if (!crossesDateLine(sortedBoundary)) {
+    return [sortedBoundary];
+  }
 
   const intersections = findDateLineIntersections(sortedBoundary);
   const leftPoly = [];
