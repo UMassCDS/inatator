@@ -207,8 +207,8 @@ export function handleAddAnnotationHexagonIDs(hexagonID, handler, switchData) {
       }
     }
     return {
-      presence: newAnnotationHexagonIDs.presence,
-      absence: newAnnotationHexagonIDs.absence,
+      presence: Array.from(newAnnotationHexagonIDs.presence),
+      absence: Array.from(newAnnotationHexagonIDs.absence),
     };
   });
 }
@@ -245,8 +245,8 @@ export function handleAddAnnotationMultiSelect(
 
     // Return the updated annotation hexagon IDs
     return {
-      presence: newAnnotationHexagonIDs.presence,
-      absence: newAnnotationHexagonIDs.absence,
+      presence: Array.from(newAnnotationHexagonIDs.presence),
+      absence: Array.from(newAnnotationHexagonIDs.absence),
     };
   });
 }

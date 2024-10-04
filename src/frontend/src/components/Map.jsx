@@ -15,7 +15,7 @@ import "leaflet-draw/dist/leaflet.draw.css";
 import * as h3 from "h3-js";
 import L from "leaflet";
 import "../styles/Map.css";
-import { crossesDateLine, processHexagon } from "../util";
+import { processHexagon } from "../util";
 
 window.type = true; // sets global type variable, used by leaflet-draw, without it the rectangle select fails
 // An ongoing issue: https://github.com/Leaflet/Leaflet.draw/issues/1026
@@ -46,12 +46,6 @@ const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
 
     return processHexagon(boundary);
   });
-
-  // return Array.from(hexagonIDs)
-  //   .map((hexID) =>
-  //     h3.cellToBoundary(hexID, false).map(([lat, lng]) => [lat, lng])
-  //   )
-  //   .filter((boundary) => !crossesDateLine(boundary));
 };
 
 // Hexagon render layer, after certain zoom it will display gray hexagons on screen
@@ -175,14 +169,12 @@ function Map({
 
   // Function to register created polygons on the map
   const handleCreated = (e) => {
-    console.log(e);
     var hexagonIds = null;
     try {
       const layer = e.layer;
       const polygonCoords = layer
         .getLatLngs()[0]
         .map((latlng) => [latlng.lat, latlng.lng]);
-      console.log(polygonCoords);
       hexagonIds = h3.polygonToCells(polygonCoords, hexResolution);
       // Add hexagons for each vertex of the polygon
       polygonCoords.map((latlng) =>
