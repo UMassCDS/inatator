@@ -8,6 +8,21 @@ export function parseTaxaID(taxaString) {
   return split ? split.slice(0, split.length - 1) : null;
 }
 
+function sortPointsClockwise(points) {
+  const centerLat = points.reduce((sum, p) => sum + p[0], 0) / points.length;
+  const centerLng = points.reduce((sum, p) => sum + p[1], 0) / points.length;
+
+  function getAngle(point) {
+    const deltaLat = point[0] - centerLat;
+    const deltaLng = point[1] - centerLng;
+    let angle = Math.atan2(deltaLng, deltaLat);
+    let angleDeg = angle * (180 / Math.PI);
+    return (angleDeg + 360) % 360;
+  }
+
+  return [...points].sort((a, b) => getAngle(a) - getAngle(b));
+}
+
 export function findDateLineIntersections(boundary) {
   const intersections = [];
 
@@ -17,37 +32,22 @@ export function findDateLineIntersections(boundary) {
     const p2 = boundary[(i + 1) % boundary.length];
 
     if (Math.abs(p1[1] - p2[1]) > 180) {
-      let [x1, y1, z1] = [
-        Math.cos(p1[1]) * Math.sin(p1[0]),
-        Math.sin(p1[1]) * Math.sin(p1[0]),
-        Math.cos(p1[0]),
-      ];
-
-      let [x2, y2, z2] = [
-        Math.cos(p2[1]) * Math.sin(p2[0]),
-        Math.sin(p2[1]) * Math.sin(p2[0]),
-        Math.cos(p2[0]),
-      ];
-
-      const t = y2 / (y2 - y1);
-
-      let [x, y, z] = [t * x1 + (1 - t) * x2, 0, t * z1 + (1 - t) * z2];
-
-      const interLat = Math.atan(z / x);
+      const t = (180 - Math.abs(p1[1])) / Math.abs(p1[1] - p2[1]);
+      const interLat = p1[0] + t * (p2[0] - p1[0]);
 
       intersections.push({
         p: p1,
         pIdx: i,
-        lat: p1[0],
-        // lat: interLat,
+        // lat: p1[0],
+        lat: interLat,
         lng: 180 * Math.sign(p1[1]),
       });
 
       intersections.push({
         p: p2,
         pIdx: (i + 1) % boundary.length,
-        lat: p2[0],
-        // lat: interLat,
+        // lat: p2[0],
+        lat: interLat,
         lng: 180 * Math.sign(p2[1]),
       });
     }
@@ -74,15 +74,16 @@ export function processHexagon(boundary) {
     return [boundary];
   }
 
-  const intersections = findDateLineIntersections(boundary);
+  const sortedBoundary = sortPointsClockwise(boundary);
+  console.log(sortedBoundary);
+
+  const intersections = findDateLineIntersections(sortedBoundary);
   console.log(intersections);
   const leftPoly = [];
   const rightPoly = [];
 
-  let currentPoly = leftPoly;
-  // let i = 0;
-  for (let i = 0; i < boundary.length; i++) {
-    const p = boundary[i];
+  for (let i = 0; i < sortedBoundary.length; i++) {
+    const p = sortedBoundary[i];
     if (p[1] < 0) {
       leftPoly.push(p);
       const inter = intersections.find((int) => int.pIdx === i);
@@ -98,7 +99,10 @@ export function processHexagon(boundary) {
     }
   }
 
-  return [leftPoly, rightPoly];
+  const sortedLeft = sortPointsClockwise(leftPoly);
+  const sortedRight = sortPointsClockwise(rightPoly);
+
+  return [sortedLeft, sortedRight];
 }
 
 export async function handleGeneratePrediction(data, handler) {
