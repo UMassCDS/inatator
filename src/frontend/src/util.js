@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 import { generatePrediction, saveAnnotation, loadAnnotation } from "./api"; // import necessary functions from api
-import * as h3 from "h3-js";
 
 // parses taxa id from given string if it exists,
 export function parseTaxaID(taxaString) {
@@ -8,19 +7,33 @@ export function parseTaxaID(taxaString) {
   return split ? split.slice(0, split.length - 1) : null;
 }
 
-function sortPointsClockwise(points) {
-  const centerLat = points.reduce((sum, p) => sum + p[0], 0) / points.length;
-  const centerLng = points.reduce((sum, p) => sum + p[1], 0) / points.length;
+function sortBoundaryClockwise(boundary) {
+  let points = boundary.map((p) => ({ x: p[0], y: p[1] }));
 
-  function getAngle(point) {
-    const deltaLat = point[0] - centerLat;
-    const deltaLng = point[1] - centerLng;
-    let angle = Math.atan2(deltaLng, deltaLat);
-    let angleDeg = angle * (180 / Math.PI);
-    return (angleDeg + 360) % 360;
-  }
+  points.sort((a, b) => a.y - b.y);
+  const cy = (points[0].y + points[points.length - 1].y) / 2;
 
-  return [...points].sort((a, b) => getAngle(a) - getAngle(b));
+  points.sort((a, b) => b.x - a.x);
+  const cx = (points[0].x + points[points.length - 1].x) / 2;
+
+  const center = { x: cx, y: cy };
+
+  var startAng;
+  points.forEach((point) => {
+    var ang = Math.atan2(point.y - center.y, point.x - center.x);
+    if (!startAng) {
+      startAng = ang;
+    } else {
+      if (ang < startAng) {
+        ang += Math.PI * 2;
+      }
+    }
+    point.angle = ang;
+  });
+
+  points.sort((a, b) => a.angle - b.angle);
+
+  return points.map((p) => [p.x, p.y]);
 }
 
 export function findDateLineIntersections(boundary) {
@@ -32,7 +45,9 @@ export function findDateLineIntersections(boundary) {
     const p2 = boundary[(i + 1) % boundary.length];
 
     if (Math.abs(p1[1] - p2[1]) > 180) {
-      const t = (180 - Math.abs(p1[1])) / Math.abs(p1[1] - p2[1]);
+      const lonDiff = p1[1] > p2[1] ? p2[1] + 360 - p1[1] : p1[1] + 360 - p2[1];
+      const t = (180 - Math.abs(p1[1])) / lonDiff;
+
       const interLat = p1[0] + t * (p2[0] - p1[0]);
 
       intersections.push({
@@ -74,11 +89,9 @@ export function processHexagon(boundary) {
     return [boundary];
   }
 
-  const sortedBoundary = sortPointsClockwise(boundary);
-  console.log(sortedBoundary);
+  const sortedBoundary = sortBoundaryClockwise(boundary);
 
   const intersections = findDateLineIntersections(sortedBoundary);
-  console.log(intersections);
   const leftPoly = [];
   const rightPoly = [];
 
@@ -99,8 +112,8 @@ export function processHexagon(boundary) {
     }
   }
 
-  const sortedLeft = sortPointsClockwise(leftPoly);
-  const sortedRight = sortPointsClockwise(rightPoly);
+  const sortedLeft = sortBoundaryClockwise(leftPoly);
+  const sortedRight = sortBoundaryClockwise(rightPoly);
 
   return [sortedLeft, sortedRight];
 }
@@ -130,18 +143,6 @@ export async function handleSaveAnnotation(data, handler) {
   // function with error handling, saves on screen annotations
   try {
     handler.loadingHandlers.open();
-    // clean annotation data to exclude dateline points
-    // const crossesDlById = (id) =>
-    //   crossesDateLine(
-    //     h3.cellToBoundary(id, false).map(([lat, lng]) => [lat, lng])
-    //   );
-    // data.annotation_hexagon_ids.absence = Array.from(
-    //   data.annotation_hexagon_ids.absence
-    // ).filter((id) => !crossesDlById(id));
-    // data.annotation_hexagon_ids.presence = Array.from(
-    //   data.annotation_hexagon_ids.presence
-    // ).filter((id) => !crossesDlById(id));
-
     const response = await saveAnnotation(data);
     if (response instanceof Error) {
       console.error("Error save annotation:", response.message);
