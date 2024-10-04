@@ -1,5 +1,5 @@
 import { useDisclosure } from "@mantine/hooks";
-import { Drawer, ActionIcon } from "@mantine/core";
+import { Drawer, ActionIcon, Tooltip } from "@mantine/core";
 import { IconHelp } from "@tabler/icons-react";
 import "../styles/Instruction.css";
 
@@ -149,9 +149,11 @@ function Instruction() {
           </div>
         }
       </Drawer>
-      <ActionIcon variant="default" size="md" onClick={open}>
-        <IconHelp />
-      </ActionIcon>
+      <Tooltip label="Open Instructions">
+        <ActionIcon variant="default" size="md" onClick={open}>
+          <IconHelp />
+        </ActionIcon>
+      </Tooltip>
     </>
   );
 }
