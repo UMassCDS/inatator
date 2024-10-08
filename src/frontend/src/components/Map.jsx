@@ -33,7 +33,13 @@ L.drawLocal.draw.handlers.polygon.tooltip.cont =
 L.drawLocal.draw.handlers.polygon.tooltip.end =
   "Click the first point to finish drawing and fill the shape with hexagons";
 
-// Helper function
+/**
+ * Converts a hexagon ids into a list of polygon boundaries
+ * A hexagon might cross dateline, it is split if that is the case
+ *
+ * @param {Array<string>} hexagonIDs List of hexagon ids
+ * @returns List of polygon boundaries
+ */
 const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
   if (!hexagonIDs) {
     return null;
