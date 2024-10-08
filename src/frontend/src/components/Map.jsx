@@ -15,7 +15,7 @@ import "leaflet-draw/dist/leaflet.draw.css";
 import * as h3 from "h3-js";
 import L from "leaflet";
 import "../styles/Map.css";
-import { processHexagon } from "../util";
+import { checkAndSplitBoundary } from "../util";
 
 window.type = true; // sets global type variable, used by leaflet-draw, without it the rectangle select fails
 // An ongoing issue: https://github.com/Leaflet/Leaflet.draw/issues/1026
@@ -39,12 +39,13 @@ const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
     return null;
   }
 
+  // checks and splits hexagon boundary, flattens results to an array of boundaries, a split hexagon will have more than one polygon that completes it
   return Array.from(hexagonIDs).flatMap((hexID) => {
     const boundary = h3
       .cellToBoundary(hexID, false)
       .map(([lat, lng]) => [lat, lng]);
 
-    return processHexagon(boundary);
+    return checkAndSplitBoundary(boundary);
   });
 };
 

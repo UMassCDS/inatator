@@ -7,10 +7,17 @@ export function parseTaxaID(taxaString) {
   return split ? split.slice(0, split.length - 1) : null;
 }
 
-function sortBoundaryClockwise(boundary) {
+/**
+ * Sorts the boundary points in a clockwise order
+ *
+ * @param {Array<Array<number>>} boundary - List of [latitude, longitude] coordinates representing the polygon's boundary
+ * @returns {Array<Array<number>>} - List of sorted [latitude, longitude] coordinates
+ */
+export function sortBoundaryClockwise(boundary) {
   // sorts points in a coordinate system clockwise, so that it doesn't 'collapse'
-  let points = boundary.map((p) => ({ x: p[0], y: p[1] }));
+  let points = boundary.map((p) => ({ x: p[0], y: p[1] })); // maps boundary to an object
 
+  // find center point of x and y
   points.sort((a, b) => a.y - b.y);
   const cy = (points[0].y + points[points.length - 1].y) / 2;
 
@@ -20,6 +27,7 @@ function sortBoundaryClockwise(boundary) {
   const center = { x: cx, y: cy };
 
   var startAng;
+  // for each point find the angle from the center, add it to point's object
   points.forEach((point) => {
     var ang = Math.atan2(point.y - center.y, point.x - center.x);
     if (!startAng) {
@@ -32,12 +40,20 @@ function sortBoundaryClockwise(boundary) {
     point.angle = ang;
   });
 
+  // sort points using angle
   points.sort((a, b) => a.angle - b.angle);
 
+  // remap objects to list
   return points.map((p) => [p.x, p.y]);
 }
 
-export function findDateLineIntersections(boundary) {
+/**
+ * Finds the intersection points of the boundary polygon that crosses the dateline, lng=+-180
+ *
+ * @param {Array<Array<number>>} boundary - List of [latitude, longitude] coordinates
+ * @returns {Array<Object>} - Array of intersection objects containing the original point, point index, and intersection coordinates
+ */
+export function findDateLineIntersectionsOnBoundary(boundary) {
   // finds intersection points of a line that crosses the dateline
   const intersections = [];
 
@@ -45,16 +61,21 @@ export function findDateLineIntersections(boundary) {
     const p1 = boundary[i];
     const p2 = boundary[(i + 1) % boundary.length];
 
+    // check if the two points are on opposite sides
     if (Math.abs(p1[1] - p2[1]) > 180) {
-      const lonDiff = p1[1] > p2[1] ? p2[1] + 360 - p1[1] : p1[1] + 360 - p2[1];
-      const t = (180 - Math.abs(p1[1])) / lonDiff;
+      // finds short distance (over the dateline) of two points
+      const lngDist = p1[1] > p2[1] ? p2[1] + 360 - p1[1] : p1[1] + 360 - p2[1];
+      // interpolation factor, y=180, point lies between p1 and p2 lng
+      const t = (180 - Math.abs(p1[1])) / lngDist;
 
+      // calculates latitude using linear interpolation, x = interLat point we interpolate to
       const interLat = p1[0] + t * (p2[0] - p1[0]);
+      // refer to linear interpolation formula for a better understanding
 
+      // push two points, one for west, one for east hemisphere
       intersections.push({
         p: p1,
         pIdx: i,
-        // lat: p1[0],
         lat: interLat,
         lng: 180 * Math.sign(p1[1]),
       });
@@ -62,7 +83,6 @@ export function findDateLineIntersections(boundary) {
       intersections.push({
         p: p2,
         pIdx: (i + 1) % boundary.length,
-        // lat: p2[0],
         lat: interLat,
         lng: 180 * Math.sign(p2[1]),
       });
@@ -72,33 +92,53 @@ export function findDateLineIntersections(boundary) {
   return intersections;
 }
 
+/**
+ * Checks if a boundary crosses the dateline, lng=+-180
+ *
+ * @param {Array<Array<number>>} boundary - List of [latitude, longitude] coordinates
+ * @returns {boolean} - Returns true if the boundary crosses the dateline, false otherwise
+ */
 export function crossesDateLine(boundary) {
   // checks if a polygon
   let crossesDateline = false;
   for (let i = 0; i < boundary.length; i++) {
     const p1 = boundary[i];
     const p2 = boundary[(i + 1) % boundary.length];
+
+    // if longer distance is greater than 180, the shortest path crosses dateline
     if (Math.abs(p1[1] - p2[1]) > 180) {
       crossesDateline = true;
       break;
     }
   }
-  return crossesDateline;
+  return crossesDateline; // boolean
 }
 
-export function processHexagon(boundary) {
+/**
+ * Checks if a boundary crosses the Date Line and splits the polygon into two parts if it does
+ *
+ * @param {Array<Array<number>>} boundary - List of [latitude, longitude] coordinates
+ * @returns {Array<Array<Array<number>>>} - Array of two polygons or a single polygon, based on if it crosses dateline
+ */
+export function checkAndSplitBoundary(boundary) {
   // checks if hexagon crosses dateline, if so splits to render it properly
+
+  // must sort boundary to apply check and split operations
   const sortedBoundary = sortBoundaryClockwise(boundary);
+  // will not split boundary if it does not cross dateline
   if (!crossesDateLine(sortedBoundary)) {
     return [sortedBoundary];
   }
 
-  const intersections = findDateLineIntersections(sortedBoundary);
+  const intersections = findDateLineIntersectionsOnBoundary(sortedBoundary);
   const leftPoly = [];
   const rightPoly = [];
 
   for (let i = 0; i < sortedBoundary.length; i++) {
     const p = sortedBoundary[i];
+
+    // depending on point's lng, push it to left or right
+    // also push the intersection point related to the point
     if (p[1] < 0) {
       leftPoly.push(p);
       const inter = intersections.find((int) => int.pIdx === i);
@@ -114,9 +154,11 @@ export function processHexagon(boundary) {
     }
   }
 
+  // sort polygons again to avoid polygon collapse
   const sortedLeft = sortBoundaryClockwise(leftPoly);
   const sortedRight = sortBoundaryClockwise(rightPoly);
 
+  // list gets extended by the caller
   return [sortedLeft, sortedRight];
 }
 
