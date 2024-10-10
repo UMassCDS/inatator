@@ -9,6 +9,7 @@ function ButtonsPanel({
   onClearAnnotation,
   onLoadAnnotation,
   onSwitchChange,
+  onDownloadAnnotation,
   isValidTaxa,
 }) {
   // Buttons component, gets passed in logic handlers that manage state of the app
@@ -32,6 +33,11 @@ function ButtonsPanel({
       id: "clear_annotation",
       text: "Clear Annotation",
       onClick: onClearAnnotation,
+    },
+    {
+      id: "download_annotation",
+      text: "Download Annotation",
+      onClick: onDownloadAnnotation,
     },
   ];
 

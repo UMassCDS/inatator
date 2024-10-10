@@ -35,6 +35,22 @@ export async function saveAnnotation(data) {
   return await response.json();
 }
 
+export async function downloadAnnotation(data) {
+  const response = await fetch(`${API_URL}/sample_annotation/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Fetch error, status:", response.status);
+  }
+
+  return await response.blob();
+}
+
 export async function loadAnnotation(data) {
   const response = await fetch(`${API_URL}/load_annotation/`, {
     method: "POST",

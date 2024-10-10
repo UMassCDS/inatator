@@ -4,22 +4,27 @@ from datetime import datetime
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from sqlalchemy.orm import Session
 
 from . import tools
+from . import data_extraction
 from .db import models
 from .db.database import SessionLocal, check_db_connection, engine
 
-DEFAULT_ANNOTATION_HEXAGON_IDS = {"annotation_hexagon_ids": {"presence": [], "absence": []}}
+DEFAULT_ANNOTATION_HEXAGON_IDS = {
+    "annotation_hexagon_ids": {"presence": [], "absence": []}
+}
 
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
+
 def get_db():
     with SessionLocal() as db:
         yield db
+
 
 origins = ["*"]
 
@@ -43,21 +48,22 @@ async def health_check():
 
 @app.post("/generate_prediction/")
 async def generate_prediction(request: Request, db: Session = Depends(get_db)):
-    eval_params=await request.json()
-    predicted_hexagons=tools.get_predicted_hexagons(db, eval_params=eval_params)
+    eval_params = await request.json()
+    predicted_hexagons = tools.get_predicted_hexagons(db, eval_params=eval_params)
     if predicted_hexagons is None:
-        index_score_combined=tools.populate_prediction_database(eval_params,db)
-        indexes=index_score_combined[:, 0]
-        scores= [float(i) for i in index_score_combined[:, 1]]
-        predicted_hexagons = [indexes[i] for i in range(len(indexes)) if scores[i]>= eval_params["threshold"]]
-    
-    annotation_hexagon_ids = {
-        "presence": predicted_hexagons,
-        "absence": list()
-    }
+        index_score_combined = tools.populate_prediction_database(eval_params, db)
+        indexes = index_score_combined[:, 0]
+        scores = [float(i) for i in index_score_combined[:, 1]]
+        predicted_hexagons = [
+            indexes[i]
+            for i in range(len(indexes))
+            if scores[i] >= eval_params["threshold"]
+        ]
 
-    if len(predicted_hexagons)==0:
-        response=dict(annotation_hexagon_ids=annotation_hexagon_ids)
+    annotation_hexagon_ids = {"presence": predicted_hexagons, "absence": list()}
+
+    if len(predicted_hexagons) == 0:
+        response = dict(annotation_hexagon_ids=annotation_hexagon_ids)
 
     else:
         response = dict(
@@ -66,6 +72,7 @@ async def generate_prediction(request: Request, db: Session = Depends(get_db)):
         )
 
     return JSONResponse(content=response)
+
 
 @app.post("/save_annotation/")
 async def save_annotation(request: Request, db: Session = Depends(get_db)):
@@ -111,16 +118,48 @@ async def load_annotation(request: Request, db: Session = Depends(get_db)):
     # Query for the hexagons associated with the latest annotation
     hexagons = (
         db.query(models.AnnotationHexagon)
-        .filter(models.AnnotationHexagon.annotation_id == latest_annotation.annotation_id)
+        .filter(
+            models.AnnotationHexagon.annotation_id == latest_annotation.annotation_id
+        )
         .all()
     )
 
     for hexagon in hexagons:
         if hexagon.hex_type not in annotation_hexagons["annotation_hexagon_ids"]:
             annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type] = []
-        annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type].append(hexagon.hex_index)
+        annotation_hexagons["annotation_hexagon_ids"][hexagon.hex_type].append(
+            hexagon.hex_index
+        )
     return JSONResponse(content=annotation_hexagons)
 
+
+@app.post("/sample_annotation/")
+async def sample_annotation(request: Request):
+    """
+    taxa_name: string,
+    hex_resolution: integer,
+    threshold: float,
+    model: string,
+    disable_ocean_mask: _,
+    annotation_hexagon_ids: dict<dict<list<h3ID>>>
+    """
+    body = await request.json()
+
+    taxa_name = body["taxa_name"]
+    annotation_hexagon_ids = body["annotation_hexagon_ids"]
+    hex_resolution = body["hex_resolution"]
+
+    points_df = data_extraction.sample_points(
+        taxa_name, annotation_hexagon_ids, hex_resolution
+    )
+
+    # date_now = str(datetime.now())
+
+    return StreamingResponse(
+        iter([points_df.to_csv(index=False)]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=annotation.csv"},
+    )
 
 
 # path_to_taxa_ids='src/backend/sinr/web_app/taxa_02_08_2023_names.txt'

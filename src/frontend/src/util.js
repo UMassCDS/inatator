@@ -1,5 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { generatePrediction, saveAnnotation, loadAnnotation } from "./api"; // import necessary functions from api
+import {
+  generatePrediction,
+  saveAnnotation,
+  loadAnnotation,
+  downloadAnnotation,
+} from "./api"; // import necessary functions from api
 
 // parses taxa id from given string if it exists,
 export function parseTaxaID(taxaString) {
@@ -41,6 +46,27 @@ export async function handleSaveAnnotation(data, handler) {
     handler.loadingHandlers.close();
   } catch (error) {
     console.error("Error save annotation:", error);
+    alert("An unexpected error occurred.");
+  } finally {
+    handler.loadingHandlers.close();
+  }
+}
+
+export async function handleDownloadAnnotation(data, handler) {
+  try {
+    handler.loadingHandlers.open();
+    const blob = await downloadAnnotation(data);
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const link = document.createElement("a");
+    link.href = url;
+    const file_name = `${data.taxa_name}_${new Date().toString()}.csv`;
+    link.setAttribute("download", file_name);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+    handler.loadingHandlers.close();
+  } catch (error) {
+    console.log("Error downloading CSV:", error);
     alert("An unexpected error occurred.");
   } finally {
     handler.loadingHandlers.close();
