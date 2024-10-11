@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Total number of observation for species
 - Short wiki summary for species
 - Added tooltip for help and cycle image buttons
+- Functionality, button, to download a csv annotations on screen for the species, it will sample as described in the poster
 
 ### Updated
 - package-lock.json: Lock file was updated when ran with `npm i`, removal of testing libraries for react suggest a change in react's dependencies.
