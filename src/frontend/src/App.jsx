@@ -156,7 +156,6 @@ function App() {
                 }}
                 onClearAnnotation={() => handleClearAnnotation(null, handler)}
                 onDownloadAnnotation={() => {
-                  console.log("Downloading samples");
                   const payloadData = {
                     taxa_name: sideBarData.taxa,
                     hex_resolution: sideBarData.hexResolution,

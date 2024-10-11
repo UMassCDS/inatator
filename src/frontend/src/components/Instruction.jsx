@@ -117,6 +117,17 @@ function Instruction() {
                   using the <b>Save Annotation</b> button.
                 </p>
               </li>
+              <li>
+                <strong className="download-annotation">
+                  Download Annotation
+                </strong>
+                : Clicking this button download the current annotation layers
+                into a csv file. You do not have to save the annotation, you can
+                download the annotations on screen for the selected species any
+                time. The file will have the species name and a timestamp as its
+                name.
+              </li>
+              <br />
             </ol>
 
             <h4>Drawing Tool Functionality:</h4>

@@ -153,8 +153,6 @@ async def sample_annotation(request: Request):
         taxa_name, annotation_hexagon_ids, hex_resolution
     )
 
-    # date_now = str(datetime.now())
-
     return StreamingResponse(
         iter([points_df.to_csv(index=False)]),
         media_type="text/csv",

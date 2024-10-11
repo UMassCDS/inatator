@@ -52,10 +52,17 @@ export async function handleSaveAnnotation(data, handler) {
   }
 }
 
+/**
+ * Handles download annotation button click. Data is hexagons on screen and species metadata, handler is an object of functions to control UI and state changes.
+ * @param {JSON} data
+ * @param {JSON} handler
+ */
 export async function handleDownloadAnnotation(data, handler) {
   try {
     handler.loadingHandlers.open();
     const blob = await downloadAnnotation(data);
+    // Downloading from UI has a strange workaround that creates a link for the file and must click to download
+    // It won't render the link in UI, download is automatic
     const url = window.URL.createObjectURL(new Blob([blob]));
     const link = document.createElement("a");
     link.href = url;

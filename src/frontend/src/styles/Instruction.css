@@ -38,3 +38,10 @@
   color: white;
   border: none;
 }
+
+.download-annotation {
+  padding: 0.1em 0.1em;
+  background-color: steelblue;
+  color: white;
+  border: none;
+}

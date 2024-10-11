@@ -35,6 +35,11 @@ export async function saveAnnotation(data) {
   return await response.json();
 }
 
+/**
+ * API request function that gets a "stream" response that represents a file
+ * @param {JSON} data
+ * @returns {Blob}
+ */
 export async function downloadAnnotation(data) {
   const response = await fetch(`${API_URL}/sample_annotation/`, {
     method: "POST",

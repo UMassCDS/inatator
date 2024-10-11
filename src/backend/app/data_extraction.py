@@ -11,7 +11,6 @@ PARAMS = {"sampling_mode": "circle", "max_amount": 7}  # polygon | circle
 
 def sample_points(taxa_name, annotation_hexagons, hex_resolution, params=PARAMS):
     taxon_id = tools.get_taxa_id_by_name(taxa_name)
-    hex_index = []
     hex_type = []
     presence_hexes = annotation_hexagons["presence"]
     absence_hexes = annotation_hexagons["absence"]
