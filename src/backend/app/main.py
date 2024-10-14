@@ -156,7 +156,7 @@ async def sample_annotation(request: Request):
     return StreamingResponse(
         iter([points_df.to_csv(index=False)]),
         media_type="text/csv",
-        headers={"Content-Disposition": f"attachment; filename=annotation.csv"},
+        headers={"Content-Disposition": "attachment; filename=annotation.csv"},
     )
 
 
