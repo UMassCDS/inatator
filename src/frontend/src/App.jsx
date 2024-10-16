@@ -22,7 +22,7 @@ import {
   handleGeneratePrediction,
   handleLoadAnnotation,
   handleSaveAnnotation,
-  handleDownloadAnnotation,
+  handleSampleAnnotation,
 } from "./util"; // handler functions to be passed into components
 
 const OCEAN_MASK = false;
@@ -155,14 +155,14 @@ function App() {
                   handleLoadAnnotation(payloadData, handler);
                 }}
                 onClearAnnotation={() => handleClearAnnotation(null, handler)}
-                onDownloadAnnotation={() => {
+                onSampleAnnotation={() => {
                   const payloadData = {
                     taxa_name: sideBarData.taxa,
                     hex_resolution: sideBarData.hexResolution,
                     annotation_hexagon_ids: annotationHexagonIDs,
                   };
 
-                  handleDownloadAnnotation(payloadData, handler);
+                  handleSampleAnnotation(payloadData, handler);
                 }}
               />
               <LoadingOverlay

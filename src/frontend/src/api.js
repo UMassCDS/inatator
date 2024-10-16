@@ -40,7 +40,7 @@ export async function saveAnnotation(data) {
  * @param {JSON} data
  * @returns {Blob}
  */
-export async function downloadAnnotation(data) {
+export async function sampleAnnotation(data) {
   const response = await fetch(`${API_URL}/sample_annotation/`, {
     method: "POST",
     headers: {
