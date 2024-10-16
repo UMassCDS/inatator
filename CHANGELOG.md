@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - old css files that are now unused
 - loadingbarstatus.js, now we use loading overlays and display errors with alerts
+- Removed prediction polygon layer, was unused
 
 ## [1.0.0] - 2024-08-12
 ### Added
