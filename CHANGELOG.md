@@ -27,10 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Converted old JS components into JSX components and updated components with mantine counterparts
 - frontend dockerfile to build vite before serving
 - Broke up functions in App.js into separate functions in utils.js, makes it more readable
+- Fixed hexagon rendering at the dateline, longitude = +-180
 
 ### Removed
 - old css files that are now unused
 - loadingbarstatus.js, now we use loading overlays and display errors with alerts
+- Removed prediction polygon layer, was unused
 
 ## [1.0.0] - 2024-08-12
 ### Added
