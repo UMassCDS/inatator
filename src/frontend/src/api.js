@@ -35,6 +35,27 @@ export async function saveAnnotation(data) {
   return await response.json();
 }
 
+/**
+ * API request function that gets a "stream" response that represents a file
+ * @param {JSON} data
+ * @returns {Blob}
+ */
+export async function sampleAnnotation(data) {
+  const response = await fetch(`${API_URL}/sample_annotation/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Fetch error, status:", response.status);
+  }
+
+  return await response.blob();
+}
+
 export async function loadAnnotation(data) {
   const response = await fetch(`${API_URL}/load_annotation/`, {
     method: "POST",

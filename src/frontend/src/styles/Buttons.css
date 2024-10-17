@@ -41,3 +41,7 @@ button:disabled {
 #clear_annotation {
   background-color: #e14b23;
 }
+
+#sample_annotation {
+  background-color: steelblue;
+}
