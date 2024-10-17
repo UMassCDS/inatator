@@ -12,9 +12,11 @@ import {
 import { EditControl } from "react-leaflet-draw";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
-import * as h3 from "h3-js/legacy";
+import * as h3 from "h3-js";
 import L from "leaflet";
 import "../styles/Map.css";
+import { checkAndSplitBoundary } from "../util";
+
 window.type = true; // sets global type variable, used by leaflet-draw, without it the rectangle select fails
 // An ongoing issue: https://github.com/Leaflet/Leaflet.draw/issues/1026
 // Might need to switch map libraries because of it
@@ -31,15 +33,26 @@ L.drawLocal.draw.handlers.polygon.tooltip.cont =
 L.drawLocal.draw.handlers.polygon.tooltip.end =
   "Click the first point to finish drawing and fill the shape with hexagons";
 
-// Helper function
+/**
+ * Converts a hexagon ids into a list of polygon boundaries
+ * A hexagon might cross dateline, it is split if that is the case
+ *
+ * @param {Array<string>} hexagonIDs List of hexagon ids
+ * @returns List of polygon boundaries
+ */
 const h3IDsToGeoBoundary = ({ hexagonIDs }) => {
-  if (hexagonIDs) {
-    const hexagons = hexagonIDs.map((hexID) =>
-      h3.h3ToGeoBoundary(hexID, false).map(([lat, lng]) => [lat, lng])
-    );
-    return hexagons;
+  if (!hexagonIDs) {
+    return null;
   }
-  return null;
+
+  // checks and splits hexagon boundary, flattens results to an array of boundaries, a split hexagon will have more than one polygon that completes it
+  return Array.from(hexagonIDs).flatMap((hexID) => {
+    const boundary = h3
+      .cellToBoundary(hexID, false)
+      .map(([lat, lng]) => [lat, lng]);
+
+    return checkAndSplitBoundary(boundary);
+  });
 };
 
 // Hexagon render layer, after certain zoom it will display gray hexagons on screen
@@ -62,7 +75,7 @@ function HexagonLayer({ hexResolution }) {
       [sw.lat, sw.lng],
     ];
 
-    const hexIdxs = h3.polyfill(screenBounds, hexResolution); // fills onscreen rectangle with h3
+    const hexIdxs = h3.polygonToCells(screenBounds, hexResolution); // fills onscreen rectangle with h3
 
     const hexagonsData = h3IDsToGeoBoundary({ hexagonIDs: hexIdxs });
     setHexagons(hexagonsData); // sets and renders screen
@@ -81,26 +94,6 @@ function HexagonLayer({ hexResolution }) {
         opacity: 0.4,
       }}
     />
-  );
-}
-
-// Not used
-function PredictionPolygon({ hullPoints }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (hullPoints) {
-      map.flyToBounds(hullPoints, { maxZoom: 5 });
-    }
-  }, [hullPoints, map]);
-
-  return (
-    hullPoints && (
-      <Polygon
-        positions={hullPoints}
-        pathOptions={{ color: "#4eaee4", fillColor: "#4eaee4" }} // blue
-      />
-    )
   );
 }
 
@@ -157,7 +150,11 @@ function AnnotationHexagonsLayer({ annotationHexagonIDs, color }) {
 const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
   useMapEvents({
     click: (e) => {
-      const hexagonID = h3.geoToH3(e.latlng.lat, e.latlng.lng, hexResolution);
+      const hexagonID = h3.latLngToCell(
+        e.latlng.lat,
+        e.latlng.lng,
+        hexResolution
+      );
       onAddAnnotationHexagonIDs(hexagonID);
     },
   });
@@ -165,7 +162,6 @@ const ClickHandler = ({ onAddAnnotationHexagonIDs, hexResolution }) => {
 };
 
 function Map({
-  hullPoints,
   predictionHexagonIDs,
   annotationHexagonIDs,
   hexResolution,
@@ -180,18 +176,16 @@ function Map({
 
   // Function to register created polygons on the map
   const handleCreated = (e) => {
-    console.log(e);
     var hexagonIds = null;
     try {
       const layer = e.layer;
       const polygonCoords = layer
         .getLatLngs()[0]
         .map((latlng) => [latlng.lat, latlng.lng]);
-      console.log(polygonCoords);
-      hexagonIds = h3.polyfill(polygonCoords, hexResolution);
+      hexagonIds = h3.polygonToCells(polygonCoords, hexResolution);
       // Add hexagons for each vertex of the polygon
       polygonCoords.map((latlng) =>
-        hexagonIds.push(h3.geoToH3(latlng[0], latlng[1], hexResolution))
+        hexagonIds.push(h3.latLngToCell(latlng[0], latlng[1], hexResolution))
       );
       // catch an error if the figure is not fully drawn
     } catch (error) {
@@ -220,6 +214,13 @@ function Map({
         center={[39, 34]}
         zoom={3}
         style={{ height: "100%", width: "100%" }}
+        // maxBounds={[
+        //   [-90, -180],
+        //   [90, 180],
+        // ]}
+        worldCopyJump:true
+
+        // maxBoundsViscosity={0.8}
       >
         <LayersControl position="topright">
           {/* Base Layers */}
@@ -260,6 +261,7 @@ function Map({
           <LayersControl.Overlay checked name="iNaturalist Observations">
             <TileLayer
               url={`https://tiles.inaturalist.org/v1/grid/{z}/{x}/{y}.png?taxon_id=${taxonId}`}
+              noWrap:true
             />
           </LayersControl.Overlay>
 
@@ -282,12 +284,6 @@ function Map({
           {predictionHexagonIDs && (
             <LayersControl.Overlay name="Prediction Hexagons">
               <PredictionHexagons predictionHexagonIDs={predictionHexagonIDs} />
-            </LayersControl.Overlay>
-          )}
-          {/* Render the PredictionPolygon if hullPoints are available */}
-          {hullPoints && (
-            <LayersControl.Overlay name="Prediction Polygon">
-              <PredictionPolygon hullPoints={hullPoints} />
             </LayersControl.Overlay>
           )}
         </LayersControl>
