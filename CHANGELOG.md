@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Short wiki summary for species
 - Added tooltip for help and cycle image buttons
 - Added a button to sample data-points from the annotation on-screen. Sampling is handled in backend with a uniform sampling in a circle that encapsulates the hexagon. Downloaded csv is directly compatible with fine-tuning suite on SINR.
+- Docs folder with poster pdf
 
 ### Updated
 - package-lock.json: Lock file was updated when ran with `npm i`, removal of testing libraries for react suggest a change in react's dependencies.
