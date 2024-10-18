@@ -1,8 +1,8 @@
 
-# iNaturalist GeoModel Annotator Project
+# iNaturalist Geomodel Annotation Tool 
 
-Run a web application for experts to annotate species range maps based on predictions from the [SINR/iNaturalist Geomodel](https://github.com/elijahcole/sinr).
-This is the code base for the iNatator project that was apart of the Data Science for the Common Good program run by the Center for Data Science at UMass Amherst. 
+Our iNatator tool is a web application for experts to annotate species range maps based on predictions from the [Spatial Implicit Neural Representations (SINR)/iNaturalist Geomodel](https://github.com/elijahcole/sinr).
+This project started as part of the Data Science for the Common Good program run by the Center for Data Science at UMass Amherst. You can view [a demo video of the tool on Youtube](https://youtu.be/5KFIZr_pxLc?si=n2TNjMmTRC0qKoix) or see an overview of the approach in [our poster](docs/inaturalist_poster.pdf).
 
 Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel 
 
@@ -135,9 +135,9 @@ Note: There are two environment files (.env and .docker.env) because the databas
 Make sure you always update your local branch to the latest.
 
 ##  🙏 Acknowledgements
-This project was enabled by data from the Cornell Lab of Ornithology, The International Union for the Conservation of Nature, iNaturalist, NASA, USGS, JAXA, CIESIN, and UC Merced. We are especially indebted to the [iNaturalist](inaturalist.org) and [eBird](https://ebird.org) communities for their data collection efforts. We also thank Matt Stimas-Mackey and Sam Heinrich for their help with data curation. This project was funded by the [Climate Change AI Innovation Grants](https://www.climatechange.ai/blog/2022-04-13-innovation-grants) program, hosted by Climate Change AI with the support of the Quadrature Climate Foundation, Schmidt Futures, and the Canada Hub of Future Earth. This work was also supported by the Caltech Resnick Sustainability Institute and an NSF Graduate Research Fellowship (grant number DGE1745301).  
+This project was enabled by data from the Cornell Lab of Ornithology, The International Union for the Conservation of Nature, iNaturalist, NASA, USGS, JAXA, CIESIN, and UC Merced. We are especially indebted to the [iNaturalist](inaturalist.org) and [eBird](https://ebird.org) communities for their data collection efforts. We also thank Grant Van Horn, Max Hamilton, Elijah Cole, Oisin Mac Aodha, Alex Shepard, Subhransu Maji, Sam Heinrich and Sarah Akbar for their suggestions and contributions to the design and testing process. 
 
-If you find our work useful in your research please consider citing our paper.  
+If you find our work useful in your research please consider citing the SINR Geomodel paper.  
 ```
 @inproceedings{SINR_icml23,
   title     = {{Spatial Implicit Neural Representations for Global-Scale Species Mapping}},
