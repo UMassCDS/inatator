@@ -1,10 +1,18 @@
 
 # iNaturalist Geomodel Annotation Tool 
 
-Our iNatator tool is a web application for experts to annotate species range maps based on predictions from the [Spatial Implicit Neural Representations (SINR)/iNaturalist Geomodel](https://github.com/elijahcole/sinr).
-This project started as part of the Data Science for the Common Good program run by the Center for Data Science at UMass Amherst. You can view [a demo video of the tool on Youtube](https://youtu.be/5KFIZr_pxLc?si=n2TNjMmTRC0qKoix) or see an overview of the approach in [our poster](docs/inaturalist_poster.pdf).
+Our iNatator tool is a web application for experts to annotate species range maps based on model predictions.
+This project started as part of the [Data Science for the Common Good](https://ds.cs.umass.edu/programs/ds4cg) program run by the Center for Data Science at UMass Amherst. 
 
-Collaborators: Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel 
+View Our Work:
+- Watch our [demo video](https://youtu.be/5KFIZr_pxLc?si=n2TNjMmTRC0qKoix)
+- See an overview of the approach in [our poster](docs/inaturalist_poster.pdf) or [post by CDS](https://ds.cs.umass.edu/projects/inaturalist-geomodel-annotation-tool)
+
+By Angela Zhu, Paula Navarrete, Sergei Pogorelov, Ozel Yilmazel, Virginia Partridge
+GeoModel Research Group: 
+- UMass Amherst Researchers: Professor Grant Van Horn, Professor Subhransu Maji, Max Hamilton
+- University of Edinburgh Researchers: Professor Oisin Mac Aodha, Christian Lange
+- iNaturalist - Alex Shepard, eBird - Samuel Heinrich
 
 ## 🌍 Overview 
 The iNaturalist team is interested in improving the predictions outputted by the Geomodel by asking experts that understand species ranges to share their knowledge and incorporate it into the Geomodel. To this end, we created a tool that allows obtaining expert feedback through annotations of species ranges in an interactive map.
